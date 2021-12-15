@@ -1,0 +1,14 @@
+{
+  "cluster": "production-demo-cluster",
+  "serviceName": "production-demo-service",
+  "taskDefinition": "production-demo-service",
+  "loadBalancers": [
+      {
+          "targetGroupArn": "",
+          "containerName": "production-demo-service",
+          "containerPort": 3000
+      }
+  ],
+  "desiredCount": 1,
+  "role": "ecsServiceRole"
+}

@@ -1,0 +1,25 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@7.3.0
+  aws-ecs: circleci/aws-ecs@0.0.11
+
+workflows:
+  build_and_push_image:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: true
+          dockerfile: 
+          region: AWS_DEFAULT_REGION
+          repo: '${MY_APP_PREFIX}'
+          tag: "$CIRCLE_SHA1"
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image
+          aws-region: AWS_DEFAULT_REGION
+          family: '${MY_APP_PREFIX}-service'
+          cluster-name: '${MY_APP_PREFIX}-cluster'
+          container-image-name-updates: 'container=${MY_APP_PREFIX}-service,tag=${CIRCLE_SHA1}'

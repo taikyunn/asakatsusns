@@ -1,0 +1,39 @@
+{
+  "family": "production-demo-service",
+  "containerDefinitions": [
+      {
+          "name": "production-demo-service",
+          "image": "",
+          "cpu": 128,
+          "memoryReservation": 128,
+          "portMappings": [
+              {
+                  "containerPort": 3000,
+                  "protocol": "tcp"
+              }
+          ],
+          "environment": [
+            {
+              "name": "DB_ADDRESS",
+              "value": ""
+            },
+            {
+              "name": "DB_ENV",
+              "value": "production"
+            },
+            {
+              "name": "DB_PASS",
+              "value": "password"
+            },
+            {
+              "name": "DB_USER",
+              "value": "admin"
+            }
+          ],
+          "command": [
+              "./main"
+          ],
+          "essential": true
+      }
+  ]
+}

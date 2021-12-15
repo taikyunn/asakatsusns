@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  vue:
+    build:
+      context: ./frontend
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
+    environment:
+      VUE_APP_API_ENDPOINT: ${LOCALENDPOINT}
+    command: sh -c "cd frontend && yarn install && yarn serve"
+
+  go:
+    build:
+      context: ./backend
+      target: dev
+    tty: true
+    stdin_open: true
+    volumes:
+    - ./backend:/go/src/app
+    ports:
+    - 3000:3000
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOTPASSWORD}
+      MYSQL_DATABASE: asakatsusns
+      MYSQL_USER: ${MYSQLUSER}
+      MYSQL_PASSWORD: ${MYSQLPASSWORD}
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+volumes:
+  db-data:
+    driver: local
