@@ -12,7 +12,7 @@ workflows:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           create-repo: true
-          dockerfile: 
+          dockerfile: Dockerfile
           region: AWS_DEFAULT_REGION
           repo: '${MY_APP_PREFIX}'
           tag: "$CIRCLE_SHA1"

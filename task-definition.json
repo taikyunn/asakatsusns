@@ -1,9 +1,9 @@
 {
-  "family": "production-demo-service",
+  "family": "asakatsusns-service",
   "containerDefinitions": [
       {
-          "name": "production-demo-service",
-          "image": "",
+          "name": "asakatsusns-service",
+          "image": "926330672208.dkr.ecr.ap-northeast-1.amazonaws.com/asakatsusns-go:latest",
           "cpu": 128,
           "memoryReservation": 128,
           "portMappings": [
@@ -15,7 +15,7 @@
           "environment": [
             {
               "name": "DB_ADDRESS",
-              "value": ""
+              "value": "asakatsusns.cvfat2usql6c.ap-northeast-1.rds.amazonaws.com"
             },
             {
               "name": "DB_ENV",
