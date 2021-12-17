@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -20,13 +21,18 @@ func serve() {
 
 	// cors対策
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8080", "https://api.asakatsusns.com"},
+		AllowOrigins:     []string{"http://localhost:8080", "https://front.asakatsusns.com"},
 		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	r.GET("/", func(c *gin.Context) {
+		r.LoadHTMLGlob("templates/index.html")
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
 
 	// 会員登録
 	r.POST("/registerUser", controller.RegisterUser)

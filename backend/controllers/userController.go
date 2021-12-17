@@ -21,4 +21,5 @@ func RegisterUser(c *gin.Context) {
 		Password: password,
 	}
 	db.InsertUser(&user)
+	c.JSON(200, user)
 }

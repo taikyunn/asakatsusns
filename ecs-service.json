@@ -4,7 +4,7 @@
   "taskDefinition": "asakatsusns-service",
   "loadBalancers": [
       {
-          "targetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-1:926330672208:targetgroup/asakatsusns-tg/5c15701eca70c9c2",
+          "targetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-1:926330672208:targetgroup/asakatsusns-tg/ed27d6f2948a09c2",
           "containerName": "asakatsusns-service",
           "containerPort": 3000
       }

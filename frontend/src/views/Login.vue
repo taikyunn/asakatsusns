@@ -15,7 +15,7 @@
 import axios from 'axios'
 
 export default {
-    data() {
+  data() {
     return {
       name: "",
       email: "",
@@ -33,12 +33,11 @@ export default {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          this.name = ""
-          this.email = ""
-          this.password = ""
+          alert("登録しました。")
+          this.getAllUser()
         }
       })
-    }
+    },
   }
 }
 </script>
