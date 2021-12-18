@@ -32,7 +32,7 @@ func serve() {
 	r.GET("/getAllUsers", controller.GetAllUsers)
 
 	r.GET("/", func(c *gin.Context) {
-		r.LoadHTMLGlob("templates/index.html")
+		r.LoadHTMLGlob("./templates/index.html")
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
