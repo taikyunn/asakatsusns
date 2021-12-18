@@ -2,7 +2,6 @@ package controller
 
 import (
 	entity "app/models/entity"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,7 +10,6 @@ import (
 
 func RegisterUser(c *gin.Context) {
 	Name := c.PostForm("name")
-	fmt.Println(Name)
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
@@ -22,4 +20,9 @@ func RegisterUser(c *gin.Context) {
 	}
 	db.InsertUser(&user)
 	c.JSON(200, user)
+}
+
+func GetAllUsers(c *gin.Context) {
+	users := db.GetUserData()
+	c.JSON(200, users)
 }

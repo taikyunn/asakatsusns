@@ -29,6 +29,8 @@ func serve() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	r.GET("/getAllUsers", controller.GetAllUsers)
+
 	r.GET("/", func(c *gin.Context) {
 		r.LoadHTMLGlob("templates/index.html")
 		c.HTML(http.StatusOK, "index.html", nil)

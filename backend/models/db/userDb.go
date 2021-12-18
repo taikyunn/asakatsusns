@@ -56,3 +56,11 @@ func InsertUser(registerUser *entity.User) {
 	db.Create(&registerUser)
 	defer db.Close()
 }
+
+func GetUserData() []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	db.Select("id,name").Find(&user)
+	return user
+}
