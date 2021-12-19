@@ -16,7 +16,6 @@ services:
   go:
     build:
       context: ./backend
-      target: dev
     tty: true
     stdin_open: true
     volumes:

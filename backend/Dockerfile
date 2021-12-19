@@ -1,5 +1,5 @@
 # 開発環境
-FROM golang:1.15.2-alpine as dev
+FROM golang:1.15.2-alpine
 
 ENV ROOT=/go/src/app
 ENV CGO_ENABLED 0
