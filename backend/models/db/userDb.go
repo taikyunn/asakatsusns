@@ -50,10 +50,10 @@ func gormConnect() *gorm.DB {
 	return db
 }
 
-func InsertUser(registerUser *entity.User) {
+func InsertUser(signUp *entity.User) {
 	db := gormConnect()
 
-	db.Create(&registerUser)
+	db.Create(&signUp)
 	defer db.Close()
 }
 

@@ -2,7 +2,8 @@
   <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/login">ログイン</router-link>
+    <router-link to="/signup">新規登録</router-link> |
+    <router-link to="/sign_in">ログイン</router-link>
   </div>
   <router-view/>
 </template>

@@ -37,7 +37,7 @@ func serve() {
 	})
 
 	// 会員登録
-	r.POST("/registerUser", controller.RegisterUser)
+	r.POST("/signUp", controller.SignUp)
 
 	r.Run(":3000")
 }

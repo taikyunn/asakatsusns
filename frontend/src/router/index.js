@@ -15,10 +15,17 @@ const routes = [
     }
   },
   {
-    path: '/login',
-    name: 'Login',
+    path: '/signup',
+    name: 'signup',
     component: function () {
-      return import('../views/Login.vue')
+      return import('../views/Signup.vue')
+    }
+  },
+  {
+    path: '/sign_in',
+    name: 'signIn',
+    component: function () {
+      return import('../views/SignIn.vue')
     }
   }
 ]
