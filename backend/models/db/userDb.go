@@ -62,5 +62,16 @@ func GetUserData() []entity.User {
 	var user []entity.User
 
 	db.Select("id,name").Find(&user)
+	defer db.Close()
+	return user
+}
+
+func GetUserPassword(name *string) []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	rows := db.Select("password").Where("name = ?", *name).Find(&user)
+	fmt.Println(rows)
+	defer db.Close()
 	return user
 }

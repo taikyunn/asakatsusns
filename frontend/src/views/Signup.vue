@@ -4,7 +4,6 @@
     {{nameError}}<br />
     <label for="name">お名前:</label>
     <input type="text" name='name' v-model="name"><br />
-    <p v-if="!!errors['name']" class="error" style="color: red;">{{ errors['name'][0]}}</p>
     {{emailError}}<br />
     <label for="email">メールアドレス:</label>
     <input type="text" name='email' v-model="email"><br />
@@ -70,25 +69,14 @@ export default {
       params.append('password', this.password)
       axios.post('/signUp', params)
       .then(response => {
-        if (response.status == 400) {
-          console.log("error")
-          throw new Error('レスポンスエラー')
-        } else {
-          if (response.data.Name !== "") {
-            this.nameError = response.data.Name
-            this.emailError = response.data.Email
-            this.passwordError = response.data.Password
-            alert("エラ〜")
-          } else {
-            alert("登録しました。")
-          }
-          this.getAllUsers()
+        if (response.status == 201) {
+          this.nameError = response.data.Name
+          this.emailError = response.data.Email
+          this.passwordError = response.data.Password
+        } else{
+          alert("登録しました。")
         }
-      })
-      .catch(error => {
-        if (error.response.data && error.response.data.errors) {
-          this.errors = error.response.data.errors;
-        }
+        this.getAllUsers()
       })
     },
   }
