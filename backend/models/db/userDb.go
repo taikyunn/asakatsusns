@@ -11,6 +11,13 @@ import (
 	entity "app/models/entity"
 )
 
+// User モデルの宣言
+type User struct {
+	gorm.Model
+	Username string `form:"username" binding:"required" gorm:"unique;not null"`
+	Password string `form:"password" binding:"required"`
+}
+
 func gormConnect() *gorm.DB {
 	err := godotenv.Load()
 	if err != nil {
@@ -61,17 +68,19 @@ func GetUserData() []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Select("id,name").Find(&user)
+	if err := db.Select("id,name").Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 	return user
 }
 
-func GetUserPassword(name *string) []entity.User {
+func GetUserPassword(name string) User {
 	db := gormConnect()
-	var user []entity.User
-
-	rows := db.Select("password").Where("name = ?", *name).Find(&user)
-	fmt.Println(rows)
+	var user User
+	if err := db.First(&user, "name = ?", name).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 	return user
 }

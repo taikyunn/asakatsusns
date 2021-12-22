@@ -11,4 +11,5 @@ require (
 	github.com/joho/godotenv v1.4.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/go-playground/validator.v9 v9.29.1
+	gorm.io/gorm v1.22.4
 )

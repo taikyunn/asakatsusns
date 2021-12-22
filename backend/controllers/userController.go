@@ -3,7 +3,7 @@ package controller
 import (
 	"app/forms"
 	entity "app/models/entity"
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -50,14 +50,22 @@ func SignIn(c *gin.Context) {
 		c.JSON(201, errorMessages)
 		return
 	}
+
 	name := c.PostForm("name")
-	password := c.PostForm("password")
-	getHashedPassword(&password)
+	formPassword := c.PostForm("password")
 
-	// ユーザーレコードを取得する
-	row := db.GetUserPassword(&name)
-	fmt.Println(row)
+	// パスワードの検証
+	dbPassword := db.GetUserPassword(name).Password
 
+	// ユーザーパスワードの比較
+	if err := bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(formPassword)); err != nil {
+		log.Println("ログインできませんでした")
+		c.JSON(201, gin.H{"err": err})
+		c.Abort()
+	} else {
+		log.Println("ログインできました")
+		c.JSON(200, name)
+	}
 }
 
 func GetAllUsers(c *gin.Context) {
@@ -67,17 +75,9 @@ func GetAllUsers(c *gin.Context) {
 
 // パスワードのhash化を行う
 func getHashedPassword(password *string) {
-	Password := []byte(*password)
-	// パスワードをハッシュ化する。
-	hashed, _ := bcrypt.GenerateFromPassword(Password, 10)
-
-	// `CompareHashAndPassword` でパスワードを検証する。
-	err := bcrypt.CompareHashAndPassword(hashed, Password)
-	fmt.Println(err)
-
-	// パスワードが間違っている場合は `bcrypt.ErrMismatchedHashAndPassword` を返す。
-	err = bcrypt.CompareHashAndPassword(hashed, []byte("INCORRECT_PASSWORD"))
-	fmt.Println(err == bcrypt.ErrMismatchedHashAndPassword)
-
-	*password = string(hashed)
+	hash, err := bcrypt.GenerateFromPassword([]byte(*password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	*password = string(hash)
 }

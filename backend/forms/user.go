@@ -3,6 +3,7 @@ package forms
 import (
 	"fmt"
 
+	// db "app/models/db"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -22,9 +23,9 @@ func (form *ValidateUser) Validate() (ok bool, result map[string]string) {
 	result = make(map[string]string)
 	// 構造体のデータをタグで定義した検証方法でチェック
 	err := validator.New().Struct(*form)
+	fmt.Println("err:", err)
 	if err != nil {
 		errors := err.(validator.ValidationErrors)
-		fmt.Println(errors)
 		if len(errors) != 0 {
 			for i := range errors {
 				// フィールドごとに、検証
@@ -65,6 +66,7 @@ func (form *LoginValidateUser) LoginValidate() (ok bool, result map[string]strin
 		fmt.Println(errors)
 		if len(errors) != 0 {
 			for i := range errors {
+				fmt.Println(i)
 				// フィールドごとに、検証
 				switch errors[i].StructField() {
 				case "Name":
@@ -72,6 +74,7 @@ func (form *LoginValidateUser) LoginValidate() (ok bool, result map[string]strin
 					case "required":
 						result["Name"] = "*お名前は必須入力です。"
 					case "unique":
+						// db.CheckNameUnique()
 						result["Name"] = "*すでに登録されているお名前です。"
 					}
 				case "Email":

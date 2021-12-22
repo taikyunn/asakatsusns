@@ -22,7 +22,7 @@ const routes = [
     }
   },
   {
-    path: '/sign_in',
+    path: '/signin',
     name: 'signIn',
     component: function () {
       return import('../views/SignIn.vue')
