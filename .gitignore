@@ -1,1 +1,2 @@
 *.env
+/backend/firebase-adminsdk.json

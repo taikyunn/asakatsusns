@@ -17,6 +17,6 @@ type User struct {
 	Password         string  `form:"password" binding:"required" gorm:"type:varchar(200)" json:"password"`
 }
 
-type Password struct {
-	Password string `gorm:"type:varchar(200)" json:"password"`
+type AuthUser struct {
+	Name string `form:"name" json:"name" binding:"required"`
 }

@@ -2,17 +2,17 @@ package controller
 
 import (
 	"app/forms"
-	entity "app/models/entity"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 
 	db "app/models/db"
+	entity "app/models/entity"
 )
 
 func SignUp(c *gin.Context) {
-
 	form := forms.ValidateUser{
 		Name:     c.PostForm("name"),
 		Email:    c.PostForm("email"),
@@ -40,32 +40,28 @@ func SignUp(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-func SignIn(c *gin.Context) {
+func Login(c *gin.Context) {
+	// バリデーション
 	form := forms.LoginValidateUser{
 		Name:     c.PostForm("name"),
 		Password: c.PostForm("password"),
 	}
-	// バリデーション
+
 	if ok, errorMessages := form.LoginValidate(); !ok {
 		c.JSON(201, errorMessages)
 		return
 	}
 
+	// 名前とパスワードが一致するか確認
 	name := c.PostForm("name")
-	formPassword := c.PostForm("password")
+	email := c.PostForm("email")
 
-	// パスワードの検証
-	dbPassword := db.GetUserPassword(name).Password
-
-	// ユーザーパスワードの比較
-	if err := bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(formPassword)); err != nil {
-		log.Println("ログインできませんでした")
-		c.JSON(201, gin.H{"err": err})
-		c.Abort()
-	} else {
-		log.Println("ログインできました")
-		c.JSON(200, name)
+	if result := db.CheckNameAndPassword(name, email); !result {
+		c.JSON(201, gin.H{"dbError": "*お名前とパスワードが一致しません。"})
+		return
 	}
+
+	c.JSON(200, name)
 }
 
 func GetAllUsers(c *gin.Context) {
@@ -80,4 +76,24 @@ func getHashedPassword(password *string) {
 		log.Fatal(err)
 	}
 	*password = string(hash)
+}
+
+func GetSample(c *gin.Context) {
+	UserName, _ := c.Get("UserName") // ログインユーザの取得
+	log.Println("UserNameセッションの中身：", UserName)
+}
+
+func GetLogin(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"UserName":     "",
+		"ErrorMessage": "",
+	})
+}
+
+func Public(c *gin.Context) {
+	c.JSON(200, gin.H{"message": "hello public!\n"})
+}
+
+func Private(c *gin.Context) {
+
 }

@@ -1,18 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import firebase from 'firebase/app'
+import 'firebase/app'
+import "firebase/auth"
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
     component: function () {
-      return import('../views/About.vue')
-    }
+      return import('../views/Home.vue')
+    },
+    meta: { requiresAuth: true }
   },
   {
     path: '/signup',
@@ -22,17 +20,42 @@ const routes = [
     }
   },
   {
-    path: '/signin',
-    name: 'signIn',
+    path: '/login',
+    name: 'login',
     component: function () {
-      return import('../views/SignIn.vue')
+      return import('../views/Login.vue')
     }
+  },
+  {
+    path: '/signout',
+    name: 'SignOut',
+    component: () => import('../views/SignOut.vue')
+  },
+  {
+    path: '/post',
+    name: 'Post',
+    component: () => import('../views/Post.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  if (requiresAuth) {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        next()
+      } else {
+        next({ name: 'login' })
+      }
+    })
+  } else {
+    next()
+  }
 })
 
 export default router

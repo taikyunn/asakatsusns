@@ -57,6 +57,7 @@ func gormConnect() *gorm.DB {
 	return db
 }
 
+// ユーザーデータ登録
 func InsertUser(signUp *entity.User) {
 	db := gormConnect()
 
@@ -64,6 +65,7 @@ func InsertUser(signUp *entity.User) {
 	defer db.Close()
 }
 
+// ユーザーデータの取得(単数)
 func GetUserData() []entity.User {
 	db := gormConnect()
 	var user []entity.User
@@ -75,12 +77,13 @@ func GetUserData() []entity.User {
 	return user
 }
 
-func GetUserPassword(name string) User {
+// 正しい名前とパスワードの組み合わせかDBでチェック
+func CheckNameAndPassword(name string, email string) bool {
 	db := gormConnect()
 	var user User
-	if err := db.First(&user, "name = ?", name).Error; err != nil {
-		panic(err.Error())
+
+	if err := db.Where("name = ? AND email = ?", name, email).Find(&user).Error; err != nil {
+		return false
 	}
-	defer db.Close()
-	return user
+	return true
 }

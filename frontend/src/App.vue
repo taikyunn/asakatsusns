@@ -1,12 +1,34 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/signup">新規登録</router-link> |
-    <router-link to="/signin">ログイン</router-link>
+    <router-link to="/">Home |</router-link>
+    <router-link to="/signup" v-if="notAuthenticatedUser">新規登録 |</router-link>
+    <router-link to="/login" v-if="notAuthenticatedUser">ログイン |</router-link>
+    <router-link to="/signout" v-if="authenticatedUser">ログアウト |</router-link>
+    <router-view></router-view>
   </div>
-  <router-view/>
 </template>
+
+<script>
+
+export default {
+  data() {
+    return {
+      notAuthenticatedUser:'',
+      authenticatedUser: ''
+    }
+  },
+  mounted(){
+    if (localStorage.getItem('jwt') != null) {
+      this.authenticatedUser = true;
+      this.notAuthenticatedUser = false;
+    } else {
+      this.authenticatedUser = false;
+      this.notAuthenticatedUser = true;
+    }
+  }
+}
+</script>
+
 
 <style>
 #app {
