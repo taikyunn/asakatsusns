@@ -21,7 +21,6 @@ export default {
       const params = new URLSearchParams
       params.append('body', this.body)
       params.append('name', localStorage.getItem('userName'))
-      console.log(params)
       axios.post('/post/new', params, {
       headers: {'Authorization': `Bearer ${localStorage.getItem('jwt')}`}
       })

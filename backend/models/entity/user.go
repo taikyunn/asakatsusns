@@ -16,7 +16,3 @@ type User struct {
 	EmailVerifiedAt  bool    `gorm:"type:bool; DEFAULT 0" json:"EmailVerifiedAt"`
 	Password         string  `form:"password" binding:"required" gorm:"type:varchar(200)" json:"password"`
 }
-
-type AuthUser struct {
-	Name string `form:"name" json:"name" binding:"required"`
-}
