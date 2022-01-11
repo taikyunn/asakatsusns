@@ -65,7 +65,7 @@ func InsertUser(signUp *entity.User) {
 	defer db.Close()
 }
 
-// ユーザーデータの取得(単数)
+// ユーザーデータの取得
 func GetUserData() []entity.User {
 	db := gormConnect()
 	var user []entity.User

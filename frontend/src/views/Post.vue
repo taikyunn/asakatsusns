@@ -25,7 +25,12 @@ export default {
       headers: {'Authorization': `Bearer ${localStorage.getItem('jwt')}`}
       })
       .then(responce => {
-        console.log(responce)
+        if (responce.status != 200) {
+          console.log("エラーが発生しました。")
+        } else {
+          alert("投稿しました。")
+          this.$router.push('/')
+        }
       })
     }
   }

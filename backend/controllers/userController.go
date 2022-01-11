@@ -3,7 +3,6 @@ package controller
 import (
 	"app/forms"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -12,6 +11,7 @@ import (
 	entity "app/models/entity"
 )
 
+// ユーザー登録
 func SignUp(c *gin.Context) {
 	form := forms.ValidateUser{
 		Name:     c.PostForm("name"),
@@ -40,6 +40,7 @@ func SignUp(c *gin.Context) {
 	c.JSON(200, user)
 }
 
+// ログイン処理
 func Login(c *gin.Context) {
 	// バリデーション
 	form := forms.LoginValidateUser{
@@ -76,24 +77,4 @@ func getHashedPassword(password *string) {
 		log.Fatal(err)
 	}
 	*password = string(hash)
-}
-
-func GetSample(c *gin.Context) {
-	UserName, _ := c.Get("UserName") // ログインユーザの取得
-	log.Println("UserNameセッションの中身：", UserName)
-}
-
-func GetLogin(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"UserName":     "",
-		"ErrorMessage": "",
-	})
-}
-
-func Public(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "hello public!\n"})
-}
-
-func Private(c *gin.Context) {
-
 }

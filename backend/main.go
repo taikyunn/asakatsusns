@@ -54,8 +54,6 @@ func serve() {
 	// ログイン
 	r.POST("/login", controller.Login)
 
-	r.GET("/public", controller.Public)
-
 	// 投稿ここで認証をしてから次に行けるように設定する。
 	menu := r.Group("/post")
 	menu.Use(authMiddleware())
@@ -63,11 +61,23 @@ func serve() {
 		menu.POST("/new", controller.Create)
 	}
 
+	// 投稿全件取得
+	r.GET("/getAllArticles", controller.GetAllArticles)
+
+	// 投稿削除
+	r.POST("/deleteArticle", controller.DeleteArticle)
+
+	// 編集画面表示
+	r.POST("/getOneArticle", controller.GetOneArticle)
+
+	// 編集
+	r.POST("/updateArticle", controller.UpdateArticle)
+
 	r.Run(":3000")
 }
 
 func authMiddleware() gin.HandlerFunc {
-	return gin.HandlerFunc(func(c *gin.Context) {
+	return func(c *gin.Context) {
 		// Firebase SDK のセットアップ
 		opt := option.WithCredentialsFile("firebase-adminsdk.json")
 		app, err := firebase.NewApp(context.Background(), nil, opt)
@@ -94,5 +104,5 @@ func authMiddleware() gin.HandlerFunc {
 		}
 		log.Printf("Verified ID token: %v\n", token)
 		c.Next()
-	})
+	}
 }
