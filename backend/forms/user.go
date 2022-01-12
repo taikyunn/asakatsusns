@@ -19,6 +19,10 @@ type LoginValidateUser struct {
 	Password string `validate:"required"`
 }
 
+type ArticleValidate struct {
+	Body string `validate:"required"`
+}
+
 // バリデーションチェックを行って、結果とNGの場合にエラーメッセージ群を返す
 func (form *ValidateUser) Validate() (ok bool, result map[string]string) {
 	result = make(map[string]string)
@@ -78,6 +82,29 @@ func (form *LoginValidateUser) LoginValidate() (ok bool, result map[string]strin
 						// 名前とPWが一致するかの確認が必要
 						// db.CheckNameUnique()
 						result["Name"] = "そのお名前は登録されていません。"
+					}
+				}
+			}
+		}
+		return false, result
+	}
+	return true, result
+}
+
+func (form *ArticleValidate) ArticleValidate() (ok bool, result map[string]string) {
+	result = make(map[string]string)
+	// 構造体のデータをタグで定義した検証方法でチェック
+	err := validator.New().Struct(*form)
+	if err != nil {
+		errors := err.(validator.ValidationErrors)
+		if len(errors) != 0 {
+			for i := range errors {
+				// フィールドごとに、検証
+				switch errors[i].StructField() {
+				case "Body":
+					switch errors[i].Tag() {
+					case "required":
+						result["Body"] = "*投稿は必須入力です。"
 					}
 				}
 			}
