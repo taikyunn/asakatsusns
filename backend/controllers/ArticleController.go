@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/forms"
 	db "app/models/db"
 	entity "app/models/entity"
 	"strconv"
@@ -15,9 +16,19 @@ type Result struct {
 	UserId int
 }
 
-func Create(c *gin.Context) {
+func CreateArticle(c *gin.Context) {
 	body := c.PostForm("body")
 	name := c.PostForm("name")
+
+	// バリデーション
+	form := forms.ArticleValidate{
+		Body: c.PostForm("body"),
+	}
+
+	if ok, errorMessages := form.ArticleValidate(); !ok {
+		c.JSON(201, errorMessages)
+		return
+	}
 
 	// user_idの取得
 	dbUserId := db.GetUserIdByName(name)

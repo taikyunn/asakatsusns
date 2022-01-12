@@ -37,6 +37,27 @@ func serve() {
 	// ヘッダー情報
 	r.POST("/getHeader", controller.GetHeader)
 
+	// マイページ情報取得
+	r.POST("/getUserData", controller.GetUserData)
+
+	// 寝る時間登録
+	r.POST("/registerSleepTime", controller.RegisterSleepTime)
+
+	// 起きる時間登録
+	r.POST("/registerWakeUpTime", controller.RegisterWakeUpTime)
+
+	// 寝る時間取得
+	r.POST("/getSleepTimeData", controller.GetSleepTimeData)
+
+	// 寝る時間編集
+	r.POST("/updateSleepTime", controller.UpdateSleepTime)
+
+	// 起きる時間取得
+	r.POST("/getWakeUpTimeData", controller.GetWakeUpTimeData)
+
+	// 起きる時間編集
+	r.POST("/updateWakeUpTime", controller.UpdateWakeUpTime)
+
 	// ユーザー全件取得
 	r.GET("/getAllUsers", controller.GetAllUsers)
 
@@ -55,7 +76,7 @@ func serve() {
 	menu := r.Group("/post")
 	menu.Use(middleware.AuthMiddleware())
 	{
-		menu.POST("/new", controller.Create)
+		menu.POST("/new", controller.CreateArticle)
 	}
 
 	// 投稿全件取得
