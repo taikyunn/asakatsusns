@@ -62,7 +62,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, name)
+	// ユーザーIDを取得
+	dbUserId := db.GetUserIdByName(name)
+	UserId := dbUserId[0].ID
+
+	c.JSON(200, gin.H{"name": name, "userId": UserId})
 }
 
 func GetAllUsers(c *gin.Context) {

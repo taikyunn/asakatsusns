@@ -48,7 +48,7 @@ func DeleteArticleById(articleId int) {
 	defer db.Close()
 }
 
-//投稿1件取得
+// 投稿1件取得
 func FindArticleData(articleId int) []entity.Article {
 	db := gormConnect()
 	var article []entity.Article

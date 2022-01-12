@@ -67,15 +67,15 @@ export default {
       params.append('email', this.email)
       axios.post('/login',params)
       .then(response => {
-        console.log(response.data)
         if (response.status == 201) {
           this.apiErrors.push(response.data.dbError)
           this.apiErrors.push(response.data.Name)
         } else if (response.status != 200){
           console.log("エラー")
         } else {
-          localStorage.setItem('userName', response.data)
-          alert("ようこそ" + response.data + "さん")
+          localStorage.setItem('userName', response.data.name)
+          localStorage.setItem('userId', response.data.userId)
+          alert("ようこそ" + response.data.name + "さん")
         }
       })
     }

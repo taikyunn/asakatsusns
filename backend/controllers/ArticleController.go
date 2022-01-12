@@ -8,6 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Result struct {
+	Id     int
+	Name   string
+	Body   string
+	UserId int
+}
+
 func Create(c *gin.Context) {
 	body := c.PostForm("body")
 	name := c.PostForm("name")
@@ -28,8 +35,29 @@ func Create(c *gin.Context) {
 
 // 投稿全件取得
 func GetAllArticles(c *gin.Context) {
+	// 投稿を全件取得
 	articles := db.GetALLArticle()
-	c.JSON(200, articles)
+
+	userID := make([]uint, len(articles))
+	for i, v := range articles {
+		userID[i] = v.UserId
+	}
+
+	result := []*Result{}
+
+	// idより投稿者を取得
+	user := db.GetNameById(userID)
+
+	// 返すデータの作成
+	for _, av := range articles {
+		for _, uv := range user {
+			if av.UserId == uv.ID {
+				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId)})
+			}
+		}
+	}
+
+	c.JSON(200, result)
 }
 
 // 投稿削除

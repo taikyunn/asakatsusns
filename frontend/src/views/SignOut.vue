@@ -16,7 +16,9 @@ export default{
       firebase.auth().signOut()
       .then(() => {
         localStorage.removeItem('jwt')
-        this.$router.push('/login')
+        localStorage.removeItem('userName')
+        localStorage.removeItem('userId')
+        this.$router.push('/')
         alert("ログアウトしました。")
       })
     }

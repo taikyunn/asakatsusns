@@ -87,3 +87,13 @@ func CheckNameAndPassword(name string, email string) bool {
 	}
 	return true
 }
+
+// ユーザーIDの配列からユーザー名を取得
+func GetNameById(userID []uint) []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	db.Select("id,name").Find(&user, userID)
+	defer db.Close()
+	return user
+}
