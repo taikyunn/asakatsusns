@@ -1,9 +1,6 @@
 <template>
   <div class="home">
     <h1>{{ msg }}</h1>
-    <h1>{{ currentUserName }}さん
-    <router-link to="/post">投稿する</router-link>
-    </h1>
     <h1>投稿一覧</h1>
     <tr>
       <th>投稿者:</th>
@@ -13,7 +10,7 @@
         <td>{{article.Name}}:</td>
         <td>{{article.Body}}</td>
         <td v-if="article.UserId == currentUserId">
-          <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))},query: { id: article.Id }}">編集</router-link>
+          <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
         </td>
         <td v-if="article.UserId == currentUserId">
           <button @click="deleteArticle(article)">
@@ -25,16 +22,12 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import "firebase/auth"
 import axios from 'axios'
 
 export default {
   data() {
     return {
       msg: '朝活SNS',
-      email:firebase.auth().currentUser.email,
-      currentUserName:localStorage.getItem('userName'),
       currentUserId: localStorage.getItem('userId'),
       articles:[],
     }

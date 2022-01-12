@@ -39,7 +39,14 @@ const routes = [
   {
     path: '/edit/:id',
     name: 'Edit',
+    props: true,
     component: () => import('../views/Edit.vue')
+  },
+  {
+    path: '/mypage/:id',
+    name: 'Mypage',
+    props: true,
+    component: () => import('../views/Mypage.vue')
   }
 ]
 

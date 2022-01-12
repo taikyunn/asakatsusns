@@ -34,6 +34,9 @@ func serve() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	// ヘッダー情報
+	r.POST("/getHeader", controller.GetHeader)
+
 	// ユーザー全件取得
 	r.GET("/getAllUsers", controller.GetAllUsers)
 

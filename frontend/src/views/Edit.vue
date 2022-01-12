@@ -14,10 +14,10 @@ import axios from 'axios'
 
 
 export default {
+  props:["id"],
   data() {
     return {
       body: '',
-      articleId: this.$route.query.id,
     }
   },
   created() {
@@ -26,7 +26,7 @@ export default {
   methods: {
     fetchArticle() {
       const params = new URLSearchParams()
-      params.append('id', this.articleId)
+      params.append('id', this.id)
       axios.post('getOneArticle', params)
       .then(response => {
         if (response.status != 200) {
@@ -40,7 +40,7 @@ export default {
     updateBody(){
       const params = new URLSearchParams()
       params.append('body', this.body)
-      params.append('id', this.articleId)
+      params.append('id', this.id)
       axios.post("updateArticle", params)
       .then(response => {
         if (response.status != 200) {

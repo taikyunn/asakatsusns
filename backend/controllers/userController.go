@@ -3,6 +3,7 @@ package controller
 import (
 	"app/forms"
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -10,6 +11,13 @@ import (
 	db "app/models/db"
 	entity "app/models/entity"
 )
+
+// ヘッダー情報取得
+func GetHeader(c *gin.Context) {
+	userIdStr := c.PostForm("id")
+	userID, _ := strconv.Atoi(userIdStr)
+	c.JSON(200, userID)
+}
 
 // ユーザー登録
 func SignUp(c *gin.Context) {
