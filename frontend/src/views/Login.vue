@@ -1,16 +1,12 @@
 <template>
   <div>
     <h1>ログインフォーム</h1>
-    <p v-if="errors.length">
-    <ul>
-      <li v-for="error in errors" :key="error">{{ error }}</li>
-    </ul>
-    </p>
-    <p v-if="apiErrors.length">
-    <ul>
-      <li v-for="error in apiErrors" :key="error">{{ error }}</li>
-    </ul>
-    </p>
+    <div v-if="errors.length">
+      <p v-for="error in errors" :key="error">{{ error }}</p>
+    </div>
+    <div v-if="apiErrors.length">
+      <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+    </div>
     <label for="name">お名前:</label>
     <input type="text" placeholder="name" name='name' v-model="name"><br />
     <label for="name">メールアドレス：:</label>
