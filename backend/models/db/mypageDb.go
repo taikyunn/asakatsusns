@@ -50,3 +50,31 @@ func GetWakeUpTimeById(userID int) []entity.User {
 	defer db.Close()
 	return user
 }
+
+// 画像ファイルのパスを保存
+func UpdateFilePath(id int, file_path string) {
+	db := gormConnect()
+	var user []entity.User
+
+	db.Model(&user).Where("id = ?", id).Update("profile_image_path", file_path)
+	defer db.Close()
+}
+
+// profile_image_pathのデータの取得
+func GetFilePathById(id int) []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	db.Select("profile_image_path").Where("id = ?", id).Find(&user)
+	defer db.Close()
+	return user
+}
+
+// ユーザー名の更新
+func UpdateUserName(id int, name string) {
+	db := gormConnect()
+	var user []entity.User
+
+	db.Model(&user).Where("id = ?", id).Update("name", name)
+	defer db.Close()
+}

@@ -43,18 +43,6 @@ const routes = [
     props: true,
     component: () => import('../views/Mypage.vue')
   },
-  {
-    path: '/sleep_time_edit/:id',
-    name: 'SleepTimeEdit',
-    props: true,
-    component: () => import('../views/SleepTimeEdit.vue')
-  },
-  {
-    path: '/wake_up_time_edit/:id',
-    name: 'WakeUpTimeEdit',
-    props: true,
-    component: () => import('../views/WakeUpTimeEdit.vue')
-  },
 ]
 
 const router = createRouter({
@@ -67,8 +55,6 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth) {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        console.log("ここが動いています。")
-
         next()
       } else {
         next({ name: 'login' })
