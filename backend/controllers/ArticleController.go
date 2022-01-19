@@ -88,12 +88,6 @@ func GetAllArticles(c *gin.Context) {
 		articleIdInfo[i] = v.ArticleId
 		articleInfo[i] = []string(v.Name)
 	}
-	log.Println(articleInfo[0])
-
-	for i, v := range articleIdInfo {
-		log.Println("i", i)
-		log.Println("v", v)
-	}
 
 	result := []*Result{}
 
