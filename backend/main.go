@@ -2,6 +2,7 @@ package main
 
 import (
 	controller "app/controllers"
+	middleware "app/middlewares"
 	"net/http"
 	"time"
 
@@ -72,12 +73,11 @@ func serve() {
 	r.POST("/login", controller.Login)
 
 	// 投稿ここで認証をしてから次に行けるように設定する。
-	r.POST("/post/new", controller.CreateArticle)
-	// menu := r.Group("/post")
-	// menu.Use(middleware.AuthMiddleware())
-	// {
-	// 	menu.POST("/new", controller.CreateArticle)
-	// }
+	menu := r.Group("/post")
+	menu.Use(middleware.AuthMiddleware())
+	{
+		menu.POST("/new", controller.CreateArticle)
+	}
 
 	// 投稿全件取得
 	r.GET("/getAllArticles", controller.GetAllArticles)
