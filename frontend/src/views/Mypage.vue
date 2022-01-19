@@ -128,7 +128,7 @@ export default {
       this.mounted()
     },
     fileUpload() {
-      var params = new FormData()
+      const params = new FormData()
       params.append('file', this.fileInfo)
       params.append('userId', this.id)
       axios.post('/fileUpload', params, {headers: {'Content-Type': 'multipart/form-data'}})

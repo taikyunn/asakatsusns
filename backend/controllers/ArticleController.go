@@ -3,7 +3,9 @@ package controller
 import (
 	"app/forms"
 	db "app/models/db"
-	entity "app/models/entity"
+	"app/models/entity"
+	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -17,8 +19,19 @@ type Result struct {
 }
 
 func CreateArticle(c *gin.Context) {
-	body := c.PostForm("body")
-	name := c.PostForm("name")
+	formData, _ := c.MultipartForm()
+	var userData entity.UserData
+	e := c.Bind(&userData)
+	if e != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
+	}
+	log.Println("names.Name:", userData.Name)
+
+	// mapデータの取り出し方を確
+	t := formData.Value
+	tags := t["tags"][0]
+	//tagデータ
+	log.Println(tags)
 
 	// バリデーション
 	form := forms.ArticleValidate{
@@ -31,13 +44,13 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	// user_idの取得
-	dbUserId := db.GetUserIdByName(name)
+	dbUserId := db.GetUserIdByName(userData.Name)
 	UserId := dbUserId[0].ID
 
 	// データの登録
 	var article = entity.Article{
 		UserId: UserId,
-		Body:   body,
+		Body:   userData.Body,
 	}
 
 	db.InsertArticle(&article)

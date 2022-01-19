@@ -6,7 +6,7 @@
     </div>
     <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
     <div>
-      <input type="hidden" name="tags" :value="tagsJson">
+      <input type="hidden" id="tags" :value="tagsJson">
       <vue-tags-input
       v-model="tag"
       :tags="tags"
@@ -62,13 +62,18 @@ export default {
         if (this.body == '') {
           throw new Error('終了します');
        }
-        const params = new URLSearchParams
+        const tags = document.getElementById("tags").value;
+        const params = new FormData()
         params.append('body', this.body)
         params.append('name', localStorage.getItem('userName'))
-        params.append('tags', this.tags)
-        axios.post('/post/new', params, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('jwt')}`}
-        })
+        params.append('tags', tags)
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        } 
+        axios.post('/post/new', params, config)
         .then(response => {
           if (response.status == 201) {
             if (response.data.Body != '') {
