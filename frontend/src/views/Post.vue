@@ -34,15 +34,15 @@ export default {
       tag: '',
       tags: [],
       autocompleteItems: [{
-        text: 'Spain',
+        text: '早起き',
       }, {
-        text: 'France',
+        text: '早寝',
       }, {
-        text: 'USA',
+        text: '朝勉',
       }, {
-        text: 'Germany',
+        text: 'カフェ勉',
       }, {
-        text: 'China',
+        text: '散歩',
       }],
     }
   },

@@ -17,7 +17,7 @@ type Result struct {
 	Name   string
 	Body   string
 	UserId int
-	Tag    string
+	Tag    []string
 }
 
 func CreateArticle(c *gin.Context) {
@@ -81,22 +81,35 @@ func GetAllArticles(c *gin.Context) {
 
 	// タグ情報の取得
 	tagInfo := db.GetTagInfo(articleID)
-	log.Println("tagInfo", tagInfo[0])
+
+	articleInfo := make([][]string, len(tagInfo))
+	articleIdInfo := make([]int, len(tagInfo))
+	for i, v := range tagInfo {
+		articleIdInfo[i] = v.ArticleId
+		articleInfo[i] = []string(v.Name)
+	}
+	log.Println(articleInfo[0])
+
+	for i, v := range articleIdInfo {
+		log.Println("i", i)
+		log.Println("v", v)
+	}
 
 	result := []*Result{}
 
 	// idより投稿者を取得
 	user := db.GetNameById(userID)
+	var null []string
 
 	// 返すデータの作成
 	for _, av := range articles {
 		for _, uv := range user {
-			for _, tv := range tagInfo {
+			for i, articleIdInfoValue := range articleIdInfo {
 				if av.UserId == uv.ID {
-					if av.ID == uint(tv.ArticleId) {
-						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), tv.Name})
+					if av.ID == uint(articleIdInfoValue) {
+						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), articleInfo[i]})
 					} else {
-						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), ""})
+						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), null})
 					}
 				}
 			}
@@ -117,6 +130,9 @@ func GetOneArticle(c *gin.Context) {
 	articleIdStr := c.PostForm("id")
 	articleID, _ := strconv.Atoi(articleIdStr)
 	resultArticle := db.FindArticleData(articleID)
+	// タグ情報の取得
+	tagInfo := db.FindTagData(articleID)
+	log.Println("tagInfo", tagInfo)
 	c.JSON(200, resultArticle)
 }
 

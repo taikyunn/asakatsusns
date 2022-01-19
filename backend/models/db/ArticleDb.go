@@ -2,6 +2,7 @@ package db
 
 import (
 	entity "app/models/entity"
+	"log"
 )
 
 // userIdの取得
@@ -94,12 +95,11 @@ func GetALLArticle() []entity.Article {
 
 type TagInfo struct {
 	ArticleId int
-	Name      string
+	Name      []string
 }
 
 // タグ情報取得
 func GetTagInfo(articleID []uint) []*TagInfo {
-	// 稿にタグ情報が含まれているか否かをチェック
 	db := gormConnect()
 	var count int64
 	var articleTag []entity.ArticleTag
@@ -120,15 +120,20 @@ func GetTagInfo(articleID []uint) []*TagInfo {
 		if err := db.Select("tag_id").Where("article_id = ?", value).Find(&articleTag).Error; err != nil {
 			panic(err.Error())
 		}
-		tagId := articleTag[0].TagId
+		tagIDs := make([]uint, len(articleTag))
+		for i, v := range articleTag {
+			tagIDs[i] = uint(v.TagId)
+		}
 
 		// タグの中身を取得
-		if err := db.Select("name").Where("id = ?", tagId).Find(&tag).Error; err != nil {
+		if err := db.Select("name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
 			panic(err.Error())
 		}
-		tagName := tag[0].Name
-
-		tagInfo = append(tagInfo, &TagInfo{int(value), tagName})
+		tagNames := make([]string, len(tag))
+		for i, v := range tag {
+			tagNames[i] = v.Name
+		}
+		tagInfo = append(tagInfo, &TagInfo{int(value), tagNames})
 	}
 	return tagInfo
 }
@@ -150,6 +155,37 @@ func FindArticleData(articleId int) []entity.Article {
 	db.First(&article, articleId)
 	defer db.Close()
 	return article
+}
+
+// タグ情報の取得
+func FindTagData(articleId int) string {
+	db := gormConnect()
+	var count int64
+	var articleTag []entity.ArticleTag
+
+	if err := db.Model(&articleTag).Where("article_id = ?", articleId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+
+	if count == 0 {
+		return ""
+	}
+
+	// tag_idの取得
+	if err := db.Select("tag_id").Where("article_id = ?", articleId).Find(&articleTag).Error; err != nil {
+		panic(err.Error())
+	}
+	tagId := articleTag[0].TagId
+	log.Println("articleId", articleId)
+	log.Println("tagId", tagId)
+
+	// tagの中身を取得
+	var tag []entity.Tag
+	if err := db.Select("name").Where("id = ?", tagId).Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	tagInfo := tag[0].Name
+	return tagInfo
 }
 
 // 編集
