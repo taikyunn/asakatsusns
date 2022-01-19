@@ -5,7 +5,6 @@ import (
 	db "app/models/db"
 	"app/models/entity"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
