@@ -85,11 +85,52 @@ func GetALLArticle() []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
 
-	if err := db.Find(&articles).Error; err != nil {
+	if err := db.Limit(10).Order("id DESC").Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 	return articles
+}
+
+type TagInfo struct {
+	ArticleId int
+	Name      string
+}
+
+// タグ情報取得
+func GetTagInfo(articleID []uint) []*TagInfo {
+	// 稿にタグ情報が含まれているか否かをチェック
+	db := gormConnect()
+	var count int64
+	var articleTag []entity.ArticleTag
+	var tag []entity.Tag
+	tagInfo := []*TagInfo{}
+
+	for _, value := range articleID {
+		// article_tagテーブルにレコードが存在するか確認
+		if err := db.Model(&articleTag).Where("article_id = ?", value).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
+		// 含まれていなかったらスキップ
+		if count == 0 {
+			continue
+		}
+
+		// tag_idの取得
+		if err := db.Select("tag_id").Where("article_id = ?", value).Find(&articleTag).Error; err != nil {
+			panic(err.Error())
+		}
+		tagId := articleTag[0].TagId
+
+		// タグの中身を取得
+		if err := db.Select("name").Where("id = ?", tagId).Find(&tag).Error; err != nil {
+			panic(err.Error())
+		}
+		tagName := tag[0].Name
+
+		tagInfo = append(tagInfo, &TagInfo{int(value), tagName})
+	}
+	return tagInfo
 }
 
 // 投稿削除

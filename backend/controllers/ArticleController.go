@@ -5,6 +5,7 @@ import (
 	db "app/models/db"
 	"app/models/entity"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -16,6 +17,7 @@ type Result struct {
 	Name   string
 	Body   string
 	UserId int
+	Tag    string
 }
 
 func CreateArticle(c *gin.Context) {
@@ -67,13 +69,19 @@ func CreateArticle(c *gin.Context) {
 
 // 投稿全件取得
 func GetAllArticles(c *gin.Context) {
-	// 投稿を全件取得
+	// 投稿を10件取得
 	articles := db.GetALLArticle()
 
 	userID := make([]uint, len(articles))
+	articleID := make([]uint, len(articles))
 	for i, v := range articles {
 		userID[i] = v.UserId
+		articleID[i] = v.ID
 	}
+
+	// タグ情報の取得
+	tagInfo := db.GetTagInfo(articleID)
+	log.Println("tagInfo", tagInfo[0])
 
 	result := []*Result{}
 
@@ -83,12 +91,17 @@ func GetAllArticles(c *gin.Context) {
 	// 返すデータの作成
 	for _, av := range articles {
 		for _, uv := range user {
-			if av.UserId == uv.ID {
-				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId)})
+			for _, tv := range tagInfo {
+				if av.UserId == uv.ID {
+					if av.ID == uint(tv.ArticleId) {
+						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), tv.Name})
+					} else {
+						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), ""})
+					}
+				}
 			}
 		}
 	}
-
 	c.JSON(200, result)
 }
 

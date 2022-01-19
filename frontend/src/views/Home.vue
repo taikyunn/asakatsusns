@@ -9,6 +9,7 @@
     <tr v-for="article in articles" :key="article">
         <td>{{article.Name}}:</td>
         <td>{{article.Body}}</td>
+        <td v-if="article.Tag != null">{{article.Tag}}</td>
         <td v-if="article.UserId == currentUserId">
           <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
         </td>
@@ -38,6 +39,7 @@ export default {
       if (response.status != 200) {
         throw new Error('レスポンスエラー')
       } else {
+        console.log(response.data)
         var resultArticles = response.data
         this.articles = resultArticles
       }
