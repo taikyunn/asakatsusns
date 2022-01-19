@@ -4,6 +4,7 @@ import (
 	"app/forms"
 	db "app/models/db"
 	"app/models/entity"
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -25,13 +26,13 @@ func CreateArticle(c *gin.Context) {
 	if e != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
 	}
-	log.Println("names.Name:", userData.Name)
 
-	// mapデータの取り出し方を確
-	t := formData.Value
-	tags := t["tags"][0]
-	//tagデータ
-	log.Println(tags)
+	// tagデータを構造体に入れる
+	f := formData.Value
+	tags := f["tags"][0]
+	b := []byte(tags)
+	var tagData []entity.TagData
+	json.Unmarshal(b, &tagData)
 
 	// バリデーション
 	form := forms.ArticleValidate{
@@ -54,6 +55,14 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	db.InsertArticle(&article)
+
+	// article_idの取得
+	dbArticleId := db.GetArticleID()
+	ArticleID := dbArticleId[0].ID
+
+	// tag,article_tagテーブルにデータを登録
+	db.InsertTags(ArticleID, tagData)
+
 	c.JSON(200, gin.H{"mesage": "clear"})
 }
 

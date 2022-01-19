@@ -72,7 +72,7 @@ export default {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
             'Content-Type': 'multipart/form-data'
           }
-        } 
+        }
         axios.post('/post/new', params, config)
         .then(response => {
           if (response.status == 201) {
