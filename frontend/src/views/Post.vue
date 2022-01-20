@@ -68,7 +68,6 @@ export default {
           throw new Error('終了します');
        }
         const tags = document.getElementById("tags").value;
-        console.log(tags)
         const params = new FormData()
         params.append('body', this.body)
         params.append('name', localStorage.getItem('userName'))
