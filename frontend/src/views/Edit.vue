@@ -37,17 +37,7 @@ export default {
       body: '',
       tag: '',
       tags: [],
-      autocompleteItems: [{
-        text: '早起き',
-      }, {
-        text: '早寝',
-      }, {
-        text: '朝勉',
-      }, {
-        text: 'カフェ勉',
-      }, {
-        text: '散歩',
-      }],
+      autocompleteItems: [],
     }
   },
   computed: {
@@ -61,29 +51,40 @@ export default {
     },
   },
   created() {
-    this.fetchArticle()
+    const params = new URLSearchParams()
+    params.append('id', this.id)
+    axios.post('getOneArticle', params)
+    .then(response => {
+      if (response.status != 200) {
+        throw new Error('レスポンスエラー')
+      } else {
+        var resultArticle = response.data
+        this.body = resultArticle[0].Body
+        if (resultArticle[0].Tags != null) {
+          this.tags = resultArticle[0].Tags
+        }
+      }
+    })
+  },
+  mounted() {
+    axios.get("/getAutocompleteItems")
+    .then (response => {
+      var resultAutocompleteItems = response.data
+      if (resultAutocompleteItems != null) {
+        var target = []
+        for (var i = 0; i < resultAutocompleteItems.length; i++) {
+          target[i] = {text: resultAutocompleteItems[i]}
+        }
+        const handler1 = {};
+        const proxy1 = new Proxy(target, handler1);
+        this.autocompleteItems = proxy1
+      }
+    })
   },
   methods: {
-    fetchArticle() {
-      const params = new URLSearchParams()
-      params.append('id', this.id)
-      axios.post('getOneArticle', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error('レスポンスエラー')
-        } else {
-          var resultArticle = response.data
-          this.body = resultArticle[0].Body
-          if (resultArticle[0].Tags != null) {
-            this.tags = resultArticle[0].Tags
-          }
-        }
-      })
-    },
     updateBody(){
       const params = new FormData()
       const tags = document.getElementById("tags").value;
-      console.log(tags)
       params.append('body', this.body)
       params.append('id', this.id)
       params.append('tags', tags)

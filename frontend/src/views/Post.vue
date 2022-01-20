@@ -33,17 +33,7 @@ export default {
       apiErrors: [],
       tag: '',
       tags: [],
-      autocompleteItems: [{
-        text: '早起き',
-      }, {
-        text: '早寝',
-      }, {
-        text: '朝勉',
-      }, {
-        text: 'カフェ勉',
-      }, {
-        text: '散歩',
-      }],
+      autocompleteItems: [],
     }
   },
   computed: {
@@ -55,6 +45,21 @@ export default {
     tagsJson() {
       return JSON.stringify(this.tags)
     },
+  },
+  mounted() {
+    axios.get("/getAutocompleteItems")
+    .then (response => {
+      var resultAutocompleteItems = response.data
+      if (resultAutocompleteItems != null) {
+        var target = []
+        for (var i = 0; i < resultAutocompleteItems.length; i++) {
+          target[i] = {text: resultAutocompleteItems[i]}
+        }
+        const handler1 = {};
+        const proxy1 = new Proxy(target, handler1);
+        this.autocompleteItems = proxy1
+      }
+    })
   },
   methods: {
     CreateArticle() {
