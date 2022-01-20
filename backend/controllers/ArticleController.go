@@ -124,6 +124,7 @@ func DeleteArticle(c *gin.Context) {
 	articleIdStr := c.PostForm("articleId")
 	articleID, _ := strconv.Atoi(articleIdStr)
 	db.DeleteArticleById(articleID)
+	db.DeleteTags(articleID)
 }
 
 // 編集画面・一件取得

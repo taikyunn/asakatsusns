@@ -145,7 +145,16 @@ func DeleteArticleById(articleId int) {
 	db := gormConnect()
 	var article []entity.Article
 
-	db.Delete(&article, articleId)
+	db.Where("id = ?", articleId).Delete(&article)
+	defer db.Close()
+}
+
+// タグ削除
+func DeleteTags(articleId int) {
+	db := gormConnect()
+	var articleTag []entity.ArticleTag
+
+	db.Delete(&articleTag, articleId)
 	defer db.Close()
 }
 

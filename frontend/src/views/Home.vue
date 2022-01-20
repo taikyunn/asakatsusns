@@ -59,13 +59,14 @@ export default {
     deleteArticle(article) {
       confirm('削除してもよろしいですか。')
       const params = new URLSearchParams()
-      params.append('articleId', article.ID)
+      params.append('articleId', article.Id)
       axios.post('deleteArticle', params)
       .then(response => {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          console.log(response)
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          alert('削除しました。')
         }
       })
     }
