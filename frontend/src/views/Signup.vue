@@ -1,11 +1,9 @@
 <template>
   <div>
     <h1>新規登録</h1>
-    <p v-if="errors.length">
-    <ul>
-      <li v-for="error in errors" :key="error">{{ error }}</li>
-    </ul>
-    </p>
+    <div v-if="errors.length">
+      <p v-for="error in errors" :key="error">{{ error }}</p>
+    </div>
     <p v-if="apiErrors.length">
     <ul>
       <li v-for="error in apiErrors" :key="error">{{ error }}</li>

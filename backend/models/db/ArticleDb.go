@@ -27,12 +27,67 @@ func InsertArticle(article *entity.Article) bool {
 	return true
 }
 
+func InsertTags(articleId uint, tags []entity.TagData) {
+	db := gormConnect()
+	var tag []entity.Tag
+	var count int64
+	var tagId uint
+
+	for _, value := range tags {
+		// tagテーブルにレコードか存在するか確認
+		if err := db.Model(&tag).Where("name = ?", value.Text).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
+
+		var tag = entity.Tag{
+			Name: value.Text,
+		}
+
+		// tagテーブルにデータを登録
+		if count == 0 {
+			db.Create(&tag)
+
+			// tag_idの取得
+			if err := db.Select("id").Last(&tag).Error; err != nil {
+				panic(err.Error())
+			}
+			tagId = tag.ID
+
+		} else {
+			// tag_idの取得
+			if err := db.Select("id").Where("name = ?", value.Text).Find(&tag).Error; err != nil {
+				panic(err.Error())
+			}
+			tagId = tag.ID
+		}
+
+		// article_tagテーブルにレコードを保存する
+		var articleTag = entity.ArticleTag{
+			ArticleId: int(articleId),
+			TagId:     int(tagId),
+		}
+		db.Create(&articleTag)
+	}
+}
+
+// 記事IDの取得
+func GetArticleID() []entity.Article {
+	db := gormConnect()
+	var article []entity.Article
+
+	if err := db.Select("id").Last(&article).Error; err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	return article
+}
+
 // 投稿全件取得
 func GetALLArticle() []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
 
-	if err := db.Find(&articles).Error; err != nil {
+	if err := db.Limit(10).Order("id DESC").Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
@@ -44,7 +99,7 @@ func DeleteArticleById(articleId int) {
 	db := gormConnect()
 	var article []entity.Article
 
-	db.Delete(&article, articleId)
+	db.Where("id = ?", articleId).Delete(&article)
 	defer db.Close()
 }
 
@@ -58,7 +113,7 @@ func FindArticleData(articleId int) []entity.Article {
 	return article
 }
 
-// 編集
+// 記事情報更新
 func UpdateArticleData(id int, body string) {
 	db := gormConnect()
 	var article []entity.Article

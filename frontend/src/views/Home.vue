@@ -9,6 +9,15 @@
     <tr v-for="article in articles" :key="article">
         <td>{{article.Name}}:</td>
         <td>{{article.Body}}</td>
+        <div v-for="tag in tags" :key="tag">
+          <div v-if="article.Id == tag.Id">
+            <div v-for="t in tag.Tag" :key="t">
+              <span v-if="article.UserId == currentUserId">
+                {{t}}
+              </span>
+            </div>
+          </div>
+        </div>
         <td v-if="article.UserId == currentUserId">
           <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
         </td>
@@ -30,6 +39,7 @@ export default {
       msg: '朝活SNS',
       currentUserId: localStorage.getItem('userId'),
       articles:[],
+      tags:[],
     }
   },
   created() {
@@ -38,8 +48,10 @@ export default {
       if (response.status != 200) {
         throw new Error('レスポンスエラー')
       } else {
-        var resultArticles = response.data
+        var resultArticles = response.data.article
         this.articles = resultArticles
+        var resultTags = response.data.tag
+        this.tags = resultTags
       }
     })
   },
@@ -47,13 +59,14 @@ export default {
     deleteArticle(article) {
       confirm('削除してもよろしいですか。')
       const params = new URLSearchParams()
-      params.append('articleId', article.ID)
+      params.append('articleId', article.Id)
       axios.post('deleteArticle', params)
       .then(response => {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          console.log(response)
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          alert('削除しました。')
         }
       })
     }

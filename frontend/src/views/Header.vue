@@ -25,7 +25,7 @@ export default {
       currentUserName:localStorage.getItem('userName'),
     }
   },
-  created(){
+  mounted(){
     const params = new URLSearchParams()
     params.append('id', localStorage.getItem('userId'))
     axios.post('getHeader', params)

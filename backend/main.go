@@ -72,6 +72,9 @@ func serve() {
 	// ログイン
 	r.POST("/login", controller.Login)
 
+	// 自動補完データの取得
+	r.GET("/getAutocompleteItems", controller.GetAutocompleteItems)
+
 	// 投稿ここで認証をしてから次に行けるように設定する。
 	menu := r.Group("/post")
 	menu.Use(middleware.AuthMiddleware())
@@ -90,6 +93,15 @@ func serve() {
 
 	// 編集
 	r.POST("/updateArticle", controller.UpdateArticle)
+
+	// 画像アップロード
+	r.POST("/fileUpload", controller.FileUpload)
+
+	// ユーザー画像情報取得
+	r.POST("/getUserProfile", controller.GetUserProfile)
+
+	// ユーザー名編集
+	r.POST("/editUserName", controller.EditUserName)
 
 	r.Run(":3000")
 }
