@@ -23,7 +23,12 @@ import axios from 'axios'
 import VueTagsInput from '@sipec/vue3-tags-input'
 
 export default {
-  props:["id"],
+  props: {
+    id: {
+      type: String,
+      default : '',
+    },
+  },
   components: {
     VueTagsInput,
   },
@@ -68,15 +73,26 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           var resultArticle = response.data
-          this.body = resultArticle[0].body
+          this.body = resultArticle[0].Body
+          if (resultArticle[0].Tags != null) {
+            this.tags = resultArticle[0].Tags
+          }
         }
       })
     },
     updateBody(){
-      const params = new URLSearchParams()
+      const params = new FormData()
+      const tags = document.getElementById("tags").value;
+      console.log(tags)
       params.append('body', this.body)
       params.append('id', this.id)
-      axios.post("updateArticle", params)
+      params.append('tags', tags)
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      axios.post("updateArticle", params, config)
       .then(response => {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")

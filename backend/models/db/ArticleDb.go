@@ -35,10 +35,11 @@ func InsertTags(articleId uint, tags []entity.TagData) {
 	var tagId uint
 
 	for _, value := range tags {
-		// tagtableにレコードか存在するか確認
+		// tagテーブルにレコードか存在するか確認
 		if err := db.Model(&tag).Where("name = ?", value.Text).Count(&count).Error; err != nil {
 			panic(err.Error())
 		}
+
 		var tag = entity.Tag{
 			Name: value.Text,
 		}
@@ -70,6 +71,7 @@ func InsertTags(articleId uint, tags []entity.TagData) {
 	}
 }
 
+// 記事IDの取得
 func GetArticleID() []entity.Article {
 	db := gormConnect()
 	var article []entity.Article
@@ -158,7 +160,53 @@ func FindArticleData(articleId int) []entity.Article {
 }
 
 // タグ情報の取得
-func FindTagData(articleId int) string {
+func FindTagData(articleId int) []string {
+	db := gormConnect()
+	var count int64
+	var articleTag []entity.ArticleTag
+
+	if err := db.Model(&articleTag).Where("article_id = ?", articleId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	log.Println(count)
+
+	if count == 0 {
+		var null []string
+		return null
+	}
+
+	// tag_idの取得
+	if err := db.Select("tag_id").Where("article_id = ?", articleId).Find(&articleTag).Error; err != nil {
+		panic(err.Error())
+	}
+	tagIDs := make([]uint, len(articleTag))
+	for i, v := range articleTag {
+		tagIDs[i] = uint(v.TagId)
+	}
+
+	// タグの中身を取得
+	var tag []entity.Tag
+	if err := db.Select("name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	tagNames := make([]string, len(tag))
+	for i, v := range tag {
+		tagNames[i] = v.Name
+	}
+	return tagNames
+}
+
+// 記事情報更新
+func UpdateArticleData(id int, body string) {
+	db := gormConnect()
+	var article []entity.Article
+
+	db.Model(&article).Where("id = ?", id).Update("body", body)
+	defer db.Close()
+}
+
+// タグデータの更新
+func UpdateTagData(articleId int, tags []entity.TagData) {
 	db := gormConnect()
 	var count int64
 	var articleTag []entity.ArticleTag
@@ -167,32 +215,46 @@ func FindTagData(articleId int) string {
 		panic(err.Error())
 	}
 
-	if count == 0 {
-		return ""
+	if count != 0 {
+		// 記事とタグの既存の紐付けを全解除＝deleted_atにデータを入れる
+		db.Where("article_id = ?", articleId).Delete(&articleTag)
 	}
 
-	// tag_idの取得
-	if err := db.Select("tag_id").Where("article_id = ?", articleId).Find(&articleTag).Error; err != nil {
-		panic(err.Error())
-	}
-	tagId := articleTag[0].TagId
-	log.Println("articleId", articleId)
-	log.Println("tagId", tagId)
-
-	// tagの中身を取得
+	// tagテーブルにレコードか存在するか確認
 	var tag []entity.Tag
-	if err := db.Select("name").Where("id = ?", tagId).Find(&tag).Error; err != nil {
-		panic(err.Error())
+	var tagId uint
+
+	for _, value := range tags {
+		if err := db.Model(&tag).Where("name = ?", value.Text).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
+		var tag = entity.Tag{
+			Name: value.Text,
+		}
+
+		// tagテーブルにデータを登録
+		if count == 0 {
+			db.Create(&tag)
+
+			// tag_idの取得
+			if err := db.Select("id").Last(&tag).Error; err != nil {
+				panic(err.Error())
+			}
+			tagId = tag.ID
+
+		} else {
+			// tag_idの取得
+			if err := db.Select("id").Where("name = ?", value.Text).Find(&tag).Error; err != nil {
+				panic(err.Error())
+			}
+			tagId = tag.ID
+		}
+
+		// article_tagテーブルに登録
+		var articleTag = entity.ArticleTag{
+			ArticleId: int(articleId),
+			TagId:     int(tagId),
+		}
+		db.Create(&articleTag)
 	}
-	tagInfo := tag[0].Name
-	return tagInfo
-}
-
-// 編集
-func UpdateArticleData(id int, body string) {
-	db := gormConnect()
-	var article []entity.Article
-
-	db.Model(&article).Where("id = ?", id).Update("body", body)
-	defer db.Close()
 }

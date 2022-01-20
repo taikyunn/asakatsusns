@@ -9,11 +9,15 @@
     <tr v-for="article in articles" :key="article">
         <td>{{article.Name}}:</td>
         <td>{{article.Body}}</td>
-        <td v-if="article.Tag != null">
-          <span v-for="tag in article.Tag" :key="tag">
-            {{tag}}&nbsp;
-          </span>
-        </td>
+        <div v-for="tag in tags" :key="tag">
+          <div v-if="article.Id == tag.Id">
+            <div v-for="t in tag.Tag" :key="t">
+              <span v-if="article.UserId == currentUserId">
+                {{t}}
+              </span>
+            </div>
+          </div>
+        </div>
         <td v-if="article.UserId == currentUserId">
           <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
         </td>
@@ -35,6 +39,7 @@ export default {
       msg: '朝活SNS',
       currentUserId: localStorage.getItem('userId'),
       articles:[],
+      tags:[],
     }
   },
   created() {
@@ -43,9 +48,10 @@ export default {
       if (response.status != 200) {
         throw new Error('レスポンスエラー')
       } else {
-        console.log(response.data)
-        var resultArticles = response.data
+        var resultArticles = response.data.article
         this.articles = resultArticles
+        var resultTags = response.data.tag
+        this.tags = resultTags
       }
     })
   },

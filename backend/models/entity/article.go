@@ -18,3 +18,8 @@ type UserData struct {
 type TagData struct {
 	Text string `json:"text"`
 }
+
+type EditArticleData struct {
+	Id   int    `form:"id"`
+	Body string `form:"body"`
+}

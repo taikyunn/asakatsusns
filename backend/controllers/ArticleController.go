@@ -17,7 +17,18 @@ type Result struct {
 	Name   string
 	Body   string
 	UserId int
-	Tag    []string
+}
+
+type DbTagResult struct {
+	Id  int
+	Tag []string
+}
+
+type EditData struct {
+	ArticleId int
+	UserId    int
+	Body      string
+	Tags      []string
 }
 
 func CreateArticle(c *gin.Context) {
@@ -82,34 +93,30 @@ func GetAllArticles(c *gin.Context) {
 	// タグ情報の取得
 	tagInfo := db.GetTagInfo(articleID)
 
-	articleInfo := make([][]string, len(tagInfo))
-	articleIdInfo := make([]int, len(tagInfo))
-	for i, v := range tagInfo {
-		articleIdInfo[i] = v.ArticleId
-		articleInfo[i] = []string(v.Name)
-	}
+	dbTagResult := []*DbTagResult{}
 
-	result := []*Result{}
+	for _, v := range tagInfo {
+		dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, v.Name})
+	}
 
 	// idより投稿者を取得
 	user := db.GetNameById(userID)
-	var null []string
+
+	result := []*Result{}
 
 	// 返すデータの作成
 	for _, av := range articles {
 		for _, uv := range user {
-			for i, articleIdInfoValue := range articleIdInfo {
-				if av.UserId == uv.ID {
-					if av.ID == uint(articleIdInfoValue) {
-						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), articleInfo[i]})
-					} else {
-						result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), null})
-					}
-				}
+			if av.UserId == uv.ID {
+				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId)})
 			}
 		}
 	}
-	c.JSON(200, result)
+
+	c.JSON(200, gin.H{
+		"article": result,
+		"tag":     dbTagResult,
+	})
 }
 
 // 投稿削除
@@ -124,16 +131,36 @@ func GetOneArticle(c *gin.Context) {
 	articleIdStr := c.PostForm("id")
 	articleID, _ := strconv.Atoi(articleIdStr)
 	resultArticle := db.FindArticleData(articleID)
+
 	// タグ情報の取得
 	tagInfo := db.FindTagData(articleID)
-	log.Println("tagInfo", tagInfo)
-	c.JSON(200, resultArticle)
+	log.Println("taginfo", tagInfo)
+
+	editData := []*EditData{}
+	editData = append(editData, &EditData{int(resultArticle[0].ID), int(resultArticle[0].UserId), resultArticle[0].Body, tagInfo})
+
+	c.JSON(200, editData)
 }
 
 // 編集
 func UpdateArticle(c *gin.Context) {
-	articleIdStr := c.PostForm("id")
-	articleID, _ := strconv.Atoi(articleIdStr)
-	body := c.PostForm("body")
-	db.UpdateArticleData(articleID, body)
+	formData, _ := c.MultipartForm()
+	var editArticleData entity.EditArticleData
+
+	e := c.Bind(&editArticleData)
+	if e != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
+	}
+
+	f := formData.Value
+	tags := f["tags"][0]
+	b := []byte(tags)
+	var tagData []entity.TagData
+	json.Unmarshal(b, &tagData)
+
+	// 記事データの更新
+	db.UpdateArticleData(editArticleData.Id, editArticleData.Body)
+
+	// タグデータの更新
+	db.UpdateTagData(editArticleData.Id, tagData)
 }
