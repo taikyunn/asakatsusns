@@ -2,7 +2,6 @@ package forms
 
 import (
 	"fmt"
-	"log"
 
 	// db "app/models/db"
 	"github.com/go-playground/validator/v10"
@@ -68,10 +67,8 @@ func (form *LoginValidateUser) LoginValidate() (ok bool, result map[string]strin
 	err := validator.New().Struct(*form)
 	if err != nil {
 		errors := err.(validator.ValidationErrors)
-		log.Println("ここ", errors)
 		if len(errors) != 0 {
 			for i := range errors {
-				log.Println("ここ1", i)
 				// フィールドごとに、検証
 				switch errors[i].StructField() {
 				case "Name":

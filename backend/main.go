@@ -103,5 +103,17 @@ func serve() {
 	// ユーザー名編集
 	r.POST("/editUserName", controller.EditUserName)
 
+	// いいね登録
+	r.POST("/registerLikes", controller.RegisterLikes)
+
+	// いいね削除
+	r.POST("/deleteLikes", controller.DeleteLikes)
+
+	// いいね数取得
+	r.GET("/getCountFavorites", controller.GetCountFavorites)
+
+	// ログイン中のユーザーがいいねしているか確認
+	r.POST("/checkFavorite", controller.CheckFavorite)
+
 	r.Run(":3000")
 }

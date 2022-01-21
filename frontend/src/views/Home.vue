@@ -26,6 +26,17 @@
             削除
           </button>
         </td>
+        <td>
+            <span v-for="result in results" :key="result">
+              <span v-if="result.ArticleId == article.Id ">
+                  <button @click="registerLikes(article)" v-if="result.Count">いいね</button>
+                  <button @click="deleteLikes(article)" v-else >いいね解除</button>
+              </span>
+            </span>
+          <span v-for="count in counts" :key="count">
+            <span v-if="count.ArticleId == article.Id">いいね数:{{count.Count}}</span>
+          </span>
+        </td>
     </tr>
   </div>
 </template>
@@ -40,6 +51,8 @@ export default {
       currentUserId: localStorage.getItem('userId'),
       articles:[],
       tags:[],
+      counts: [],
+      results:[],
     }
   },
   created() {
@@ -55,6 +68,10 @@ export default {
       }
     })
   },
+  mounted () {
+    this.countFavorites()
+    this.checkFavorite()
+  },
   methods:{
     deleteArticle(article) {
       confirm('削除してもよろしいですか。')
@@ -68,6 +85,50 @@ export default {
           this.$router.go({path: this.$router.currentRoute.path, force: true})
           alert('削除しました。')
         }
+      })
+    },
+    registerLikes(article) {
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      params.append('userId', article.UserId)
+      axios.post('registerLikes', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          this.countFavorites()
+          this.checkFavorite()
+        }
+      })
+    },
+    deleteLikes(article) {
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      params.append('userId', article.UserId)
+      axios.post('deleteLikes', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          this.countFavorites()
+          this.checkFavorite()
+        }
+      })
+    },
+    countFavorites() {
+      axios.get('getCountFavorites')
+      .then(response => {
+        var resultCountData = response.data
+        this.counts = resultCountData
+      })
+    },
+    checkFavorite() {
+      const params = new URLSearchParams()
+      params.append("userId", localStorage.getItem('userId'))
+      axios.post("checkFavorite", params)
+      .then(response => {
+        var resultCheckFavorite = response.data
+        this.results = resultCheckFavorite
       })
     }
   }

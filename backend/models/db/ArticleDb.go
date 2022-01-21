@@ -27,6 +27,7 @@ func InsertArticle(article *entity.Article) bool {
 	return true
 }
 
+// タグデータの登録
 func InsertTags(articleId uint, tags []entity.TagData) {
 	db := gormConnect()
 	var tag []entity.Tag
@@ -82,7 +83,7 @@ func GetArticleID() []entity.Article {
 	return article
 }
 
-// 投稿全件取得
+// 直近10件の投稿取得
 func GetALLArticle() []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
