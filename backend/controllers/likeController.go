@@ -3,7 +3,6 @@ package controller
 import (
 	db "app/models/db"
 	"app/models/entity"
-	"log"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -40,14 +39,28 @@ func DeleteLikes(c *gin.Context) {
 func GetCountFavorites(c *gin.Context) {
 	// 直近10件の投稿データのarticleIdを取得
 	articleIds := db.GetLastTenArticleID()
-	log.Println("articleIds", articleIds)
 
 	articleID := make([]int, len(articleIds))
 	for i, v := range articleIds {
 		articleID[i] = int(v.ID)
 	}
 
-	// article_idを元にcountデータを取得
+	// countデータを取得
 	countData := db.GetLikeCount(articleID)
 	c.JSON(200, countData)
+}
+
+// ログイン中のユーザーのいいね状態の取得
+func CheckFavorite(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	articleIds := db.GetLastTenArticleID()
+	articleID := make([]int, len(articleIds))
+	for i, v := range articleIds {
+		articleID[i] = int(v.ID)
+	}
+
+	favoriteData := db.CheckFavorite(articleID, userID)
+	c.JSON(200, favoriteData)
 }

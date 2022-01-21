@@ -2,12 +2,16 @@ package db
 
 import (
 	entity "app/models/entity"
-	"log"
 )
 
 type CountData struct {
 	ArticleId int
 	Count     int
+}
+
+type Favoritedata struct {
+	ArticleId int
+	Count     bool
 }
 
 // いいね登録
@@ -47,8 +51,25 @@ func GetLikeCount(articleIds []int) []*CountData {
 
 	for _, v := range articleIds {
 		db.Where("article_id = ?", v).Find(&likes).Count(&count)
-		log.Println("ここ:", count)
 		countData = append(countData, &CountData{v, count})
 	}
 	return countData
+}
+
+// ログイン中のユーザーがいいね済みかチェックする
+func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
+	db := gormConnect()
+	var likes []entity.Likes
+	var count int
+	favoriteData := []*Favoritedata{}
+
+	for _, v := range articleIds {
+		db.Where("article_id = ? AND user_id = ?", v, userId).Find(&likes).Count(&count)
+		if count == 1 {
+			favoriteData = append(favoriteData, &Favoritedata{v, true})
+		} else {
+			favoriteData = append(favoriteData, &Favoritedata{v, false})
+		}
+	}
+	return favoriteData
 }

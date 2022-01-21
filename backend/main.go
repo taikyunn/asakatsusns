@@ -112,5 +112,8 @@ func serve() {
 	// いいね数取得
 	r.GET("/getCountFavorites", controller.GetCountFavorites)
 
+	// ログイン中のユーザーがいいねしているか確認
+	r.POST("/checkFavorite", controller.CheckFavorite)
+
 	r.Run(":3000")
 }
