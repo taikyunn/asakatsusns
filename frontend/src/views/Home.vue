@@ -26,11 +26,13 @@
             削除
           </button>
         </td>
-          <div>
-            <button @click="registerLikes(article)">いいね</button>
-            <button @click="deleteLikes(article)">いいね解除</button>
-            いいね数:
-          </div>
+        <td>
+          <button @click="deleteLikes(article)" v-if="isLiked">いいね解除</button>
+          <button @click="registerLikes(article)" v-else >いいね</button>
+          <span v-for="count in counts" :key="count">
+            <span v-if="count.ArticleId == article.Id">いいね数:{{count.Count}}</span>
+          </span>
+        </td>
     </tr>
   </div>
 </template>
@@ -45,6 +47,8 @@ export default {
       currentUserId: localStorage.getItem('userId'),
       articles:[],
       tags:[],
+      isLiked: false,
+      counts: '',
     }
   },
   created() {
@@ -59,6 +63,9 @@ export default {
         this.tags = resultTags
       }
     })
+  },
+  mounted () {
+    this.countFavorites()
   },
   methods:{
     deleteArticle(article) {
@@ -83,6 +90,8 @@ export default {
       .then(response => {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
+        } else {
+          // this.isLiked = true
         }
       })
     },
@@ -92,12 +101,20 @@ export default {
       params.append('userId', article.UserId)
       axios.post('deleteLikes', params)
       .then(response => {
-        console.log(response)
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
+        } else {
+          // this.isLiked = false
         }
       })
     },
+    countFavorites() {
+      axios.get('getCountFavorites')
+      .then(response => {
+        var resultCountData = response.data
+        this.counts = resultCountData
+      })
+    }
   }
 }
 </script>

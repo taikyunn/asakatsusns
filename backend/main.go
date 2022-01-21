@@ -109,5 +109,8 @@ func serve() {
 	// いいね削除
 	r.POST("/deleteLikes", controller.DeleteLikes)
 
+	// いいね数取得
+	r.GET("/getCountFavorites", controller.GetCountFavorites)
+
 	r.Run(":3000")
 }
