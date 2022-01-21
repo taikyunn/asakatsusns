@@ -66,9 +66,9 @@ func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
 	for _, v := range articleIds {
 		db.Where("article_id = ? AND user_id = ?", v, userId).Find(&likes).Count(&count)
 		if count == 1 {
-			favoriteData = append(favoriteData, &Favoritedata{v, true})
-		} else {
 			favoriteData = append(favoriteData, &Favoritedata{v, false})
+		} else {
+			favoriteData = append(favoriteData, &Favoritedata{v, true})
 		}
 	}
 	return favoriteData

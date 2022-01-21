@@ -29,7 +29,7 @@
         <td>
             <span v-for="result in results" :key="result">
               <span v-if="result.ArticleId == article.Id ">
-                  <button @click="registerLikes(article)" v-if="result.Count == true" >いいね</button>
+                  <button @click="registerLikes(article)" v-if="result.Count">いいね</button>
                   <button @click="deleteLikes(article)" v-else >いいね解除</button>
               </span>
             </span>
@@ -51,8 +51,8 @@ export default {
       currentUserId: localStorage.getItem('userId'),
       articles:[],
       tags:[],
-      counts: '',
-      results:'',
+      counts: [],
+      results:[],
     }
   },
   created() {
