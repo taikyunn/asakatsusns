@@ -14,6 +14,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// S3バケットへアップロード
 func UploadS3Bucket(file *multipart.FileHeader, filename string) {
 	sess := Credentials()
 
@@ -40,6 +41,7 @@ func UploadS3Bucket(file *multipart.FileHeader, filename string) {
 	log.Println("done")
 }
 
+// S3バケットからダウンロード
 func DownloadS3Bucket(filepath string) (*os.File, string) {
 	sess := Credentials()
 

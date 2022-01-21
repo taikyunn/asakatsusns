@@ -27,6 +27,7 @@ func InsertArticle(article *entity.Article) bool {
 	return true
 }
 
+// タグデータの登録
 func InsertTags(articleId uint, tags []entity.TagData) {
 	db := gormConnect()
 	var tag []entity.Tag

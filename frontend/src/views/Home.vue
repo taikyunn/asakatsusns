@@ -26,6 +26,11 @@
             削除
           </button>
         </td>
+          <div>
+            <button @click="registerLikes(article)">いいね</button>
+            <button @click="deleteLikes(article)">いいね解除</button>
+            いいね数:
+          </div>
     </tr>
   </div>
 </template>
@@ -69,7 +74,30 @@ export default {
           alert('削除しました。')
         }
       })
-    }
+    },
+    registerLikes(article) {
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      params.append('userId', article.UserId)
+      axios.post('registerLikes', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        }
+      })
+    },
+    deleteLikes(article) {
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      params.append('userId', article.UserId)
+      axios.post('deleteLikes', params)
+      .then(response => {
+        console.log(response)
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        }
+      })
+    },
   }
 }
 </script>

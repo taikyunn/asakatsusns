@@ -103,5 +103,11 @@ func serve() {
 	// ユーザー名編集
 	r.POST("/editUserName", controller.EditUserName)
 
+	// いいね登録
+	r.POST("/registerLikes", controller.RegisterLikes)
+
+	// いいね削除
+	r.POST("/deleteLikes", controller.DeleteLikes)
+
 	r.Run(":3000")
 }
