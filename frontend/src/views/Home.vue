@@ -26,6 +26,17 @@
             削除
           </button>
         </td>
+        <td>
+            <span v-for="result in results" :key="result">
+              <span v-if="result.ArticleId == article.Id ">
+                  <button @click="registerLikes(article)" v-if="result.Count">いいね</button>
+                  <button @click="deleteLikes(article)" v-else >いいね解除</button>
+              </span>
+            </span>
+          <span v-for="count in counts" :key="count">
+            <span v-if="count.ArticleId == article.Id">いいね数:{{count.Count}}</span>
+          </span>
+        </td>
     </tr>
   </div>
 </template>
@@ -40,6 +51,8 @@ export default {
       currentUserId: localStorage.getItem('userId'),
       articles:[],
       tags:[],
+      counts: [],
+      results:[],
     }
   },
   created() {
@@ -54,6 +67,10 @@ export default {
         this.tags = resultTags
       }
     })
+  },
+  mounted () {
+    this.countFavorites()
+    this.checkFavorite()
   },
   methods:{
     deleteArticle(article) {
