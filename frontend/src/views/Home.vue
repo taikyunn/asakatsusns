@@ -129,6 +129,7 @@ export default {
       .then(response => {
         var resultCheckFavorite = response.data
         this.results = resultCheckFavorite
+        console.log(this.results)
       })
     }
   }
