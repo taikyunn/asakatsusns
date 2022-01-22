@@ -8,7 +8,7 @@
     </tr>
     <tr v-for="article in articles" :key="article">
         <td>{{article.Name}}:</td>
-        <td>{{article.Body}}</td>
+        <td><router-link :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></td>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.Id">
             <div v-for="t in tag.Tag" :key="t">
@@ -68,6 +68,60 @@ export default {
           this.$router.go({path: this.$router.currentRoute.path, force: true})
           alert('削除しました。')
         }
+      })
+    },
+    registerLikes(article) {
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      params.append('userId', article.UserId)
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      axios.post('/post/registerLikes', params, config)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          this.countFavorites()
+          this.checkFavorite()
+        }
+      })
+    },
+    deleteLikes(article) {
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      params.append('userId', article.UserId)
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      axios.post('/post/deleteLikes', params, config)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          this.countFavorites()
+          this.checkFavorite()
+        }
+      })
+    },
+    countFavorites() {
+      axios.get('getCountFavorites')
+      .then(response => {
+        var resultCountData = response.data
+        this.counts = resultCountData
+      })
+    },
+    checkFavorite() {
+      const params = new URLSearchParams()
+      params.append("userId", localStorage.getItem('userId'))
+      axios.post("checkFavorite", params)
+      .then(response => {
+        var resultCheckFavorite = response.data
+        this.results = resultCheckFavorite
       })
     }
   }

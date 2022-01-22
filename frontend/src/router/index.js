@@ -43,6 +43,12 @@ const routes = [
     props: true,
     component: () => import('../views/Mypage.vue')
   },
+  {
+    path: '/detail/:id',
+    name: 'Detail',
+    props: true,
+    component: () => import('../views/Detail.vue')
+  },
 ]
 
 const router = createRouter({

@@ -75,11 +75,18 @@ func serve() {
 	// 自動補完データの取得
 	r.GET("/getAutocompleteItems", controller.GetAutocompleteItems)
 
-	// 投稿ここで認証をしてから次に行けるように設定する。
+	// 認証を必要とするリクエスト
 	menu := r.Group("/post")
 	menu.Use(middleware.AuthMiddleware())
 	{
+		// 記事投稿機能
 		menu.POST("/new", controller.CreateArticle)
+
+		// いいね登録
+		menu.POST("/registerLikes", controller.RegisterLikes)
+
+		// いいね削除
+		menu.POST("/deleteLikes", controller.DeleteLikes)
 	}
 
 	// 投稿全件取得
@@ -102,6 +109,12 @@ func serve() {
 
 	// ユーザー名編集
 	r.POST("/editUserName", controller.EditUserName)
+
+	// いいね数取得
+	r.GET("/getCountFavorites", controller.GetCountFavorites)
+
+	// ログイン中のユーザーがいいねしているか確認
+	r.POST("/checkFavorite", controller.CheckFavorite)
 
 	r.Run(":3000")
 }
