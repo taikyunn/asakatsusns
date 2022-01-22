@@ -91,7 +91,12 @@ export default {
       const params = new URLSearchParams()
       params.append('articleId', article.Id)
       params.append('userId', article.UserId)
-      axios.post('registerLikes', params)
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      axios.post('/post/registerLikes', params, config)
       .then(response => {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
@@ -105,7 +110,12 @@ export default {
       const params = new URLSearchParams()
       params.append('articleId', article.Id)
       params.append('userId', article.UserId)
-      axios.post('deleteLikes', params)
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      axios.post('/post/deleteLikes', params, config)
       .then(response => {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
