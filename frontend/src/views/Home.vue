@@ -8,7 +8,7 @@
     </tr>
     <tr v-for="article in articles" :key="article">
         <td>{{article.Name}}:</td>
-        <td>{{article.Body}}</td>
+        <td><router-link :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></td>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.Id">
             <div v-for="t in tag.Tag" :key="t">
@@ -139,7 +139,6 @@ export default {
       .then(response => {
         var resultCheckFavorite = response.data
         this.results = resultCheckFavorite
-        console.log(this.results)
       })
     }
   }
