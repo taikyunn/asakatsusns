@@ -88,42 +88,58 @@ export default {
       })
     },
     registerLikes(article) {
-      const params = new URLSearchParams()
-      params.append('articleId', article.Id)
-      params.append('userId', article.UserId)
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
         }
+        const params = new URLSearchParams()
+        params.append('articleId', article.Id)
+        params.append('userId', article.UserId)
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          }
+        }
+        axios.post('/post/registerLikes', params, config)
+        .then(response => {
+          if (response.status != 200) {
+            throw new Error('レスポンスエラー')
+          } else {
+            this.countFavorites()
+            this.checkFavorite()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
       }
-      axios.post('/post/registerLikes', params, config)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error('レスポンスエラー')
-        } else {
-          this.countFavorites()
-          this.checkFavorite()
-        }
-      })
     },
     deleteLikes(article) {
-      const params = new URLSearchParams()
-      params.append('articleId', article.Id)
-      params.append('userId', article.UserId)
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
         }
+        const params = new URLSearchParams()
+        params.append('articleId', article.Id)
+        params.append('userId', article.UserId)
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          }
+        }
+        axios.post('/post/deleteLikes', params, config)
+        .then(response => {
+          if (response.status != 200) {
+            throw new Error('レスポンスエラー')
+          } else {
+            this.countFavorites()
+            this.checkFavorite()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
       }
-      axios.post('/post/deleteLikes', params, config)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error('レスポンスエラー')
-        } else {
-          this.countFavorites()
-          this.checkFavorite()
-        }
-      })
     },
     countFavorites() {
       axios.get('getCountFavorites')
