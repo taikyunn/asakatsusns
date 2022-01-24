@@ -50,6 +50,14 @@ func GetCountFavorites(c *gin.Context) {
 	c.JSON(200, countData)
 }
 
+func GetOneCountFavorites(c *gin.Context) {
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+
+	count := db.GetOneLikeCount(articleID)
+	c.JSON(200, count)
+}
+
 // ログイン中のユーザーのいいね状態の取得
 func CheckFavorite(c *gin.Context) {
 	userIdStr := c.PostForm("userId")

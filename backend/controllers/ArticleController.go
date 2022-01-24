@@ -5,7 +5,6 @@ import (
 	db "app/models/db"
 	"app/models/entity"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -36,7 +35,6 @@ type DetailData struct {
 	UserId    int
 	Name      string
 	Body      string
-	LikeCount int
 	Tags      []string
 }
 
@@ -185,14 +183,11 @@ func GetArticleDetail(c *gin.Context) {
 	// 投稿者名を取得
 	userData := db.GetUserName(articleData[0].UserId)
 
-	// いいね数を取得
-	likeCount := db.GetOneLikeCount(articleID)
-
 	// タグデータの取得
 	tagInfo := db.GetOneTagData(articleID)
 
 	detailData := []*DetailData{}
-	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, likeCount, tagInfo})
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagInfo})
 
 	c.JSON(200, detailData)
 }

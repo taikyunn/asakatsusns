@@ -110,8 +110,11 @@ func serve() {
 	// ユーザー名編集
 	r.POST("/editUserName", controller.EditUserName)
 
-	// いいね数取得
+	// いいね数取得(トップページ)
 	r.GET("/getCountFavorites", controller.GetCountFavorites)
+
+	// いいね数取得(詳細ページ)
+	r.POST("/getOneCountFavorites", controller.GetOneCountFavorites)
 
 	// ログイン中のユーザーがいいねしているか確認
 	r.POST("/checkFavorite", controller.CheckFavorite)
