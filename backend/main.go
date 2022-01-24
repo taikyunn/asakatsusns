@@ -116,5 +116,11 @@ func serve() {
 	// ログイン中のユーザーがいいねしているか確認
 	r.POST("/checkFavorite", controller.CheckFavorite)
 
+	// 投稿詳細ページ
+	r.POST("/getArticleDetail", controller.GetArticleDetail)
+
+	// 詳細ページ・ログイン中のユーザーがいいねしているか確認
+	r.POST("/checkFavoriteByArticleId", controller.CheckFavoriteByArticleId)
+
 	r.Run(":3000")
 }

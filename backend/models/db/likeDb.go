@@ -56,7 +56,7 @@ func GetLikeCount(articleIds []int) []*CountData {
 	return countData
 }
 
-// ログイン中のユーザーがいいね済みかチェックする
+// ログイン中のユーザーがいいね済みかチェック
 func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
 	db := gormConnect()
 	var likes []entity.Likes
@@ -70,6 +70,36 @@ func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
 		} else {
 			favoriteData = append(favoriteData, &Favoritedata{v, true})
 		}
+	}
+	return favoriteData
+}
+
+// 一件の投稿に対するいいね数を取得
+func GetOneLikeCount(articleId int) int {
+	db := gormConnect()
+	var likes []entity.Likes
+	var count int
+
+	if err := db.Where("article_id = ?", articleId).Find(&likes).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	return count
+}
+
+// ログイン中のユーザーがいいね済みかチェック(単数)
+func CheckFavoriteByArticleId(articleId int, userId int) []*Favoritedata {
+	db := gormConnect()
+	var likes []entity.Likes
+	var count int
+	favoriteData := []*Favoritedata{}
+
+	if err := db.Where("article_id = ? AND user_id = ?", articleId, userId).Find(&likes).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	if count == 1 {
+		favoriteData = append(favoriteData, &Favoritedata{articleId, false})
+	} else {
+		favoriteData = append(favoriteData, &Favoritedata{articleId, true})
 	}
 	return favoriteData
 }

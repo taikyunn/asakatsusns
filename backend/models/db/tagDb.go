@@ -158,3 +158,39 @@ func GetAutocompleteItems() []entity.Tag {
 	}
 	return tag
 }
+
+// 投稿(1件)に紐づくタグデータを取得
+func GetOneTagData(ArticleId int) []string {
+	db := gormConnect()
+	var count int
+	var articleTag []entity.ArticleTag
+	var tag []entity.Tag
+
+	// article_tagテーブルにレコードが存在するか確認
+	if err := db.Model(&articleTag).Where("article_id = ?", ArticleId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	if count == 0 {
+		var null []string
+		return null
+	}
+
+	// tag_idの取得
+	if err := db.Select("tag_id").Where("article_id = ?", ArticleId).Find(&articleTag).Error; err != nil {
+		panic(err.Error())
+	}
+	tagIDs := make([]uint, len(articleTag))
+	for i, v := range articleTag {
+		tagIDs[i] = uint(v.TagId)
+	}
+
+	// タグの中身を取得
+	if err := db.Select("name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	tagNames := make([]string, len(tag))
+	for i, v := range tag {
+		tagNames[i] = v.Name
+	}
+	return tagNames
+}

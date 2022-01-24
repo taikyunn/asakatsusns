@@ -121,3 +121,14 @@ func UpdateArticleData(id int, body string) {
 	db.Model(&article).Where("id = ?", id).Update("body", body)
 	defer db.Close()
 }
+
+// body,user_idを取得
+func GetArticleBody(articleID int) []entity.Article {
+	db := gormConnect()
+	var article []entity.Article
+
+	if err := db.Select("user_id, body").Where("id = ?", articleID).Find(&article).Error; err != nil {
+		panic(err.Error())
+	}
+	return article
+}

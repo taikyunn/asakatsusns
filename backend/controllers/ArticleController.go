@@ -31,6 +31,15 @@ type EditData struct {
 	Tags      []string
 }
 
+type DetailData struct {
+	ArticleId int
+	UserId    int
+	Name      string
+	Body      string
+	LikeCount int
+	Tags      []string
+}
+
 func CreateArticle(c *gin.Context) {
 	formData, _ := c.MultipartForm()
 	var userData entity.UserData
@@ -135,7 +144,6 @@ func GetOneArticle(c *gin.Context) {
 
 	// タグ情報の取得
 	tagInfo := db.FindTagData(articleID)
-	log.Println("taginfo", tagInfo)
 
 	editData := []*EditData{}
 	editData = append(editData, &EditData{int(resultArticle[0].ID), int(resultArticle[0].UserId), resultArticle[0].Body, tagInfo})
@@ -164,4 +172,27 @@ func UpdateArticle(c *gin.Context) {
 
 	// タグデータの更新
 	db.UpdateTagData(editArticleData.Id, tagData)
+}
+
+// 詳細ページ表示
+func GetArticleDetail(c *gin.Context) {
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+
+	// 記事の中身を取得
+	articleData := db.GetArticleBody(articleID)
+
+	// 投稿者名を取得
+	userData := db.GetUserName(articleData[0].UserId)
+
+	// いいね数を取得
+	likeCount := db.GetOneLikeCount(articleID)
+
+	// タグデータの取得
+	tagInfo := db.GetOneTagData(articleID)
+
+	detailData := []*DetailData{}
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, likeCount, tagInfo})
+
+	c.JSON(200, detailData)
 }
