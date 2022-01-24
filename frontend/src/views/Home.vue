@@ -134,7 +134,12 @@ export default {
         }
         axios.post('/post/deleteLikes', params, config)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status == 201) {
+            if (response.data.Body != '') {
+              alert("ログインからやり直してください。")
+              this.$router.push('/login')
+            }
+          } else if (response.status != 200) {
             throw new Error('レスポンスエラー')
           } else {
             this.countFavorites()
