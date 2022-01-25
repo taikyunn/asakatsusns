@@ -13,7 +13,9 @@
       </span>
     </div>
     <div>
-      <h3>コメントを追加する</h3>
+      <h2>コメントを追加する</h2>
+      <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
+      <button @click='createComment'>コメントする</button>
     </div>
   </div>
 </template>
@@ -33,6 +35,7 @@ export default {
       ArticleData: [],
       results:[],
       count:'',
+      comment:'',
     }
   },
   created() {
@@ -52,22 +55,22 @@ export default {
      this.countFavorites()
      this.checkFavorite()
    },
-   methods: {
-     checkFavorite() {
-       const params = new URLSearchParams()
-       params.append('articleId', this.id)
-       params.append('userId', localStorage.getItem('userId'))
+  methods: {
+    checkFavorite() {
+      const params = new URLSearchParams()
+      params.append('articleId', this.id)
+      params.append('userId', localStorage.getItem('userId'))
       axios.post("checkFavoriteByArticleId", params)
       .then(response => {
-        if (response.status != 200) {
+      if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
           var resultCheckFavorite = response.data
           this.results = resultCheckFavorite
         }
       })
-     },
-     registerLikes(articleId, userId) {
+    },
+    registerLikes(articleId, userId) {
       try {
         if (localStorage.getItem('jwt') == '') {
           throw new Error('終了します');
