@@ -24,3 +24,18 @@ func InsertComment(c *gin.Context) {
 
 	db.InsertComment(&commentData)
 }
+
+// コメント件数取得
+func GetCountComments(c *gin.Context) {
+	// 直近10件の投稿データのarticleIdを取得
+	articleIds := db.GetLastTenArticleID()
+
+	articleID := make([]int, len(articleIds))
+	for i, v := range articleIds {
+		articleID[i] = int(v.ID)
+	}
+
+	// コメント件数を取得
+	commentCount := db.GetCommentCount(articleID)
+	c.JSON(200, commentCount)
+}

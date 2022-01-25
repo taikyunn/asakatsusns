@@ -45,7 +45,7 @@ func GetCountFavorites(c *gin.Context) {
 		articleID[i] = int(v.ID)
 	}
 
-	// countデータを取得
+	// いいね件数を取得
 	countData := db.GetLikeCount(articleID)
 	c.JSON(200, countData)
 }

@@ -33,8 +33,11 @@
                   <button @click="deleteLikes(article)" v-else >いいね解除</button>
               </span>
             </span>
-          <span v-for="count in counts" :key="count">
-            <span v-if="count.ArticleId == article.Id">いいね数:{{count.Count}}</span>
+          <span v-for="likesCount in likesCounts" :key="likesCount">
+            <span v-if="likesCount.ArticleId == article.Id">いいね数:{{likesCount.Count}}</span>
+          </span>
+          <span v-for="commentCount in commentCounts" :key="commentCount">
+            <span v-if="commentCount.ArticleId == article.Id">コメント数:{{commentCount.Count}}</span>
           </span>
         </td>
     </tr>
@@ -51,8 +54,9 @@ export default {
       currentUserId: localStorage.getItem('userId'),
       articles:[],
       tags:[],
-      counts: [],
+      likesCounts: [],
       results:[],
+      commentCounts:[],
     }
   },
   created() {
@@ -71,6 +75,7 @@ export default {
   mounted () {
     this.countFavorites()
     this.checkFavorite()
+    this.countComments()
   },
   methods:{
     deleteArticle(article) {
@@ -154,8 +159,8 @@ export default {
     countFavorites() {
       axios.get('getCountFavorites')
       .then(response => {
-        var resultCountData = response.data
-        this.counts = resultCountData
+        var resultLikesCount = response.data
+        this.likesCounts = resultLikesCount
       })
     },
     checkFavorite() {
@@ -165,6 +170,13 @@ export default {
       .then(response => {
         var resultCheckFavorite = response.data
         this.results = resultCheckFavorite
+      })
+    },
+    countComments() {
+      axios.get('getCountComments')
+      .then(response => {
+        var resultCommentCount = response.data
+        this.commentCounts = resultCommentCount
       })
     }
   }

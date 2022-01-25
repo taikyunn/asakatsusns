@@ -9,6 +9,11 @@ type CommentData struct {
 	Comment string
 }
 
+type CommentCount struct {
+	ArticleId int
+	Count     int
+}
+
 // コメントを登録
 func InsertComment(comment *entity.Comment) {
 	db := gormConnect()
@@ -49,4 +54,18 @@ func GetCommentData(articleId int) []*CommentData {
 		}
 	}
 	return commentData
+}
+
+// コメント件巣を取得
+func GetCommentCount(articleIds []int) []*CommentCount {
+	db := gormConnect()
+	var comment []entity.Comment
+	var count int
+	commentCount := []*CommentCount{}
+
+	for _, v := range articleIds {
+		db.Where("article_id = ?", v).Find(&comment).Count(&count)
+		commentCount = append(commentCount, &CommentCount{v, count})
+	}
+	return commentCount
 }
