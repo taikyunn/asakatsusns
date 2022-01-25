@@ -15,7 +15,7 @@
       @tags-changed="newTags => tags = newTags"
       />
     </div>
-    <button @click='CreateArticle'>投稿する</button>
+    <button @click='createArticle'>投稿する</button>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ export default {
     })
   },
   methods: {
-    CreateArticle() {
+    createArticle() {
     try {
         if (this.body == '') {
           throw new Error('終了します');

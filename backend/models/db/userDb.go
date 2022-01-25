@@ -97,3 +97,14 @@ func GetNameById(userID []uint) []entity.User {
 	defer db.Close()
 	return user
 }
+
+// ユーザーIdからユーザー名を取得(単数)
+func GetUserName(userID uint) []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	if err := db.Select("name").Where("id = ?", userID).Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
+	return user
+}

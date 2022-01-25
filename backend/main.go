@@ -76,17 +76,20 @@ func serve() {
 	r.GET("/getAutocompleteItems", controller.GetAutocompleteItems)
 
 	// 認証を必要とするリクエスト
-	menu := r.Group("/post")
-	menu.Use(middleware.AuthMiddleware())
+	auth := r.Group("/post")
+	auth.Use(middleware.AuthMiddleware())
 	{
 		// 記事投稿機能
-		menu.POST("/new", controller.CreateArticle)
+		auth.POST("/new", controller.CreateArticle)
 
 		// いいね登録
-		menu.POST("/registerLikes", controller.RegisterLikes)
+		auth.POST("/registerLikes", controller.RegisterLikes)
 
 		// いいね削除
-		menu.POST("/deleteLikes", controller.DeleteLikes)
+		auth.POST("/deleteLikes", controller.DeleteLikes)
+
+		// コメント追加
+		auth.POST("/insertComment", controller.InsertComment)
 	}
 
 	// 投稿全件取得
@@ -110,11 +113,23 @@ func serve() {
 	// ユーザー名編集
 	r.POST("/editUserName", controller.EditUserName)
 
-	// いいね数取得
+	// いいね数取得(トップページ)
 	r.GET("/getCountFavorites", controller.GetCountFavorites)
+
+	// いいね数取得(詳細ページ)
+	r.POST("/getOneCountFavorites", controller.GetOneCountFavorites)
 
 	// ログイン中のユーザーがいいねしているか確認
 	r.POST("/checkFavorite", controller.CheckFavorite)
+
+	// 投稿詳細ページ
+	r.POST("/getArticleDetail", controller.GetArticleDetail)
+
+	// 詳細ページ・ログイン中のユーザーがいいねしているか確認
+	r.POST("/checkFavoriteByArticleId", controller.CheckFavoriteByArticleId)
+
+	// コメント件数取得
+	r.GET("/getCountComments", controller.GetCountComments)
 
 	r.Run(":3000")
 }

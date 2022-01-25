@@ -5,7 +5,6 @@ import (
 	db "app/models/db"
 	"app/models/entity"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -29,6 +28,15 @@ type EditData struct {
 	UserId    int
 	Body      string
 	Tags      []string
+}
+
+type DetailData struct {
+	ArticleId int
+	UserId    int
+	Name      string
+	Body      string
+	Tags      []string
+	Comments  []*db.CommentData
 }
 
 func CreateArticle(c *gin.Context) {
@@ -135,7 +143,6 @@ func GetOneArticle(c *gin.Context) {
 
 	// タグ情報の取得
 	tagInfo := db.FindTagData(articleID)
-	log.Println("taginfo", tagInfo)
 
 	editData := []*EditData{}
 	editData = append(editData, &EditData{int(resultArticle[0].ID), int(resultArticle[0].UserId), resultArticle[0].Body, tagInfo})
@@ -164,4 +171,27 @@ func UpdateArticle(c *gin.Context) {
 
 	// タグデータの更新
 	db.UpdateTagData(editArticleData.Id, tagData)
+}
+
+// 詳細ページ表示
+func GetArticleDetail(c *gin.Context) {
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+
+	// 記事の中身を取得
+	articleData := db.GetArticleBody(articleID)
+
+	// 投稿者名を取得
+	userData := db.GetUserName(articleData[0].UserId)
+
+	// タグデータの取得
+	tagData := db.GetOneTagData(articleID)
+
+	// コメントデータ取得
+	commentData := db.GetCommentData(articleID)
+
+	detailData := []*DetailData{}
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagData, commentData})
+
+	c.JSON(200, detailData)
 }

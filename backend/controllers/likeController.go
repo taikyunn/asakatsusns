@@ -45,9 +45,17 @@ func GetCountFavorites(c *gin.Context) {
 		articleID[i] = int(v.ID)
 	}
 
-	// countデータを取得
+	// いいね件数を取得
 	countData := db.GetLikeCount(articleID)
 	c.JSON(200, countData)
+}
+
+func GetOneCountFavorites(c *gin.Context) {
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+
+	count := db.GetOneLikeCount(articleID)
+	c.JSON(200, count)
 }
 
 // ログイン中のユーザーのいいね状態の取得
@@ -62,5 +70,16 @@ func CheckFavorite(c *gin.Context) {
 	}
 
 	favoriteData := db.CheckFavorite(articleID, userID)
+	c.JSON(200, favoriteData)
+}
+
+// 詳細ページ・ログイン中のユーザーのいいね状態の取得
+func CheckFavoriteByArticleId(c *gin.Context) {
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	favoriteData := db.CheckFavoriteByArticleId(articleID, userID)
 	c.JSON(200, favoriteData)
 }
