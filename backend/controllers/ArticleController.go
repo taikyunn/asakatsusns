@@ -36,6 +36,7 @@ type DetailData struct {
 	Name      string
 	Body      string
 	Tags      []string
+	Comments  []*db.CommentData
 }
 
 func CreateArticle(c *gin.Context) {
@@ -184,10 +185,13 @@ func GetArticleDetail(c *gin.Context) {
 	userData := db.GetUserName(articleData[0].UserId)
 
 	// タグデータの取得
-	tagInfo := db.GetOneTagData(articleID)
+	tagData := db.GetOneTagData(articleID)
+
+	// コメントデータ取得
+	commentData := db.GetCommentData(articleID)
 
 	detailData := []*DetailData{}
-	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagInfo})
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagData, commentData})
 
 	c.JSON(200, detailData)
 }
