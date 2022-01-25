@@ -34,11 +34,11 @@ func AuthMiddleware() gin.HandlerFunc {
 		// JWT の検証
 		token, err := auth.VerifyIDToken(context.Background(), idToken)
 		if err != nil {
-			log.Println("エラー発生しました。")
 			c.JSON(201, gin.H{"message": "エラー"})
 			return
+		} else {
+			log.Printf("Verified ID token: %v\n", token)
+			c.Next()
 		}
-		log.Printf("Verified ID token: %v\n", token)
-		c.Next()
 	}
 }

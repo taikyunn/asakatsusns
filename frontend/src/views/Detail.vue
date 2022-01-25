@@ -4,8 +4,8 @@
       <p>{{ArticleData.Name}}さん</p>
       <p>内容:{{ArticleData.Body}}</p>
         <span v-for="result in results" :key="result">
-          <button @click="registerLikes(ArticleData.ArticleId, ArticleData.UserId)" v-if="result.Count">いいね</button>
-          <button @click="deleteLikes(ArticleData.ArticleId, ArticleData.UserId)" v-else>いいね解除</button>
+          <button @click="registerLikes()" v-if="result.Count">いいね</button>
+          <button @click="deleteLikes()" v-else>いいね解除</button>
         </span>
       <p>いいね数:{{count}}</p>
       <span v-for="tag in ArticleData.Tags" :key="tag">
@@ -15,7 +15,9 @@
     <div>
       <h2>コメントを追加する</h2>
       <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
-      <button @click='createComment'>コメントする</button>
+      <div>
+        <button @click='insertComment()'>コメントする</button>
+      </div>
     </div>
   </div>
 </template>
@@ -38,24 +40,25 @@ export default {
       comment:'',
     }
   },
-  created() {
-    const params = new URLSearchParams()
-    params.append('articleId', this.id)
-    axios.post('getArticleDetail', params)
-    .then(response => {
-      if (response.status != 200) {
-        throw new Error('レスポンスエラー')
-      } else {
-        var ArticleData = response.data
-        this.ArticleData = ArticleData[0]
-      }
-    })
-  },
    mounted() {
+     this.getArticleDetail()
      this.countFavorites()
      this.checkFavorite()
    },
   methods: {
+    getArticleDetail() {
+      const params = new URLSearchParams()
+      params.append('articleId', this.id)
+      axios.post('getArticleDetail', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var ArticleData = response.data
+          this.ArticleData = ArticleData[0]
+        }
+      })
+    },
     checkFavorite() {
       const params = new URLSearchParams()
       params.append('articleId', this.id)
@@ -70,14 +73,14 @@ export default {
         }
       })
     },
-    registerLikes(articleId, userId) {
+    registerLikes() {
       try {
         if (localStorage.getItem('jwt') == '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
-        params.append('articleId', articleId)
-        params.append('userId', userId)
+        params.append('articleId', this.id)
+        params.append('userId', localStorage.getItem('userId'))
         const config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
@@ -102,14 +105,14 @@ export default {
         this.$router.push('/login')
       }
     },
-    deleteLikes(articleId, userId) {
+    deleteLikes() {
       try {
         if (localStorage.getItem('jwt') == '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
-        params.append('articleId', articleId)
-        params.append('userId', userId)
+        params.append('articleId', this.id)
+        params.append('userId', localStorage.getItem('userId'))
         const config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
@@ -143,6 +146,31 @@ export default {
         this.count = resultCountData
       })
     },
+    insertComment() {
+      const params = new URLSearchParams()
+      params.append('comment', this.comment)
+      params.append('articleId', this.id)
+      params.append('userId', localStorage.getItem('userId'))
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      axios.post('/post/insertComment', params, config)
+      .then(response => {
+        if (response.status == 201) {
+          if (response.data.Body != '') {
+            alert("ログインからやり直してください。")
+            this.$router.push('/login')
+          }
+        } else if (response.status != 200){
+          throw new Error('レスポンスエラー')
+        } else {
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          this.getArticleDetail()
+        }
+      })
+    }
   },
 }
 </script>

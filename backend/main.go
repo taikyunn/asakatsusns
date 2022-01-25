@@ -76,17 +76,20 @@ func serve() {
 	r.GET("/getAutocompleteItems", controller.GetAutocompleteItems)
 
 	// 認証を必要とするリクエスト
-	menu := r.Group("/post")
-	menu.Use(middleware.AuthMiddleware())
+	auth := r.Group("/post")
+	auth.Use(middleware.AuthMiddleware())
 	{
 		// 記事投稿機能
-		menu.POST("/new", controller.CreateArticle)
+		auth.POST("/new", controller.CreateArticle)
 
 		// いいね登録
-		menu.POST("/registerLikes", controller.RegisterLikes)
+		auth.POST("/registerLikes", controller.RegisterLikes)
 
 		// いいね削除
-		menu.POST("/deleteLikes", controller.DeleteLikes)
+		auth.POST("/deleteLikes", controller.DeleteLikes)
+
+		// コメント追加
+		auth.POST("/insertComment", controller.InsertComment)
 	}
 
 	// 投稿全件取得
