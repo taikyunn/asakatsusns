@@ -19,28 +19,57 @@
         10 フォロワー
       </p>
     </div>
+    <div>
+      <p v-if="isEdit">
+        <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName" >{{userInfo.name}}*クリックで編集*</span>
+        <span v-else >
+          <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
+          <button @click="updateName">登録</button>
+        </span>
+      </p>
+      <p v-else>
+        アカウント名:{{userInfo.name}}
+      </p>
+    </div>
+    <div>
+      <p v-if="isEdit">
+        寝る時間:
+        <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">{{userInfo.SleepTime}}*クリックで編集*</span>
+        <span v-else >
+          <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
+          <button @click="updateSleepTime">登録</button>
+        </span>
+      </p>
+      <p v-else>
+        <span v-if="userInfo.SleepTime != null">
+          寝る時間:{{userInfo.SleepTime}}
+        </span>
+        <span v-else>
+          寝る時間:設定されていません。
+        </span>
+      </p>
+    </div>
+    <div>
+      <p v-if="isEdit">
+        起きる時間設定:
+        <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">{{userInfo.WakeUpTime}}*クリックで編集*</span>
+        <span v-else >
+          <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
+          <button @click="updateWakeUpTime">登録</button>
+        </span>
+      </p>
+      <p v-else>
+        <span v-if="userInfo.WakeUpTime != null">
+          起きる時間:{{userInfo.WakeUpTime}}
+        </span>
+        <span v-else>
+          起きる時間:設定されていません
+        </span>
+      </p>
+    </div>
     <p>
-      ユーザー名：
-      <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName">{{userInfo.name}}*クリックで編集*</span>
-      <span v-else >
-        <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
-        <button @click="updateName">登録</button>
-      </span>
     </p>
     <p>
-      寝る時間：
-      <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">{{userInfo.SleepTime}}*クリックで編集*</span>
-      <span v-else >
-        <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
-        <button @click="updateSleepTime">登録</button>
-      </span>
-    </p>
-    <p>起きる時間設定：
-      <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">{{userInfo.WakeUpTime}}*クリックで編集*</span>
-      <span v-else >
-        <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
-        <button @click="updateWakeUpTime">登録</button>
-      </span>
     </p>
   </div>
 </template>
@@ -82,7 +111,7 @@ export default {
       this.profileDataUrl = URL.createObjectURL(blob);
     })
       // this.checkFollowButton()
-    // this.checkIsEdit()
+    this.checkIsEdit()
   },
   created() {
     const params = new URLSearchParams()
@@ -101,11 +130,11 @@ export default {
         this.isFollowedBy = true
       }
     },
-    // checkIsEdit() {
-    //   if (this.id == localStorage.getItem('userId')) {
-    //     this.isFollowedBy = true
-    //   }
-    // },
+    checkIsEdit() {
+      if (this.id == localStorage.getItem('userId')) {
+        this.isEdit = true
+      }
+    },
     registerSleepTime() {
       const params = new URLSearchParams()
       params.append('userId', this.id)
