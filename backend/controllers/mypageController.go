@@ -158,6 +158,9 @@ func GetMypageArticle(c *gin.Context) {
 	userIdStr := c.PostForm("userId")
 	userID, _ := strconv.Atoi(userIdStr)
 
-	mypageArticle := db.GetMypageArticle(userID)
-	c.JSON(200, mypageArticle)
+	mypageArticle, articleIds := db.GetMypageArticle(userID)
+
+	// いいね数を取得
+	countData := db.GetLikeCount(articleIds)
+	c.JSON(200, gin.H{"mypageArticle": mypageArticle, "countData": countData})
 }

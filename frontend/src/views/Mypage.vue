@@ -73,7 +73,10 @@
     <div>
       <h2>投稿一覧</h2>
       <p v-for="article in mypageArticle" :key="article">
-        {{article}}
+        {{article.body}}
+        <span v-for="count in countData" :key="count">
+          <span v-if="count.ArticleId == article.ID">いいね数:{{count.Count}}</span>
+        </span>
       </p>
     </div>
   </div>
@@ -100,6 +103,7 @@ export default {
       isEdit: false,
       followData: [],
       mypageArticle: [],
+      countData: '',
     }
   },
   directives: {
@@ -322,11 +326,14 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          var resultMypageArticle = response.data
+          console.log(response.data)
+          var resultMypageArticle = response.data.mypageArticle
           this.mypageArticle = resultMypageArticle
+          var resultCountData = response.data.countData
+          this.countData = resultCountData
         }
       })
-    }
+    },
   }
 }
 </script>

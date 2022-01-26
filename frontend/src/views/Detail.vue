@@ -13,17 +13,17 @@
       </span>
     </div>
     <div>
-      <h2>コメント一覧</h2>
-      <p v-for="commentData in ArticleData.Comments" :key="commentData">
-        {{commentData.Name}}さん:{{commentData.Comment}}
-      </p>
-    </div>
-    <div>
       <h2>コメントを追加する</h2>
       <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
       <div>
         <button @click='insertComment()'>コメントする</button>
       </div>
+    </div>
+    <div>
+      <h2>コメント一覧</h2>
+      <p v-for="commentData in ArticleData.Comments" :key="commentData">
+        {{commentData.Name}}さん:{{commentData.Comment}}
+      </p>
     </div>
   </div>
 </template>
