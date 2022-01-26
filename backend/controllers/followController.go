@@ -27,3 +27,13 @@ func RegisterFollow(c *gin.Context) {
 
 	db.RegisterFollow(followerId, followedId)
 }
+
+// フォロー解除
+func DeleteFollow(c *gin.Context) {
+	followerIdStr := c.PostForm("follower_id")
+	followerId, _ := strconv.Atoi(followerIdStr)
+	followedIdStr := c.PostForm("followed_id")
+	followedId, _ := strconv.Atoi(followedIdStr)
+
+	db.DeleteFollow(followerId, followedId)
+}

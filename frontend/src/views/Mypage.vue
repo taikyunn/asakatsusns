@@ -18,7 +18,7 @@
         10 フォロワー
       </p>
       <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
-      <button v-else>フォロー解除</button>
+      <button v-else @click="deleteFollow">フォロー解除</button>
     </div>
     <div>
       <p v-if="isEdit">
@@ -252,6 +252,27 @@ export default {
         params.append('follower_id', localStorage.getItem('userId'))
         params.append('followed_id',this.id)
         axios.post("registerFollow", params)
+        .then(response => {
+          if (response.status != 200) {
+            throw new Error("レスポンスエラー")
+          } else {
+            this.checkFollow()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    },
+    deleteFollow() {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('follower_id', localStorage.getItem('userId'))
+        params.append('followed_id',this.id)
+        axios.post('deleteFollow', params)
         .then(response => {
           if (response.status != 200) {
             throw new Error("レスポンスエラー")

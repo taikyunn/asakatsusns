@@ -31,3 +31,12 @@ func RegisterFollow(followerId int, followedId int) {
 	db.Create(&follow)
 	defer db.Close()
 }
+
+// フォロー解除
+func DeleteFollow(followerId int, followedId int) {
+	db := gormConnect()
+	var follow []entity.Follow
+
+	db.Where("follower_id = ? AND followed_id = ?", followerId, followedId).Delete(&follow)
+	defer db.Close()
+}

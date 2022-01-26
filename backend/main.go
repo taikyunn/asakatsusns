@@ -137,5 +137,8 @@ func serve() {
 	// フォロー登録
 	r.POST("/registerFollow", controller.RegisterFollow)
 
+	// フォロー解除
+	r.POST("/deleteFollow", controller.DeleteFollow)
+
 	r.Run(":3000")
 }
