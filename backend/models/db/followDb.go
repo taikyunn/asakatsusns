@@ -40,3 +40,27 @@ func DeleteFollow(followerId int, followedId int) {
 	db.Where("follower_id = ? AND followed_id = ?", followerId, followedId).Delete(&follow)
 	defer db.Close()
 }
+
+// フォロワー数取得
+func GetFollower(userId int) int {
+	db := gormConnect()
+	var follow []entity.Follow
+	var count int
+
+	if err := db.Model(&follow).Where("followed_id = ?", userId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	return count
+}
+
+// フォロー数取得
+func GetFollow(userId int) int {
+	db := gormConnect()
+	var follow []entity.Follow
+	var count int
+
+	if err := db.Model(&follow).Where("follower_id = ?", userId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	return count
+}

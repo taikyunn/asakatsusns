@@ -140,5 +140,8 @@ func serve() {
 	// フォロー解除
 	r.POST("/deleteFollow", controller.DeleteFollow)
 
+	// フォロー情報取得
+	r.POST("/getFollowData", controller.GetFollowData)
+
 	r.Run(":3000")
 }

@@ -14,8 +14,8 @@
     </div>
     <div>
       <p>
-        10 フォロー
-        10 フォロワー
+        {{followData.FollowerCount}} フォロー
+        {{followData.FollowCount}} フォロワー
       </p>
       <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
       <button v-else @click="deleteFollow">フォロー解除</button>
@@ -88,7 +88,8 @@ export default {
       editSleepTime: false,
       editWakeUpTime: false,
       isFollowedBy: false,
-      isEdit:false,
+      isEdit: false,
+      followData: [],
     }
   },
   directives: {
@@ -103,6 +104,7 @@ export default {
     this.getUserProfile()
     this.checkFollow()
     this.checkIsEdit()
+    this.getFollowData()
   },
   created() {
     const params = new URLSearchParams()
@@ -284,6 +286,15 @@ export default {
         alert("ログインからやり直してください。")
         this.$router.push('/login')
       }
+    },
+    getFollowData() {
+      const params = new URLSearchParams()
+      params.append('userId',this.id)
+      axios.post('getFollowData', params)
+      .then(response => {
+        var followDataResult = response.data
+        this.followData = followDataResult[0]
+      })
     }
   }
 }
