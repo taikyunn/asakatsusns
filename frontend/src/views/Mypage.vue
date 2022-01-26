@@ -11,13 +11,14 @@
           <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
           <button v-on:click="fileUpload()">アップロード</button>
       </p>
-      <button v-if="isFollowedBy">フォロー</button>
     </div>
     <div>
       <p>
         10 フォロー
         10 フォロワー
       </p>
+      <button v-if="!isFollowedBy">フォロー</button>
+      <button v-else>フォロー解除</button>
     </div>
     <div>
       <p v-if="isEdit">
@@ -104,7 +105,7 @@ export default {
   },
   mounted() {
     this.getUserProfile()
-    this.checkFollowButton()
+    this.checkFollow()
     this.checkIsEdit()
   },
   created() {
@@ -126,10 +127,14 @@ export default {
         this.profileDataUrl = URL.createObjectURL(blob);
       })
     },
-    checkFollowButton() {
-      if (this.id != localStorage.getItem('userId')) {
-        this.isFollowedBy = true
-      }
+    checkFollow() {
+      const params = new URLSearchParams()
+      params.append('follower_id',localStorage.getItem('userId'))
+      axios.post("checkFollow", params)
+      .then(response => {
+        var followResult = response.data
+        this.isFollowedBy = followResult
+      })
     },
     checkIsEdit() {
       if (this.id == localStorage.getItem('userId')) {
@@ -232,7 +237,6 @@ export default {
       const params = new URLSearchParams()
       params.append('wakeUpTime', this.userInfo.WakeUpTime)
       params.append('userId', this.id)
-      console.log(this.userInfo.WakeUpTime)
       axios.post("updateWakeUpTime", params)
       .then(response => {
         if (response.status != 200) {

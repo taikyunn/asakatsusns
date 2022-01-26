@@ -131,5 +131,8 @@ func serve() {
 	// コメント件数取得
 	r.GET("/getCountComments", controller.GetCountComments)
 
+	// フォローしているか判別
+	r.POST("/checkFollow", controller.CheckFollow)
+
 	r.Run(":3000")
 }
