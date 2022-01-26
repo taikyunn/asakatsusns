@@ -11,7 +11,7 @@
           <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
           <button v-on:click="fileUpload()">アップロード</button>
       </p>
-      <button>フォロー</button>
+      <button v-if="isFollowedBy">フォロー</button>
     </div>
     <div>
       <p>
@@ -61,6 +61,7 @@ export default {
       editName: false,
       editSleepTime: false,
       editWakeUpTime: false,
+      isFollowedBy: false,
     }
   },
   directives: {
@@ -72,13 +73,8 @@ export default {
     }
   },
   mounted() {
-    const params = new URLSearchParams()
-    params.append('userId', this.id)
-    axios.post('getUserProfile', params, {responseType: "blob"})
-    .then(response => {
-      const blob = new Blob([response.data])
-      this.profileDataUrl = URL.createObjectURL(blob);
-    })
+    this.getUserProfile()
+    this.checkFollowButton()
   },
   created() {
     const params = new URLSearchParams()
@@ -90,6 +86,20 @@ export default {
     })
   },
   methods: {
+    getUserProfile() {
+      const params = new URLSearchParams()
+      params.append('userId', this.id)
+      axios.post('getUserProfile', params, {responseType: "blob"})
+      .then(response => {
+        const blob = new Blob([response.data])
+        this.profileDataUrl = URL.createObjectURL(blob);
+      })
+    },
+    checkFollowButton() {
+      if (this.id != localStorage.getItem('userId')) {
+        this.isFollowedBy = true
+      }
+    },
     registerSleepTime() {
       const params = new URLSearchParams()
       params.append('userId', this.id)
