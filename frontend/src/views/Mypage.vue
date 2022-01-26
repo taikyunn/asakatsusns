@@ -103,14 +103,8 @@ export default {
     }
   },
   mounted() {
-    const params = new URLSearchParams()
-    params.append('userId', this.id)
-    axios.post('getUserProfile', params, {responseType: "blob"})
-    .then(response => {
-      const blob = new Blob([response.data])
-      this.profileDataUrl = URL.createObjectURL(blob);
-    })
-      // this.checkFollowButton()
+    this.getUserProfile()
+    this.checkFollowButton()
     this.checkIsEdit()
   },
   created() {
@@ -124,6 +118,13 @@ export default {
   },
   methods: {
     getUserProfile() {
+      const params = new URLSearchParams()
+      params.append('userId', this.id)
+      axios.post('getUserProfile', params, {responseType: "blob"})
+      .then(response => {
+        const blob = new Blob([response.data])
+        this.profileDataUrl = URL.createObjectURL(blob);
+      })
     },
     checkFollowButton() {
       if (this.id != localStorage.getItem('userId')) {
