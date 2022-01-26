@@ -1,16 +1,24 @@
 <template>
   <div>
     <h1>プロフィール</h1>
-    <p>プロフィール画像</p>
-    <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
-    <p v-if="url">
-      <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
-      <img :src="url" width="100" />
-    </p>
-    <p>
-        <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
-        <button v-on:click="fileUpload()">アップロード</button>
-    </p>
+    <div>
+      <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
+      <p v-if="url">
+        <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
+        <img :src="url" width="100" />
+      </p>
+      <p>
+          <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
+          <button v-on:click="fileUpload()">アップロード</button>
+      </p>
+      <button>フォロー</button>
+    </div>
+    <div>
+      <p>
+        10 フォロー
+        10 フォロワー
+      </p>
+    </div>
     <p>
       お名前：
       <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName">{{userInfo.name}}*クリックで編集*</span>
@@ -33,11 +41,6 @@
         <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
         <button @click="updateWakeUpTime">登録</button>
       </span>
-      <!-- <router-link :to="{name: 'WakeUpTimeEdit', params: {id:(Number(userInfo.ID))}}">編集する</router-link>
-      <span v-if="userInfo.WakeUpTime == null">
-        <input type="time" name='wakeUpTime' v-model="wakeUpTime">
-        <button @click="registerWakeUpTime">登録</button>
-      </span> -->
     </p>
   </div>
 </template>
@@ -62,10 +65,10 @@ export default {
   },
   directives: {
     focus: {
-        // ディレクティブ定義
-        inserted: function (el) {
-            el.focus();
-        }
+      // ディレクティブ定義
+      inserted: function (el) {
+          el.focus();
+      }
     }
   },
   mounted() {
