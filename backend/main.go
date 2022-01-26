@@ -134,5 +134,8 @@ func serve() {
 	// フォローしているか判別
 	r.POST("/checkFollow", controller.CheckFollow)
 
+	// フォロー登録
+	r.POST("/registerFollow", controller.RegisterFollow)
+
 	r.Run(":3000")
 }

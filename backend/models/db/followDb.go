@@ -4,12 +4,13 @@ import (
 	entity "app/models/entity"
 )
 
-func CheckFollow(followerId int) bool {
+// フォローしているか判別
+func CheckFollow(followerId int, followedId int) bool {
 	db := gormConnect()
 	var follow []entity.Follow
 	var count int
 
-	if err := db.Model(&follow).Where("followed_id = ?", followerId).Count(&count).Error; err != nil {
+	if err := db.Model(&follow).Where("follower_id = ? AND followed_id = ?", followerId, followedId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
 	if count == 0 {
@@ -17,4 +18,16 @@ func CheckFollow(followerId int) bool {
 	} else {
 		return true
 	}
+}
+
+// フォロー登録
+func RegisterFollow(followerId int, followedId int) {
+	db := gormConnect()
+	var follow = entity.Follow{
+		FollowerId: followerId,
+		FollowedId: followedId,
+	}
+
+	db.Create(&follow)
+	defer db.Close()
 }

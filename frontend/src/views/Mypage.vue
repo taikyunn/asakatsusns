@@ -8,8 +8,8 @@
         <img :src="url" width="100" />
       </p>
       <p>
-          <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
-          <button v-on:click="fileUpload()">アップロード</button>
+        <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
+        <button v-on:click="fileUpload()">アップロード</button>
       </p>
     </div>
     <div>
@@ -17,7 +17,7 @@
         10 フォロー
         10 フォロワー
       </p>
-      <button v-if="!isFollowedBy">フォロー</button>
+      <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
       <button v-else>フォロー解除</button>
     </div>
     <div>
@@ -126,6 +126,7 @@ export default {
     checkFollow() {
       const params = new URLSearchParams()
       params.append('follower_id',localStorage.getItem('userId'))
+      params.append('followed_id',this.id)
       axios.post("checkFollow", params)
       .then(response => {
         var followResult = response.data
@@ -214,7 +215,6 @@ export default {
     updateSleepTime() {
       const params = new URLSearchParams()
       params.append('sleepTime', this.userInfo.SleepTime)
-      console.log(this.userInfo.SleepTime)
       params.append('userId', this.id)
       axios.post("updateSleepTime", params)
       .then(response => {
@@ -243,6 +243,27 @@ export default {
         }
       })
     },
+    registerFollow() {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('follower_id', localStorage.getItem('userId'))
+        params.append('followed_id',this.id)
+        axios.post("registerFollow", params)
+        .then(response => {
+          if (response.status != 200) {
+            throw new Error("レスポンスエラー")
+          } else {
+            this.checkFollow()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    }
   }
 }
 </script>
