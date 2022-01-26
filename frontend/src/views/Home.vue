@@ -7,7 +7,7 @@
       <th>投稿:</th>
     </tr>
     <tr v-for="article in articles" :key="article">
-        <td>{{article.Name}}:</td>
+        <router-link :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">{{article.Name}}さん</router-link>
         <td><router-link :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></td>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.Id">

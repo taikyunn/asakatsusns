@@ -103,6 +103,10 @@ func GetUserProfile(c *gin.Context) {
 
 	// filepathの取得
 	user := db.GetFilePathById(userID)
+	// デフォルト画像設定
+	if len(user[0].ProfileImagePath) == 0 {
+		user[0].ProfileImagePath = "images/default.png"
+	}
 
 	// filepathよりS3のデータを取得
 	image, extension := db.DownloadS3Bucket(user[0].ProfileImagePath)

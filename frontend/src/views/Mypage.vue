@@ -20,7 +20,7 @@
       </p>
     </div>
     <p>
-      お名前：
+      ユーザー名：
       <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName">{{userInfo.name}}*クリックで編集*</span>
       <span v-else >
         <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
@@ -62,6 +62,7 @@ export default {
       editSleepTime: false,
       editWakeUpTime: false,
       isFollowedBy: false,
+      isEdit:false,
     }
   },
   directives: {
@@ -73,8 +74,15 @@ export default {
     }
   },
   mounted() {
-    this.getUserProfile()
-    this.checkFollowButton()
+    const params = new URLSearchParams()
+    params.append('userId', this.id)
+    axios.post('getUserProfile', params, {responseType: "blob"})
+    .then(response => {
+      const blob = new Blob([response.data])
+      this.profileDataUrl = URL.createObjectURL(blob);
+    })
+      // this.checkFollowButton()
+    // this.checkIsEdit()
   },
   created() {
     const params = new URLSearchParams()
@@ -87,19 +95,17 @@ export default {
   },
   methods: {
     getUserProfile() {
-      const params = new URLSearchParams()
-      params.append('userId', this.id)
-      axios.post('getUserProfile', params, {responseType: "blob"})
-      .then(response => {
-        const blob = new Blob([response.data])
-        this.profileDataUrl = URL.createObjectURL(blob);
-      })
     },
     checkFollowButton() {
       if (this.id != localStorage.getItem('userId')) {
         this.isFollowedBy = true
       }
     },
+    // checkIsEdit() {
+    //   if (this.id == localStorage.getItem('userId')) {
+    //     this.isFollowedBy = true
+    //   }
+    // },
     registerSleepTime() {
       const params = new URLSearchParams()
       params.append('userId', this.id)
