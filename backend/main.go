@@ -98,11 +98,14 @@ func serve() {
 	// 投稿削除
 	r.POST("/deleteArticle", controller.DeleteArticle)
 
-	// 編集画面表示
+	// 投稿編集画面表示
 	r.POST("/getOneArticle", controller.GetOneArticle)
 
-	// 編集
+	// 投稿編集
 	r.POST("/updateArticle", controller.UpdateArticle)
+
+	// 投稿取得(マイページ)
+	r.POST("/getMypageArticle", controller.GetMypageArticle)
 
 	// 画像アップロード
 	r.POST("/fileUpload", controller.FileUpload)

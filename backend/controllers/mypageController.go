@@ -152,3 +152,12 @@ func EditUserName(c *gin.Context) {
 
 	db.UpdateUserName(userID, userName)
 }
+
+// 投稿取得(マイページ)
+func GetMypageArticle(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	mypageArticle := db.GetMypageArticle(userID)
+	c.JSON(200, mypageArticle)
+}

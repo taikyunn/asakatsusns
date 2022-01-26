@@ -17,8 +17,10 @@
         {{followData.FollowerCount}} フォロー
         {{followData.FollowCount}} フォロワー
       </p>
-      <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
-      <button v-else @click="deleteFollow">フォロー解除</button>
+      <div v-if="!isMyOwnPage">
+        <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
+        <button v-else @click="deleteFollow">フォロー解除</button>
+      </div>
     </div>
     <div>
       <p v-if="isEdit">
@@ -68,6 +70,12 @@
         </span>
       </p>
     </div>
+    <div>
+      <h2>投稿一覧</h2>
+      <p v-for="article in mypageArticle" :key="article">
+        {{article}}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -88,8 +96,10 @@ export default {
       editSleepTime: false,
       editWakeUpTime: false,
       isFollowedBy: false,
+      isMyOwnPage: false,
       isEdit: false,
       followData: [],
+      mypageArticle: [],
     }
   },
   directives: {
@@ -103,8 +113,10 @@ export default {
   mounted() {
     this.getUserProfile()
     this.checkFollow()
+    this.checkMyOwnPage()
     this.checkIsEdit()
     this.getFollowData()
+    this.getMypageArticle()
   },
   created() {
     const params = new URLSearchParams()
@@ -134,6 +146,10 @@ export default {
         var followResult = response.data
         this.isFollowedBy = followResult
       })
+    },
+    checkMyOwnPage() {
+      if (this.id == localStorage.getItem('userId'))
+      this.isMyOwnPage = true
     },
     checkIsEdit() {
       if (this.id == localStorage.getItem('userId')) {
@@ -259,6 +275,7 @@ export default {
             throw new Error("レスポンスエラー")
           } else {
             this.checkFollow()
+            this.getFollowData()
           }
         })
       } catch {
@@ -280,6 +297,7 @@ export default {
             throw new Error("レスポンスエラー")
           } else {
             this.checkFollow()
+            this.getFollowData()
           }
         })
       } catch {
@@ -294,6 +312,19 @@ export default {
       .then(response => {
         var followDataResult = response.data
         this.followData = followDataResult[0]
+      })
+    },
+    getMypageArticle() {
+      const params = new URLSearchParams()
+      params.append('userId',this.id)
+      axios.post('getMypageArticle', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultMypageArticle = response.data
+          this.mypageArticle = resultMypageArticle
+        }
       })
     }
   }
