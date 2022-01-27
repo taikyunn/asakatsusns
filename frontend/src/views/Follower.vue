@@ -5,8 +5,7 @@
       フォロワーはいません。
     </p>
     <p v-for="followerList in followerLists" :key="followerList">
-      {{followerList.UserId}}
-      {{followerList.Name}}
+      <router-link :to="{name: 'Mypage', params: {id:(Number(followerList.UserId))}}"> {{followerList.Name}}</router-link>
       <button v-if="!isFollowedBy" @click="registerFollow">フォローする</button>
       <button v-else @click="deleteFollow()">フォロー中</button>
     </p>
