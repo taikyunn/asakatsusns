@@ -7,24 +7,20 @@
     <p v-for="followerList in followerLists" :key="followerList">
       {{followerList.UserId}}
       {{followerList.Name}}
-      <span v-if="followerList.UserId != loginUserId">
-        <button v-if="isFollowedBy" @click="registerFollow">フォローする</button>
-        <button v-else @click="deleteFollow">フォロー中</button>
-      </span>
+      <button v-if="!isFollowedBy" @click="registerFollow">フォローする</button>
+      <button v-else @click="deleteFollow()">フォロー中</button>
     </p>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-
 export default {
   props:["id"],
   data() {
     return {
       followerLists: [],
       isFollowedBy: false,
-      loginUserId: localStorage.getItem('userId')
     }
   },
   created() {
@@ -68,7 +64,7 @@ export default {
           if (response.status != 200) {
             throw new Error("レスポンスエラー")
           } else {
-            this.checkFollow()
+            this.isFollowedBy = true
           }
         })
       } catch {
@@ -89,7 +85,7 @@ export default {
           if (response.status != 200) {
             throw new Error("レスポンスエラー")
           } else {
-            this.checkFollow()
+            this.isFollowedBy = false
           }
         })
       } catch {

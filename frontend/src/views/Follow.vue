@@ -7,10 +7,8 @@
     <p v-for="followList in followLists" :key="followList" v-else>
       {{followList.UserId}}
       {{followList.Name}}
-      <span v-if="followList.UserId != loginUserId">
-        <button v-if="isFollowedBy" @click="registerFollow(followList.UserId)">フォローする</button>
-        <button v-else @click="deleteFollow(followList.UserId)">フォロー中</button>
-      </span>
+      <button v-if="isFollowedBy" @click="registerFollow(followList.UserId)">フォローする</button>
+      <button v-else @click="deleteFollow(followList.UserId)">フォロー中</button>
     </p>
   </div>
 </template>
@@ -23,7 +21,6 @@ export default {
   data() {
     return {
       followLists: [],
-      loginUserId: localStorage.getItem('userId'),
       isFollowedBy: false,
     }
   },
