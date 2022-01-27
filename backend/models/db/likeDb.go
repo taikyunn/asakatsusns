@@ -14,6 +14,11 @@ type Favoritedata struct {
 	Count     bool
 }
 
+type FavoritePostData struct {
+	UserId int
+	Body   string
+}
+
 // いいね登録
 func RegisterLikes(like *entity.Likes) {
 	db := gormConnect()
@@ -102,4 +107,34 @@ func CheckFavoriteByArticleId(articleId int, userId int) []*Favoritedata {
 		favoriteData = append(favoriteData, &Favoritedata{articleId, true})
 	}
 	return favoriteData
+}
+
+// 直近10件のいいねした記事IDを取得
+func GetLikedPostId(userId int) []int {
+	db := gormConnect()
+	var likes []entity.Likes
+
+	if err := db.Select("article_id").Limit(10).Order("id DESC").Where("user_id = ?", userId).Find(&likes).Error; err != nil {
+		panic(err.Error())
+	}
+
+	articleIDs := make([]int, len(likes))
+	for i, v := range likes {
+		articleIDs[i] = v.ArticleId
+	}
+	return articleIDs
+}
+
+// いいね記事の中身を取得
+func GetLikedPost(articleIds []int) []*FavoritePostData {
+	db := gormConnect()
+	var article []entity.Article
+	favoritePostData := []*FavoritePostData{}
+
+	for _, v := range articleIds {
+		db.Select("user_id, body").Where("id = ?", v).Find(&article)
+		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), article[0].Body})
+	}
+
+	return favoritePostData
 }

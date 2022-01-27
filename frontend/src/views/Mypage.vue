@@ -71,7 +71,7 @@
       </p>
     </div>
     <div>
-      <h2>投稿一覧</h2>
+      <h2>投稿</h2>
       <p v-for="article in mypageArticle" :key="article">
         {{article.body}}
         <span v-for="count in countData" :key="count">
@@ -83,6 +83,13 @@
             <button @click="deleteLikes(article.ID)" v-else>いいね解除</button>
           </span>
         </span>
+      </p>
+    </div>
+    <div>
+      <h2>いいね</h2>
+      <p v-for="likedPost in likedPosts" :key="likedPost">
+        {{likedPost.UserId}}:
+        {{likedPost.Body}}
       </p>
     </div>
   </div>
@@ -111,6 +118,7 @@ export default {
       mypageArticle: [],
       countData: '',
       results: [],
+      likedPosts:[],
     }
   },
   directives: {
@@ -130,6 +138,7 @@ export default {
     this.getMypageArticle()
     this.checkFavoriteMypage()
     this.getCountFavoriteMypage()
+    this.getLikedPost()
   },
   created() {
     const params = new URLSearchParams()
@@ -431,6 +440,19 @@ export default {
         this.$router.push('/login')
       }
     },
+    getLikedPost() {
+      const params = new URLSearchParams()
+      params.append('userId', this.id)
+      axios.post('getLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var likedPostResult = response.data
+          this.likedPosts = likedPostResult
+        }
+      })
+    }
   }
 }
 </script>

@@ -152,5 +152,8 @@ func serve() {
 	// マイページ・いいね数取得
 	r.POST("/getCountFavoriteMypage", controller.GetCountFavoriteMypage)
 
+	// マイページ・いいねした投稿を取得
+	r.POST("/getLikedPost", controller.GetLikedPost)
+
 	r.Run(":3000")
 }
