@@ -86,11 +86,11 @@ func CheckFavoriteByArticleId(c *gin.Context) {
 
 // いいねした記事最新10件を取得
 func GetLikedPost(c *gin.Context) {
-	userIdStr := c.PostForm("userId")
-	userID, _ := strconv.Atoi(userIdStr)
+	mypageUserIdStr := c.PostForm("mypageUserId")
+	mypageUserId, _ := strconv.Atoi(mypageUserIdStr)
 
 	// いいねした記事のidを取得
-	articleIDs := db.GetLikedPostId(userID)
+	articleIDs := db.GetLikedPostId(mypageUserId)
 
 	// いいね記事の中身を取得
 	favoritePostData := db.GetLikedPost(articleIDs)

@@ -88,7 +88,7 @@
     <div>
       <h2>いいね</h2>
       <p v-for="likedPost in likedPosts" :key="likedPost">
-        {{likedPost.UserId}}:
+        {{likedPost.Name}}:
         {{likedPost.Body}}
       </p>
     </div>
@@ -442,7 +442,7 @@ export default {
     },
     getLikedPost() {
       const params = new URLSearchParams()
-      params.append('userId', this.id)
+      params.append('mypageUserId', this.id)
       axios.post('getLikedPost', params)
       .then(response => {
         if (response.status != 200) {
@@ -450,6 +450,7 @@ export default {
         } else {
           var likedPostResult = response.data
           this.likedPosts = likedPostResult
+          console.log(this.likedPosts)
         }
       })
     }
