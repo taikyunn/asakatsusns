@@ -4,6 +4,11 @@ import (
 	entity "app/models/entity"
 )
 
+type FollowList struct {
+	UserId int
+	Name   string
+}
+
 // フォローしているか判別
 func CheckFollow(followerId int, followedId int) bool {
 	db := gormConnect()
@@ -47,7 +52,7 @@ func GetFollower(userId int) int {
 	var follow []entity.Follow
 	var count int
 
-	if err := db.Model(&follow).Where("followed_id = ?", userId).Count(&count).Error; err != nil {
+	if err := db.Model(&follow).Where("follower_id = ?", userId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
 	return count
@@ -59,8 +64,38 @@ func GetFollow(userId int) int {
 	var follow []entity.Follow
 	var count int
 
-	if err := db.Model(&follow).Where("follower_id = ?", userId).Count(&count).Error; err != nil {
+	if err := db.Model(&follow).Where("followed_id = ?", userId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
 	return count
+}
+
+// フォロー一覧取得
+func GetFollowerList(followerId int) []int {
+	db := gormConnect()
+	var follow []entity.Follow
+
+	if err := db.Select("followed_id").Where("follower_id = ?", followerId).Find(&follow).Error; err != nil {
+		panic(err.Error())
+	}
+
+	followedIds := make([]int, len(follow))
+	for i, v := range follow {
+		followedIds[i] = v.FollowedId
+	}
+	return followedIds
+}
+
+func GetFollowNameList(followedIds []int) []*FollowList {
+	db := gormConnect()
+	var user []entity.User
+	followList := []*FollowList{}
+
+	for _, v := range followedIds {
+		if err := db.Select("name").Where("id = ?", v).Find(&user).Error; err != nil {
+			panic(err.Error())
+		}
+		followList = append(followList, &FollowList{v, user[0].Name})
+	}
+	return followList
 }

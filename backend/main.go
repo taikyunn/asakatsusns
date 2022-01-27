@@ -155,5 +155,8 @@ func serve() {
 	// マイページ・いいねした投稿を取得
 	r.POST("/getLikedPost", controller.GetLikedPost)
 
+	// フォロー一覧取得
+	r.POST("/getFollow", controller.GetFollow)
+
 	r.Run(":3000")
 }

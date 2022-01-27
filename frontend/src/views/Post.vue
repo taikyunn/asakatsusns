@@ -88,14 +88,13 @@ export default {
               this.apiErrors.push(response.data.Body)
             }
           } else if (response.status != 200) {
-            console.log("エラーが発生しました。")
+            throw new Error('レスポンスエラー')
           } else {
             alert("投稿しました。")
             this.$router.push('/')
           }
         })
       } catch(error) {
-        console.log(error)
         this.apiErrors.push("投稿内容を入力してください。")
       }
     }

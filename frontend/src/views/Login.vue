@@ -47,7 +47,6 @@ export default {
         })
       })
       .catch(error => {
-        console.log(error)
         switch (error.code) {
           case 'auth/invalid-email' :
             this.errors.push("*メールアドレスの形式が正しくありません")
@@ -67,7 +66,7 @@ export default {
           this.apiErrors.push(response.data.dbError)
           this.apiErrors.push(response.data.Name)
         } else if (response.status != 200){
-          console.log("エラー")
+          throw new Error('レスポンスエラー')
         } else {
           localStorage.setItem('userName', response.data.name)
           localStorage.setItem('userId', response.data.userId)

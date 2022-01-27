@@ -14,8 +14,8 @@
     </div>
     <div>
       <p>
-        {{followData.FollowerCount}} フォロー
-        {{followData.FollowCount}} フォロワー
+        <router-link :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}} フォロー</router-link>
+        <router-link :to="{name: 'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} フォロワー</router-link>
       </p>
       <div v-if="!isMyOwnPage">
         <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
@@ -90,6 +90,7 @@
       <p v-for="likedPost in likedPosts" :key="likedPost">
         {{likedPost.Name}}:
         {{likedPost.Body}}
+        いいね数:{{likedPost.Count}}
       </p>
     </div>
   </div>
@@ -450,10 +451,9 @@ export default {
         } else {
           var likedPostResult = response.data
           this.likedPosts = likedPostResult
-          console.log(this.likedPosts)
         }
       })
-    }
+    },
   }
 }
 </script>

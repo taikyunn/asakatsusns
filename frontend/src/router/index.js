@@ -49,6 +49,18 @@ const routes = [
     props: true,
     component: () => import('../views/Detail.vue')
   },
+  {
+    path: '/mypage/:id/follow',
+    name: 'Follow',
+    props: true,
+    component: () => import('../views/Follow.vue')
+  },
+  {
+    path: '/mypage/:id/follower',
+    name: 'Follower',
+    props: true,
+    component: () => import('../views/Follower.vue')
+  },
 ]
 
 const router = createRouter({
