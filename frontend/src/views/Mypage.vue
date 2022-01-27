@@ -18,8 +18,8 @@
         <router-link :to="{name: 'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} フォロワー</router-link>
       </p>
       <div v-if="!isMyOwnPage">
-        <button v-if="!isFollowedBy" @click="registerFollow">フォロー</button>
-        <button v-else @click="deleteFollow">フォロー解除</button>
+        <button v-if="!isFollowedBy" @click="registerFollow">フォローする</button>
+        <button v-else @click="deleteFollow">フォロー中</button>
       </div>
     </div>
     <div>
