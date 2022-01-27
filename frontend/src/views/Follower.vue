@@ -7,8 +7,10 @@
     <p v-for="followerList in followerLists" :key="followerList">
       {{followerList.UserId}}
       {{followerList.Name}}
-      <button v-if="!isFollowedBy" @click="registerFollow">フォローする</button>
-      <button v-else @click="deleteFollow">フォロー中</button>
+      <span v-if="followerList.UserId != loginUserId">
+        <button v-if="isFollowedBy" @click="registerFollow">フォローする</button>
+        <button v-else @click="deleteFollow">フォロー中</button>
+      </span>
     </p>
   </div>
 </template>
@@ -22,6 +24,7 @@ export default {
     return {
       followerLists: [],
       isFollowedBy: false,
+      loginUserId: localStorage.getItem('userId')
     }
   },
   created() {
@@ -50,7 +53,6 @@ export default {
       .then(response => {
         var followResult = response.data
         this.isFollowedBy = followResult
-        console.log(this.isFollowedBy)
       })
     },
     registerFollow() {
