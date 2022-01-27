@@ -158,11 +158,9 @@ func GetMypageArticle(c *gin.Context) {
 	userIdStr := c.PostForm("userId")
 	userID, _ := strconv.Atoi(userIdStr)
 
-	mypageArticle, articleIds := db.GetMypageArticle(userID)
+	mypageArticle, _ := db.GetMypageArticle(userID)
 
-	// いいね数を取得
-	countData := db.GetLikeCount(articleIds)
-	c.JSON(200, gin.H{"mypageArticle": mypageArticle, "countData": countData})
+	c.JSON(200, mypageArticle)
 }
 
 // いいねしているか判定(マイページ)
@@ -179,4 +177,16 @@ func CheckFavoriteMypage(c *gin.Context) {
 	favoriteData := db.CheckFavorite(articleIds, visiterUserID)
 
 	c.JSON(200, favoriteData)
+}
+
+// マイページ・いいね数取得
+func GetCountFavoriteMypage(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	_, articleIds := db.GetMypageArticle(userID)
+
+	// いいね数を取得
+	countData := db.GetLikeCount(articleIds)
+	c.JSON(200, countData)
 }

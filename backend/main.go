@@ -149,5 +149,8 @@ func serve() {
 	// マイページ・いいねしているか確認
 	r.POST("/checkFavoriteMypage", controller.CheckFavoriteMypage)
 
+	// マイページ・いいね数取得
+	r.POST("/getCountFavoriteMypage", controller.GetCountFavoriteMypage)
+
 	r.Run(":3000")
 }
