@@ -86,16 +86,33 @@ func GetFollowerList(followerId int) []int {
 	return followedIds
 }
 
-func GetFollowNameList(followedIds []int) []*FollowList {
+func GetFollowNameList(userIds []int) []*FollowList {
 	db := gormConnect()
 	var user []entity.User
 	followList := []*FollowList{}
 
-	for _, v := range followedIds {
+	for _, v := range userIds {
 		if err := db.Select("name").Where("id = ?", v).Find(&user).Error; err != nil {
 			panic(err.Error())
 		}
 		followList = append(followList, &FollowList{v, user[0].Name})
 	}
 	return followList
+}
+
+// フォロワーユーザーID
+func GetFollowedList(followedId int) []int {
+	db := gormConnect()
+	var follow []entity.Follow
+
+	if err := db.Select("follower_id").Where("followed_id = ?", followedId).Find(&follow).Error; err != nil {
+		panic(err.Error())
+	}
+
+	followerIds := make([]int, len(follow))
+	for i, v := range follow {
+		followerIds[i] = v.FollowerId
+	}
+
+	return followerIds
 }

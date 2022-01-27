@@ -158,5 +158,8 @@ func serve() {
 	// フォロー一覧取得
 	r.POST("/getFollow", controller.GetFollow)
 
+	// フォロワー一覧取得
+	r.POST("/getFollower", controller.GetFollower)
+
 	r.Run(":3000")
 }

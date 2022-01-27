@@ -68,7 +68,22 @@ func GetFollow(c *gin.Context) {
 	// フォローしているユーザーIDを取得
 	followedIds := db.GetFollowerList(followerId)
 
-	// フォロワーの名前リストを取得
+	// フォローしているユーザーの名前リストを取得
 	followList := db.GetFollowNameList(followedIds)
+
 	c.JSON(200, followList)
+}
+
+// フォロワー一覧取得
+func GetFollower(c *gin.Context) {
+	followedIdStr := c.PostForm("followed_id")
+	followedId, _ := strconv.Atoi(followedIdStr)
+
+	// フォロワーユーザーIDを取得
+	followerIds := db.GetFollowedList(followedId)
+
+	// フォロワーの名前リストの取得
+	followerList := db.GetFollowNameList(followerIds)
+
+	c.JSON(200, followerList)
 }

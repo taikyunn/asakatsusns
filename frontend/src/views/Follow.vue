@@ -11,11 +11,11 @@
 <script>
 import axios from 'axios'
 
-export default{
+export default {
   props:["id"],
   data() {
     return {
-      followLists:[],
+      followLists: [],
     }
   },
   created() {
