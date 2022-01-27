@@ -80,7 +80,7 @@
         <span v-for="result in results" :key="result">
           <span v-if="result.ArticleId == article.ID">
             <button @click="registerLikes(article.ID)" v-if="result.Count">いいね</button>
-            <button v-else>いいね解除</button>
+            <button @click="deleteLikes(article.ID)" v-else>いいね解除</button>
           </span>
         </span>
       </p>
@@ -367,12 +367,12 @@ export default {
         }
       })
     },
-    registerLikes(articleId){
+    registerLikes(articleId) {
       try {
         if (localStorage.getItem('jwt') == '') {
           throw new Error('終了します')
         }
-                const params = new URLSearchParams()
+        const params = new URLSearchParams()
         params.append('articleId', articleId)
         params.append('userId', localStorage.getItem('userId'))
         const config = {
@@ -381,6 +381,38 @@ export default {
           }
         }
         axios.post('/post/registerLikes', params, config)
+        .then(response => {
+          if (response.status == 201) {
+            if (response.data.Body != '') {
+              alert("ログインからやり直してください。")
+              this.$router.push('/login')
+            }
+          } else if (response.status != 200) {
+            throw new Error('レスポンスエラー')
+          } else {
+            this.checkFavoriteMypage()
+            this.getCountFavoriteMypage()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    },
+    deleteLikes(articleId) {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('articleId', articleId)
+        params.append('userId', localStorage.getItem('userId'))
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          }
+        }
+        axios.post('/post/deleteLikes', params, config)
         .then(response => {
           if (response.status == 201) {
             if (response.data.Body != '') {
