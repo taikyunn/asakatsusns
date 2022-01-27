@@ -7,6 +7,8 @@
     <p v-for="followerList in followerLists" :key="followerList">
       {{followerList.UserId}}
       {{followerList.Name}}
+      <button v-if="!isFollowedBy" @click="registerFollow">フォローする</button>
+      <button v-else @click="deleteFollow">フォロー中</button>
     </p>
   </div>
 </template>
@@ -19,10 +21,12 @@ export default {
   data() {
     return {
       followerLists: [],
+      isFollowedBy: false,
     }
   },
   created() {
     this.getFollower()
+    this.checkFollow()
   },
   methods:{
     getFollower() {
@@ -37,7 +41,60 @@ export default {
           this.followerLists = followerResult
         }
       })
-    }
+    },
+    checkFollow() {
+      const params = new URLSearchParams()
+      params.append('follower_id',localStorage.getItem('userId'))
+      params.append('followed_id',this.id)
+      axios.post("checkFollow", params)
+      .then(response => {
+        var followResult = response.data
+        this.isFollowedBy = followResult
+        console.log(this.isFollowedBy)
+      })
+    },
+    registerFollow() {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('follower_id', localStorage.getItem('userId'))
+        params.append('followed_id',this.id)
+        axios.post("registerFollow", params)
+        .then(response => {
+          if (response.status != 200) {
+            throw new Error("レスポンスエラー")
+          } else {
+            this.checkFollow()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    },
+    deleteFollow() {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('follower_id', localStorage.getItem('userId'))
+        params.append('followed_id',this.id)
+        axios.post('deleteFollow', params)
+        .then(response => {
+          if (response.status != 200) {
+            throw new Error("レスポンスエラー")
+          } else {
+            this.checkFollow()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    },
   },
 }
 </script>
