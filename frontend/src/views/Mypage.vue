@@ -77,6 +77,12 @@
         <span v-for="count in countData" :key="count">
           <span v-if="count.ArticleId == article.ID">いいね数:{{count.Count}}</span>
         </span>
+        <span v-for="result in results" :key="result">
+          <span v-if="result.ArticleId == article.ID">
+            <button v-if="result.Count">いいね</button>
+            <button v-else>いいね解除</button>
+          </span>
+        </span>
       </p>
     </div>
   </div>
@@ -104,6 +110,7 @@ export default {
       followData: [],
       mypageArticle: [],
       countData: '',
+      results: [],
     }
   },
   directives: {
@@ -121,6 +128,7 @@ export default {
     this.checkIsEdit()
     this.getFollowData()
     this.getMypageArticle()
+    this.checkFavoriteMypage()
   },
   created() {
     const params = new URLSearchParams()
@@ -326,7 +334,6 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          console.log(response.data)
           var resultMypageArticle = response.data.mypageArticle
           this.mypageArticle = resultMypageArticle
           var resultCountData = response.data.countData
@@ -334,6 +341,20 @@ export default {
         }
       })
     },
+    checkFavoriteMypage() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId',this.id)
+      params.append('visiterUserId',localStorage.getItem('userId'))
+      axios.post('checkFavoriteMypage', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultCheckFavorite = response.data
+          this.results = resultCheckFavorite
+        }
+      })
+    }
   }
 }
 </script>

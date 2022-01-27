@@ -56,7 +56,7 @@ func GetLikeCount(articleIds []int) []*CountData {
 	return countData
 }
 
-// ログイン中のユーザーがいいね済みかチェック
+// ユーザーがいいね済みかチェック
 func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
 	db := gormConnect()
 	var likes []entity.Likes

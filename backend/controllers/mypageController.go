@@ -153,7 +153,7 @@ func EditUserName(c *gin.Context) {
 	db.UpdateUserName(userID, userName)
 }
 
-// 投稿取得(マイページ)
+// 投稿・いいね数取得(マイページ)
 func GetMypageArticle(c *gin.Context) {
 	userIdStr := c.PostForm("userId")
 	userID, _ := strconv.Atoi(userIdStr)
@@ -163,4 +163,20 @@ func GetMypageArticle(c *gin.Context) {
 	// いいね数を取得
 	countData := db.GetLikeCount(articleIds)
 	c.JSON(200, gin.H{"mypageArticle": mypageArticle, "countData": countData})
+}
+
+// いいねしているか判定(マイページ)
+func CheckFavoriteMypage(c *gin.Context) {
+	mypageUserIdStr := c.PostForm("mypageUserId")
+	mypageUserID, _ := strconv.Atoi(mypageUserIdStr)
+	visiterUserIdStr := c.PostForm("visiterUserId")
+	visiterUserID, _ := strconv.Atoi(visiterUserIdStr)
+
+	// 投稿を取得
+	_, articleIds := db.GetMypageArticle(mypageUserID)
+
+	// いいね済みか判別
+	favoriteData := db.CheckFavorite(articleIds, visiterUserID)
+
+	c.JSON(200, favoriteData)
 }

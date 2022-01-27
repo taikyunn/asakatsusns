@@ -146,5 +146,8 @@ func serve() {
 	// フォロー情報取得
 	r.POST("/getFollowData", controller.GetFollowData)
 
+	// マイページ・いいねしているか確認
+	r.POST("/checkFavoriteMypage", controller.CheckFavoriteMypage)
+
 	r.Run(":3000")
 }
