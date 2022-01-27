@@ -1,6 +1,9 @@
 <template>
   <div>
     <h1>フォロワー一覧</h1>
+    <p v-if="followerLists == 0">
+      フォロワーはいません。
+    </p>
     <p v-for="followerList in followerLists" :key="followerList">
       {{followerList.UserId}}
       {{followerList.Name}}

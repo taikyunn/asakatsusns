@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1>フォロー一覧</h1>
-    <p v-for="followList in followLists" :key="followList">
+    <p v-if="followLists == 0">
+      フォロしているアカウントはありません。
+    </p>
+    <p v-for="followList in followLists" :key="followList" v-else>
       {{followList.UserId}}
       {{followList.Name}}
     </p>
