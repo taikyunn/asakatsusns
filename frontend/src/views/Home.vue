@@ -99,7 +99,7 @@ export default {
         }
         const params = new URLSearchParams()
         params.append('articleId', article.Id)
-        params.append('userId', article.UserId)
+        params.append('userId', localStorage.getItem('userId'))
         const config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
@@ -131,7 +131,7 @@ export default {
         }
         const params = new URLSearchParams()
         params.append('articleId', article.Id)
-        params.append('userId', article.UserId)
+        params.append('userId', localStorage.getItem('userId'))
         const config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
