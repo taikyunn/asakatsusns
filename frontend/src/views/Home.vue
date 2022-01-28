@@ -4,10 +4,29 @@
     <h1>投稿一覧</h1>
     <div class="card w-75" v-for="article in articles" :key="article">
       <div class="card-header">
-        <router-link :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">{{article.Name}}さん</router-link>
+        <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">{{article.Name}}さん</router-link>
       </div>
       <div class="card-body">
-        <p class="card-text"><router-link :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></p>
+        <div class="card-body text-end" v-if="article.UserId == currentUserId">
+          <div class="dropdown">
+            <a class="dropdown-toggle" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <fa icon="ellipsis-v"/>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" justify-content-end >
+              <li>
+                  <a class="dropdown-item" href="#">
+                    <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
+                  </a>
+              </li>
+              <li>
+                  <a class="dropdown-item" href="#">
+                    <button @click="deleteArticle(article)">削除</button>
+                  </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="card-text"><router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></p>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.Id">
             <div v-for="t in tag.Tag" :key="t">
@@ -17,23 +36,28 @@
             </div>
           </div>
         </div>
-        <div v-if="article.UserId == currentUserId">
-          <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
-          <button @click="deleteArticle(article)">削除</button>
-        </div>
-        <div v-for="result in results" :key="result">
-          <div v-if="result.ArticleId == article.Id">
-            <button @click="registerLikes(article)" v-if="result.Count">いいね</button>
-            <button @click="deleteLikes(article)" v-else >いいね解除</button>
-          </div>
-        </div>
       </div>
       <div class="card-footer text-end">
         <div v-for="likesCount in likesCounts" :key="likesCount">
           <div v-if="likesCount.ArticleId == article.Id">
-            <span v-if="likesCount.ArticleId == article.Id">いいね数:{{likesCount.Count}}</span>
+            <span v-for="result in results" :key="result">
+              <span v-if="result.ArticleId == article.Id">
+                <span @click="registerLikes(article)" v-if="result.Count">
+                  <fa icon="heart" class="like-btn"/>
+                  <span v-if="likesCount.ArticleId == article.Id" class="heart">
+                    {{likesCount.Count}}
+                  </span>
+                </span>
+                <span @click="deleteLikes(article)" v-else >
+                  <fa icon="heart" class="unlike-btn"/>
+                  <span v-if="likesCount.ArticleId == article.Id" class="heart">
+                    {{likesCount.Count}}
+                  </span>
+                </span>
+              </span>
+            </span>
             <span v-for="commentCount in commentCounts" :key="commentCount">
-              <span v-if="commentCount.ArticleId == article.Id">コメント数:{{commentCount.Count}}</span>
+              <span v-if="commentCount.ArticleId == article.Id"><fa icon="comment-alt" class="comment-icon"/>{{commentCount.Count}}</span>
             </span>
           </div>
         </div>
@@ -183,3 +207,35 @@ export default {
 }
 </script>
 
+<style scoped>
+.like-btn {
+ width: 18px;
+ height: 18px;
+ font-size: 25px;
+ color: #808080;
+ margin-right: 5px;
+}
+
+.unlike-btn {
+ width: 18px;
+ height: 18px;
+ font-size: 25px;
+ color: #e54747;
+ margin-left: 20px;
+ }
+
+ .heart {
+   margin-right: 20px;
+ }
+.comment-icon {
+  margin-right: 5px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.link {
+  text-decoration: none;
+}
+</style>
