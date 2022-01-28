@@ -1,77 +1,87 @@
 <template>
   <div class="home">
     <Header />
-    <h1>投稿一覧</h1>
-    <div class="card w-75" v-for="article in articles" :key="article">
-      <div class="card-header">
-        <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
-          {{article.Name}}さん
-        </router-link>
-      </div>
-      <div class="card-body">
-        <div class="card-body text-end" v-if="article.UserId == currentUserId">
-          <div class="dropdown">
-            <a class="dropdown-toggle" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <fa icon="ellipsis-v"/>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" justify-content-end >
-              <li>
-                  <a class="dropdown-item" href="#">
-                    <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
-                      編集
-                    </router-link>
-                  </a>
-              </li>
-              <li>
-                  <a class="dropdown-item" href="#">
-                    <button class="btn btn-warning" @click="deleteArticle(article)">
-                      削除
-                    </button>
-                  </a>
-              </li>
-            </ul>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5">
+          <div>
+            <h2>メインタグ</h2>
           </div>
         </div>
-        <p class="card-text">
-          <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
-            {{article.Body}}
-          </router-link>
-        </p>
-        <div v-for="tag in tags" :key="tag">
-          <div v-if="article.Id == tag.Id">
-            <div v-for="t in tag.Tag" :key="t">
-              <span v-if="article.UserId == currentUserId">
-                {{t}}
+        <div class="col-md-6">
+          <div class="card w-75" v-for="article in articles" :key="article">
+            <div class="card-header">
+              <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
+                {{article.Name}}さん
+              </router-link>
+              <span  v-if="article.UserId == currentUserId">
+                <span class="dropdown">
+                  <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <fa icon="ellipsis-v" class="ellipsis" />
+                  </a>
+                  <ul class="dropdown-menu" justify-content-end >
+                    <li>
+                        <a class="dropdown-item" href="#">
+                          <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
+                            編集
+                          </router-link>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                          <button class="btn btn-warning" @click="deleteArticle(article)">
+                            削除
+                          </button>
+                        </a>
+                    </li>
+                  </ul>
+                </span>
               </span>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer text-end">
-        <div v-for="likesCount in likesCounts" :key="likesCount">
-          <div v-if="likesCount.ArticleId == article.Id">
-            <span v-for="commentCount in commentCounts" :key="commentCount">
-              <span v-if="commentCount.ArticleId == article.Id">
-                <fa icon="comment-alt" class="comment-icon" />
-                {{commentCount.Count}}
-              </span>
-            </span>
-            <span v-for="result in results" :key="result">
-              <span v-if="result.ArticleId == article.Id">
-                <span @click="registerLikes(article)" v-if="result.Count">
-                  <fa icon="heart" class="like-btn"/>
-                  <span v-if="likesCount.ArticleId == article.Id" class="heart">
-                    {{likesCount.Count}}
+            <div class="card-body">
+              <p class="card-text">
+                <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
+                  {{article.Body}}
+                </router-link>
+              </p>
+              <div v-for="tag in tags" :key="tag">
+                <div v-if="article.Id == tag.Id">
+                  <div v-for="t in tag.Tag" :key="t">
+                    <span v-if="article.UserId == currentUserId">
+                      {{t}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer text-end">
+              <div v-for="likesCount in likesCounts" :key="likesCount">
+                <div v-if="likesCount.ArticleId == article.Id">
+                  <span v-for="commentCount in commentCounts" :key="commentCount">
+                    <span v-if="commentCount.ArticleId == article.Id">
+                      <fa icon="comment-alt" class="comment-icon" />
+                      {{commentCount.Count}}
+                    </span>
                   </span>
-                </span>
-                <span @click="deleteLikes(article)" v-else >
-                  <fa icon="heart" class="unlike-btn"/>
-                  <span v-if="likesCount.ArticleId == article.Id" class="heart">
-                    {{likesCount.Count}}
+                  <span v-for="result in results" :key="result">
+                    <span v-if="result.ArticleId == article.Id">
+                      <span @click="registerLikes(article)" v-if="result.Count">
+                        <fa icon="heart" class="like-btn"/>
+                        <span v-if="likesCount.ArticleId == article.Id" class="heart">
+                          {{likesCount.Count}}
+                        </span>
+                      </span>
+                      <span @click="deleteLikes(article)" v-else >
+                        <fa icon="heart" class="unlike-btn"/>
+                        <span v-if="likesCount.ArticleId == article.Id" class="heart">
+                          {{likesCount.Count}}
+                        </span>
+                      </span>
+                    </span>
                   </span>
-                </span>
-              </span>
-            </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -247,6 +257,7 @@ export default {
 }
 
 .card {
+  margin-top: 50px;
   margin-bottom: 20px;
 }
 
@@ -254,5 +265,8 @@ export default {
   text-decoration: none;
 }
 
+.ellipsis {
+  float: right;
+}
 
 </style>
