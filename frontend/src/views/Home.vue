@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <Header></Header>
     <h1>{{ msg }}</h1>
     <h1>投稿一覧</h1>
     <tr>
@@ -46,6 +47,7 @@
 
 <script>
 import axios from 'axios'
+import Header from './Header.vue'
 
 export default {
   data() {
@@ -59,6 +61,7 @@ export default {
       commentCounts:[],
     }
   },
+  components: { Header },
   created() {
     axios.get('getAllArticles')
     .then(response => {

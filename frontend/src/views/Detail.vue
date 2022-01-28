@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <div>
       <p>{{ArticleData.Name}}さん</p>
       <p>内容:{{ArticleData.Body}}</p>
@@ -30,6 +31,7 @@
 
 <script>
 import axios from 'axios'
+import Header from './Header.vue'
 
 export default {
   props: {
@@ -46,11 +48,12 @@ export default {
       comment:'',
     }
   },
-   mounted() {
-     this.getArticleDetail()
-     this.countFavorites()
-     this.checkFavorite()
-   },
+  components: { Header },
+  mounted() {
+    this.getArticleDetail()
+    this.countFavorites()
+    this.checkFavorite()
+  },
   methods: {
     getArticleDetail() {
       const params = new URLSearchParams()

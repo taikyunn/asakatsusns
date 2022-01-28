@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <h1>プロフィール</h1>
     <div>
       <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
@@ -98,6 +99,7 @@
 
 <script>
 import axios from 'axios'
+import Header from './Header.vue'
 
 export default {
   props:["id"],
@@ -122,6 +124,7 @@ export default {
       likedPosts:[],
     }
   },
+  components: { Header },
   directives: {
     focus: {
       // ディレクティブ定義

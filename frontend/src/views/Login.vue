@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <h1>ログインフォーム</h1>
     <div v-if="errors.length">
       <p v-for="error in errors" :key="error">{{ error }}</p>
@@ -13,7 +14,7 @@
     <input type="email" placeholder="email" name='name' v-model="email"><br />
     <label for="password">パスワード:</label>
     <input type="password" placeholder="password" name='password' v-model="password"><br />
-    <button @click="login">ログイン</button>
+    <button @click="loginFirebase">ログイン</button>
     <p>You don't have an account?
         <router-link to="/signup">create account now!!</router-link>
     </p>
@@ -25,6 +26,7 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import 'firebase/app'
 import "firebase/auth"
+import Header from './Header.vue'
 
 export default {
   data() {
@@ -36,14 +38,15 @@ export default {
       apiErrors: [],
       }
   },
+  components: { Header },
   methods: {
-    login() {
+    loginFirebase() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
       .then(response => {
         response.user.getIdToken()
         .then(idToken => {
           localStorage.setItem("jwt", idToken.toString())
-          this.$router.push('/')
+          this.login()
         })
       })
       .catch(error => {
@@ -56,6 +59,9 @@ export default {
             break;
         }
       })
+    },
+    login() {
+      console.log('ここが動いています')
       const params = new URLSearchParams
       params.append('name', this.name)
       params.append('password', this.password)
@@ -70,6 +76,7 @@ export default {
         } else {
           localStorage.setItem('userName', response.data.name)
           localStorage.setItem('userId', response.data.userId)
+          this.$router.push('/')
           alert("ようこそ" + response.data.name + "さん")
         }
       })

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <h1>フォロー一覧</h1>
     <p v-if="followLists == 0">
       フォロしているアカウントはありません。
@@ -14,6 +15,7 @@
 
 <script>
 import axios from 'axios'
+import Header from './Header.vue'
 
 export default {
   props:["id"],
@@ -23,6 +25,7 @@ export default {
       isFollowedBy: false,
     }
   },
+  components: { Header },
   created() {
     this.getFollow()
   },

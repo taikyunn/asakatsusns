@@ -58,9 +58,6 @@ func serve() {
 	// 起きる時間編集
 	r.POST("/updateWakeUpTime", controller.UpdateWakeUpTime)
 
-	// ユーザー全件取得
-	r.GET("/getAllUsers", controller.GetAllUsers)
-
 	r.GET("/", func(c *gin.Context) {
 		r.LoadHTMLGlob("./templates/index.html")
 		c.HTML(http.StatusOK, "index.html", nil)

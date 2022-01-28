@@ -77,11 +77,6 @@ func Login(c *gin.Context) {
 	c.JSON(200, gin.H{"name": name, "userId": UserId})
 }
 
-func GetAllUsers(c *gin.Context) {
-	users := db.GetUserData()
-	c.JSON(200, users)
-}
-
 // パスワードのhash化を行う
 func getHashedPassword(password *string) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(*password), bcrypt.DefaultCost)
