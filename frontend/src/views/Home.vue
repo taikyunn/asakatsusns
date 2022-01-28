@@ -1,10 +1,12 @@
 <template>
   <div class="home">
-    <Header></Header>
+    <Header />
     <h1>投稿一覧</h1>
     <div class="card w-75" v-for="article in articles" :key="article">
       <div class="card-header">
-        <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">{{article.Name}}さん</router-link>
+        <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
+          {{article.Name}}さん
+        </router-link>
       </div>
       <div class="card-body">
         <div class="card-body text-end" v-if="article.UserId == currentUserId">
@@ -15,18 +17,26 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" justify-content-end >
               <li>
                   <a class="dropdown-item" href="#">
-                    <router-link :to="{name: 'Edit', params: {id:(Number(article.Id))}}">編集</router-link>
+                    <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
+                      編集
+                    </router-link>
                   </a>
               </li>
               <li>
                   <a class="dropdown-item" href="#">
-                    <button @click="deleteArticle(article)">削除</button>
+                    <button class="btn btn-warning" @click="deleteArticle(article)">
+                      削除
+                    </button>
                   </a>
               </li>
             </ul>
           </div>
         </div>
-        <p class="card-text"><router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></p>
+        <p class="card-text">
+          <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
+            {{article.Body}}
+          </router-link>
+        </p>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.Id">
             <div v-for="t in tag.Tag" :key="t">
@@ -41,7 +51,10 @@
         <div v-for="likesCount in likesCounts" :key="likesCount">
           <div v-if="likesCount.ArticleId == article.Id">
             <span v-for="commentCount in commentCounts" :key="commentCount">
-              <span v-if="commentCount.ArticleId == article.Id"><fa icon="comment-alt" class="comment-icon"/>{{commentCount.Count}}</span>
+              <span v-if="commentCount.ArticleId == article.Id">
+                <fa icon="comment-alt" class="comment-icon" />
+                {{commentCount.Count}}
+              </span>
             </span>
             <span v-for="result in results" :key="result">
               <span v-if="result.ArticleId == article.Id">
@@ -240,4 +253,6 @@ export default {
 .link {
   text-decoration: none;
 }
+
+
 </style>
