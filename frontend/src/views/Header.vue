@@ -10,8 +10,9 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             </ul>
-            <img :src="penImage" class="img-fluid" />
+            <fa icon="pen" />
             <a class="nav-link"><router-link to="/post" class="post" v-if="authenticatedUser">投稿する</router-link></a>
+            <fa icon="user-circle" />
             <div class="justify-content-end">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
@@ -46,7 +47,6 @@ export default {
       notAuthenticatedUser:'',
       currentUserId:'',
       currentUserName:localStorage.getItem('userName'),
-      penImage: require('@/images/pen.jpg'),
     }
   },
   mounted(){

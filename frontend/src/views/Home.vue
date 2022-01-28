@@ -40,6 +40,9 @@
       <div class="card-footer text-end">
         <div v-for="likesCount in likesCounts" :key="likesCount">
           <div v-if="likesCount.ArticleId == article.Id">
+            <span v-for="commentCount in commentCounts" :key="commentCount">
+              <span v-if="commentCount.ArticleId == article.Id"><fa icon="comment-alt" class="comment-icon"/>{{commentCount.Count}}</span>
+            </span>
             <span v-for="result in results" :key="result">
               <span v-if="result.ArticleId == article.Id">
                 <span @click="registerLikes(article)" v-if="result.Count">
@@ -55,9 +58,6 @@
                   </span>
                 </span>
               </span>
-            </span>
-            <span v-for="commentCount in commentCounts" :key="commentCount">
-              <span v-if="commentCount.ArticleId == article.Id"><fa icon="comment-alt" class="comment-icon"/>{{commentCount.Count}}</span>
             </span>
           </div>
         </div>
@@ -213,6 +213,7 @@ export default {
  height: 18px;
  font-size: 25px;
  color: #808080;
+ margin-left: 20px;
  margin-right: 5px;
 }
 
@@ -222,6 +223,7 @@ export default {
  font-size: 25px;
  color: #e54747;
  margin-left: 20px;
+ margin-right: 5px;
  }
 
  .heart {
