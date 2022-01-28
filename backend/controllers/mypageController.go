@@ -103,6 +103,10 @@ func GetUserProfile(c *gin.Context) {
 
 	// filepathの取得
 	user := db.GetFilePathById(userID)
+	// デフォルト画像設定
+	if len(user[0].ProfileImagePath) == 0 {
+		user[0].ProfileImagePath = "images/default.png"
+	}
 
 	// filepathよりS3のデータを取得
 	image, extension := db.DownloadS3Bucket(user[0].ProfileImagePath)
@@ -147,4 +151,42 @@ func EditUserName(c *gin.Context) {
 	userName := c.PostForm("name")
 
 	db.UpdateUserName(userID, userName)
+}
+
+// 投稿・いいね数取得(マイページ)
+func GetMypageArticle(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	mypageArticle, _ := db.GetMypageArticle(userID)
+
+	c.JSON(200, mypageArticle)
+}
+
+// いいねしているか判定(マイページ)
+func CheckFavoriteMypage(c *gin.Context) {
+	mypageUserIdStr := c.PostForm("mypageUserId")
+	mypageUserID, _ := strconv.Atoi(mypageUserIdStr)
+	visiterUserIdStr := c.PostForm("visiterUserId")
+	visiterUserID, _ := strconv.Atoi(visiterUserIdStr)
+
+	// 投稿を取得
+	_, articleIds := db.GetMypageArticle(mypageUserID)
+
+	// いいね済みか判別
+	favoriteData := db.CheckFavorite(articleIds, visiterUserID)
+
+	c.JSON(200, favoriteData)
+}
+
+// マイページ・いいね数取得
+func GetCountFavoriteMypage(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	_, articleIds := db.GetMypageArticle(userID)
+
+	// いいね数を取得
+	countData := db.GetLikeCount(articleIds)
+	c.JSON(200, countData)
 }

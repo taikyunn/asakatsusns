@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <h1>編集ページ</h1>
     <h2>投稿内容</h2>
     <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
@@ -21,6 +22,7 @@
 <script>
 import axios from 'axios'
 import VueTagsInput from '@sipec/vue3-tags-input'
+import Header from './Header.vue'
 
 export default {
   props: {
@@ -31,6 +33,7 @@ export default {
   },
   components: {
     VueTagsInput,
+    Header,
   },
   data() {
     return {

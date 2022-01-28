@@ -14,6 +14,13 @@ type Favoritedata struct {
 	Count     bool
 }
 
+type FavoritePostData struct {
+	UserId int
+	Name   string
+	Body   string
+	Count  int
+}
+
 // いいね登録
 func RegisterLikes(like *entity.Likes) {
 	db := gormConnect()
@@ -50,13 +57,15 @@ func GetLikeCount(articleIds []int) []*CountData {
 	countData := []*CountData{}
 
 	for _, v := range articleIds {
-		db.Where("article_id = ?", v).Find(&likes).Count(&count)
+		if err := db.Where("article_id = ?", v).Find(&likes).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
 		countData = append(countData, &CountData{v, count})
 	}
 	return countData
 }
 
-// ログイン中のユーザーがいいね済みかチェック
+// ユーザーがいいね済みかチェック
 func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
 	db := gormConnect()
 	var likes []entity.Likes
@@ -102,4 +111,45 @@ func CheckFavoriteByArticleId(articleId int, userId int) []*Favoritedata {
 		favoriteData = append(favoriteData, &Favoritedata{articleId, true})
 	}
 	return favoriteData
+}
+
+// 直近10件のいいねした記事IDを取得
+func GetLikedPostId(userId int) []int {
+	db := gormConnect()
+	var likes []entity.Likes
+
+	if err := db.Select("article_id").Limit(10).Order("id DESC").Where("user_id = ?", userId).Find(&likes).Error; err != nil {
+		panic(err.Error())
+	}
+
+	articleIDs := make([]int, len(likes))
+	for i, v := range likes {
+		articleIDs[i] = v.ArticleId
+	}
+	return articleIDs
+}
+
+// いいね記事の中身を取得
+func GetLikedPost(articleIds []int) []*FavoritePostData {
+	db := gormConnect()
+	var article []entity.Article
+	var user []entity.User
+	var likes []entity.Likes
+	var count int
+	favoritePostData := []*FavoritePostData{}
+
+	for _, v := range articleIds {
+		if err := db.Select("user_id, body").Where("id = ?", v).Find(&article).Error; err != nil {
+			panic(err.Error())
+		}
+		if err := db.Select("name").Where("id = ?", article[0].UserId).Find(&user).Error; err != nil {
+			panic(err.Error())
+		}
+		if err := db.Where("article_id = ?", v).Find(&likes).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
+		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), user[0].Name, article[0].Body, count})
+	}
+
+	return favoritePostData
 }

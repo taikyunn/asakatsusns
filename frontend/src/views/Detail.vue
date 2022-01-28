@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <div>
       <p>{{ArticleData.Name}}さん</p>
       <p>内容:{{ArticleData.Body}}</p>
@@ -13,23 +14,24 @@
       </span>
     </div>
     <div>
-      <h2>コメント一覧</h2>
-      <p v-for="commentData in ArticleData.Comments" :key="commentData">
-        {{commentData.Name}}さん:{{commentData.Comment}}
-      </p>
-    </div>
-    <div>
       <h2>コメントを追加する</h2>
       <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
       <div>
         <button @click='insertComment()'>コメントする</button>
       </div>
     </div>
+    <div>
+      <h2>コメント一覧</h2>
+      <p v-for="commentData in ArticleData.Comments" :key="commentData">
+        {{commentData.Name}}さん:{{commentData.Comment}}
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import Header from './Header.vue'
 
 export default {
   props: {
@@ -46,11 +48,12 @@ export default {
       comment:'',
     }
   },
-   mounted() {
-     this.getArticleDetail()
-     this.countFavorites()
-     this.checkFavorite()
-   },
+  components: { Header },
+  mounted() {
+    this.getArticleDetail()
+    this.countFavorites()
+    this.checkFavorite()
+  },
   methods: {
     getArticleDetail() {
       const params = new URLSearchParams()

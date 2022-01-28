@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <h1>新規登録</h1>
     <div v-if="errors.length">
       <p v-for="error in errors" :key="error">{{ error }}</p>
@@ -19,15 +20,6 @@
     <p>Do you have an account?
       <router-link to="/login">sign in now!!</router-link>
     </p>
-    <h2>登録者一覧</h2>
-    <tr>
-      <th>ID:</th>
-      <th>Name:</th>
-    </tr>
-    <tr v-for="user in users" :key="user.name">
-      <td>{{user.ID}}:</td>
-      <td>{{user.name}}</td>
-    </tr>
   </div>
 </template>
 
@@ -36,6 +28,7 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import 'firebase/app'
 import "firebase/auth"
+import Header from './Header.vue'
 
 export default {
   data() {
@@ -48,29 +41,8 @@ export default {
       apiErrors: [],
     }
   },
-  created() {
-    axios.get('getAllUsers')
-    .then(response => {
-      if (response.status != 200) {
-        throw new Error('レスポンスエラー')
-      } else {
-        var resultUsers = response.data
-        this.users = resultUsers
-      }
-    })
-  },
+  components: { Header },
   methods: {
-    getAllUsers() {
-      axios.get('getAllUsers')
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error('レスポンスエラー')
-        } else {
-          var resultUsers = response.data
-          this.users = resultUsers
-        }
-      })
-    },
     signUp() {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
       .then(response => {

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import firebase from 'firebase/app'
-import 'firebase/app'
-import "firebase/auth"
+// import firebase from 'firebase/app'
+// import 'firebase/app'
+// import "firebase/auth"
 
 const routes = [
   {
@@ -49,6 +49,18 @@ const routes = [
     props: true,
     component: () => import('../views/Detail.vue')
   },
+  {
+    path: '/mypage/:id/follow',
+    name: 'Follow',
+    props: true,
+    component: () => import('../views/Follow.vue')
+  },
+  {
+    path: '/mypage/:id/follower',
+    name: 'Follower',
+    props: true,
+    component: () => import('../views/Follower.vue')
+  },
 ]
 
 const router = createRouter({
@@ -56,19 +68,20 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth) {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        next()
-      } else {
-        next({ name: 'login' })
-      }
-    })
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+//   if (requiresAuth) {
+//     firebase.auth().onAuthStateChanged(function (user) {
+//       console.log(user)
+//       if (user) {
+//         next()
+//       } else {
+//         next({ name: 'login' })
+//       }
+//     })
+//   } else {
+//     next()
+//   }
+// })
 
 export default router

@@ -46,17 +46,16 @@ func DownloadS3Bucket(filepath string) (*os.File, string) {
 	bucket := os.Getenv("BUCKET_NAME")
 	key := filepath
 
-	// デフォルト画像設定
-	if len(key) == 0 {
-		key = "images/default.png"
-	}
-
+	pos := strings.LastIndex(key, ".")
 	var filename string
 	var extension string
 
-	if (strings.Index(key, "jpeg")) == -1 {
+	if (key[pos:]) == ".jpeg" {
 		extension = "jpeg"
 		filename = "download1.jpeg"
+	} else if (key[pos:]) == ".jpg" {
+		extension = "jpg"
+		filename = "download1.jpg"
 	} else {
 		extension = "png"
 		filename = "download1.png"

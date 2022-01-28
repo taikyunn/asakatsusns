@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	// サーバーを起動する
 	serve()
 }
 
@@ -58,9 +57,6 @@ func serve() {
 	// 起きる時間編集
 	r.POST("/updateWakeUpTime", controller.UpdateWakeUpTime)
 
-	// ユーザー全件取得
-	r.GET("/getAllUsers", controller.GetAllUsers)
-
 	r.GET("/", func(c *gin.Context) {
 		r.LoadHTMLGlob("./templates/index.html")
 		c.HTML(http.StatusOK, "index.html", nil)
@@ -98,11 +94,14 @@ func serve() {
 	// 投稿削除
 	r.POST("/deleteArticle", controller.DeleteArticle)
 
-	// 編集画面表示
+	// 投稿編集画面表示
 	r.POST("/getOneArticle", controller.GetOneArticle)
 
-	// 編集
+	// 投稿編集
 	r.POST("/updateArticle", controller.UpdateArticle)
+
+	// 投稿取得(マイページ)
+	r.POST("/getMypageArticle", controller.GetMypageArticle)
 
 	// 画像アップロード
 	r.POST("/fileUpload", controller.FileUpload)
@@ -130,6 +129,33 @@ func serve() {
 
 	// コメント件数取得
 	r.GET("/getCountComments", controller.GetCountComments)
+
+	// フォローしているか判別
+	r.POST("/checkFollow", controller.CheckFollow)
+
+	// フォロー登録
+	r.POST("/registerFollow", controller.RegisterFollow)
+
+	// フォロー解除
+	r.POST("/deleteFollow", controller.DeleteFollow)
+
+	// フォロー情報取得
+	r.POST("/getFollowData", controller.GetFollowData)
+
+	// マイページ・いいねしているか確認
+	r.POST("/checkFavoriteMypage", controller.CheckFavoriteMypage)
+
+	// マイページ・いいね数取得
+	r.POST("/getCountFavoriteMypage", controller.GetCountFavoriteMypage)
+
+	// マイページ・いいねした投稿を取得
+	r.POST("/getLikedPost", controller.GetLikedPost)
+
+	// フォロー一覧取得
+	r.POST("/getFollow", controller.GetFollow)
+
+	// フォロワー一覧取得
+	r.POST("/getFollower", controller.GetFollower)
 
 	r.Run(":3000")
 }

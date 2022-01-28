@@ -78,3 +78,18 @@ func UpdateUserName(id int, name string) {
 	db.Model(&user).Where("id = ?", id).Update("name", name)
 	defer db.Close()
 }
+
+// 投稿取得(マイページ)
+func GetMypageArticle(userID int) ([]entity.Article, []int) {
+	db := gormConnect()
+	var article []entity.Article
+
+	db.Limit(10).Order("id DESC").Select("id, body").Where("user_id = ?", userID).Find(&article)
+	defer db.Close()
+
+	articleIds := make([]int, len(article))
+	for i, v := range article {
+		articleIds[i] = int(v.ID)
+	}
+	return article, articleIds
+}

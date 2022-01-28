@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <h1>投稿内容</h1>
     <div v-if="apiErrors.length">
       <p v-for="error in apiErrors" :key="error">{{ error }}</p>
@@ -22,10 +23,12 @@
 <script>
 import axios from 'axios'
 import VueTagsInput from '@sipec/vue3-tags-input'
+import Header from './Header.vue'
 
 export default {
   components: {
     VueTagsInput,
+    Header,
   },
   data() {
     return {
@@ -88,14 +91,13 @@ export default {
               this.apiErrors.push(response.data.Body)
             }
           } else if (response.status != 200) {
-            console.log("エラーが発生しました。")
+            throw new Error('レスポンスエラー')
           } else {
             alert("投稿しました。")
             this.$router.push('/')
           }
         })
       } catch(error) {
-        console.log(error)
         this.apiErrors.push("投稿内容を入力してください。")
       }
     }

@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <Header></Header>
     <h1>{{ msg }}</h1>
     <h1>投稿一覧</h1>
     <tr>
@@ -7,7 +8,7 @@
       <th>投稿:</th>
     </tr>
     <tr v-for="article in articles" :key="article">
-        <td>{{article.Name}}:</td>
+        <router-link :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">{{article.Name}}さん</router-link>
         <td><router-link :to="{name: 'Detail', params: {id:(Number(article.Id))}}">{{article.Body}}</router-link></td>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.Id">
@@ -46,6 +47,7 @@
 
 <script>
 import axios from 'axios'
+import Header from './Header.vue'
 
 export default {
   data() {
@@ -59,6 +61,7 @@ export default {
       commentCounts:[],
     }
   },
+  components: { Header },
   created() {
     axios.get('getAllArticles')
     .then(response => {
@@ -99,7 +102,7 @@ export default {
         }
         const params = new URLSearchParams()
         params.append('articleId', article.Id)
-        params.append('userId', article.UserId)
+        params.append('userId', localStorage.getItem('userId'))
         const config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
@@ -131,7 +134,7 @@ export default {
         }
         const params = new URLSearchParams()
         params.append('articleId', article.Id)
-        params.append('userId', article.UserId)
+        params.append('userId', localStorage.getItem('userId'))
         const config = {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
