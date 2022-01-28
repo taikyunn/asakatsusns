@@ -9,8 +9,10 @@
     "prod-build": "vue-cli-service build --mode production"
   },
   "dependencies": {
+    "@popperjs/core": "^2.9.3",
     "@sipec/vue3-tags-input": "^3.0.4",
     "axios": "^0.24.0",
+    "bootstrap": "^5.1.0",
     "firebase": "^8.10.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",

@@ -6,6 +6,8 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import 'firebase/app'
 import "firebase/auth"
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/js/bootstrap.bundle.min.js"
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 
