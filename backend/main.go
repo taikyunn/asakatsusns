@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	// サーバーを起動する
 	serve()
 }
 
