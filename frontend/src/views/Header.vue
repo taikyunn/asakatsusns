@@ -13,7 +13,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           </ul>
-          <label class="nav-link">
+          <label class="nav-link" v-if="authenticatedUser">
             <fa icon="pen" class="pen" />
             <router-link to="/post" class="post" v-if="authenticatedUser">
               投稿する
