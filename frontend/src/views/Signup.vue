@@ -1,25 +1,37 @@
 <template>
   <div>
     <Header></Header>
-    <h1>新規登録</h1>
-    <div v-if="errors.length">
-      <p v-for="error in errors" :key="error">{{ error }}</p>
+    <div class="text-center">
+      <h1 class="title">新規登録</h1>
+      <div v-if="errors.length">
+        <p v-for="error in errors" :key="error">{{ error }}</p>
+      </div>
+      <p v-if="apiErrors.length">
+      <ul>
+        <li v-for="error in apiErrors" :key="error">{{ error }}</li>
+      </ul>
+      </p>
+      <div class="mb-3">
+        <label for="name">お名前:</label>
+        <input type="text" placeholder="Username" name='name' v-model="name">
+      </div>
+      <div class="mb-3">
+        <label for="email">メールアドレス:</label>
+        <input type="text" placeholder="Password" name='email' v-model="email">
+      </div>
+      <div class="mb-3">
+        <label for="password">パスワード:</label>
+        <input type="password" name='password' v-model="password">
+      </div>
+      <div class="mb-3">
+        <button @click="signUp">登録する</button>
+      </div>
+      <div class="mb-3">
+        <p>Do you have an account?
+          <router-link to="/login">sign in now!!</router-link>
+        </p>
+      </div>
     </div>
-    <p v-if="apiErrors.length">
-    <ul>
-      <li v-for="error in apiErrors" :key="error">{{ error }}</li>
-    </ul>
-    </p>
-    <label for="name">お名前:</label>
-    <input type="text" placeholder="Username" name='name' v-model="name"><br />
-    <label for="email">メールアドレス:</label>
-    <input type="text" placeholder="Password" name='email' v-model="email"><br />
-    <label for="password">パスワード:</label>
-    <input type="password" name='password' v-model="password"><br />
-    <button @click="signUp">登録する</button>
-    <p>Do you have an account?
-      <router-link to="/login">sign in now!!</router-link>
-    </p>
   </div>
 </template>
 
@@ -83,33 +95,8 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.signup {
-  margin-top: 20px;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center
-}
-input {
-  margin: 10px 0;
-  padding: 10px;
-}
-button {
-  margin: 10px 0;
-  padding: 10px;
+.title {
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 </style>
