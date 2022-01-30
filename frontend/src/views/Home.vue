@@ -47,7 +47,7 @@
               <div v-for="tag in tags" :key="tag">
                 <div v-if="article.Id == tag.Id">
                   <div v-for="t in tag.Tag" :key="t">
-                    <span v-if="article.UserId == currentUserId">
+                    <span v-if="article.UserId == currentUserId" class="tag">
                       {{t}}
                     </span>
                   </div>
@@ -263,10 +263,20 @@ export default {
 
 .link {
   text-decoration: none;
+  text-align: left;
+  color:black;
 }
 
 .ellipsis {
   float: right;
 }
 
+.dropdown-toggle {
+  color: black;
+}
+
+.tag {
+  color: green;
+  white-space: nowrap;
+}
 </style>

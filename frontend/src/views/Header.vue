@@ -1,8 +1,5 @@
 <template>
   <div id="nav">
-    <router-link to="/signup" v-if="notAuthenticatedUser">
-      新規登録
-    </router-link>
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -16,17 +13,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           </ul>
-          <fa icon="pen" />
-          <a class="nav-link">
+          <label class="nav-link">
+            <fa icon="pen" class="pen" />
             <router-link to="/post" class="post" v-if="authenticatedUser">
               投稿する
             </router-link>
-          </a>
-          <fa icon="user-circle" />
+          </label>
           <div class="justify-content-end">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <fa icon="user-circle" />
                   <router-link class="user-name" :to="{name: 'Mypage', params: {id:(Number(currentUserId))}}" v-if="authenticatedUser">
                     {{ currentUserName }}さん
                   </router-link>
@@ -41,7 +38,14 @@
                   </li>
                   <li>
                     <a class="dropdown-item" href="#">
-                      <router-link to="/login" v-if="notAuthenticatedUser">
+                      <router-link class="btn btn-warning" to="/signup" v-if="notAuthenticatedUser">
+                        新規登録
+                      </router-link>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      <router-link class="btn btn-warning" to="/login" v-if="notAuthenticatedUser">
                         ログイン
                       </router-link>
                     </a>
@@ -112,10 +116,16 @@ export default {
 <style scoped>
 .title, .post, .user-name {
   text-decoration: none;
+  color: black;
+  font-weight: bold;
 }
 img {
   border-radius: 50%;
   width:3%;
   height:3%;
 }
+.pen {
+  color: black;
+}
+
 </style>
