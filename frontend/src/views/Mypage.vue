@@ -3,7 +3,7 @@
     <Header></Header>
     <div class="container">
       <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-5 text-center">
             <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
             <p v-if="url">
               <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
@@ -14,10 +14,10 @@
               <button v-on:click="fileUpload()">アップロード</button>
             </p>
             <p>
-              <router-link :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
+              <router-link class="link" :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
                 フォロー
               </router-link>
-              <router-link :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} 
+              <router-link class="link" :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} 
                 フォロワー
               </router-link>
               <span v-if="!isMyOwnPage">
@@ -43,80 +43,104 @@
             <p v-else>
               アカウント名:{{userInfo.name}}
             </p>
+            <p v-if="isEdit">
+              寝る時間:
+              <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">
+                {{userInfo.SleepTime}}*クリックで編集*
+              </span>
+              <span v-else >
+                <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
+                <button @click="updateSleepTime">
+                  登録
+                </button>
+              </span>
+            </p>
+            <p v-else>
+              <span v-if="userInfo.SleepTime != null">
+                寝る時間:{{userInfo.SleepTime}}
+              </span>
+              <span v-else>
+                寝る時間:設定されていません。
+              </span>
+            </p>
+            <p v-if="isEdit">
+              起きる時間設定:
+              <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">
+                {{userInfo.WakeUpTime}}*クリックで編集*
+              </span>
+              <span v-else >
+                <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
+                <button @click="updateWakeUpTime">
+                  登録
+                </button>
+              </span>
+            </p>
+            <p v-else>
+              <span v-if="userInfo.WakeUpTime != null">
+                起きる時間:{{userInfo.WakeUpTime}}
+              </span>
+              <span v-else>
+                起きる時間:設定されていません
+              </span>
+            </p>
           </div>
           <div class="col-md-6">
-            <div>
-              <p v-if="isEdit">
-                寝る時間:
-                <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">
-                  {{userInfo.SleepTime}}*クリックで編集*
-                </span>
-                <span v-else >
-                  <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
-                  <button @click="updateSleepTime">
-                    登録
-                  </button>
-                </span>
-              </p>
-              <p v-else>
-                <span v-if="userInfo.SleepTime != null">
-                  寝る時間:{{userInfo.SleepTime}}
-                </span>
-                <span v-else>
-                  寝る時間:設定されていません。
-                </span>
-              </p>
-            </div>
-            <div>
-              <p v-if="isEdit">
-                起きる時間設定:
-                <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">
-                  {{userInfo.WakeUpTime}}*クリックで編集*
-                </span>
-                <span v-else >
-                  <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
-                  <button @click="updateWakeUpTime">
-                    登録
-                  </button>
-                </span>
-              </p>
-              <p v-else>
-                <span v-if="userInfo.WakeUpTime != null">
-                  起きる時間:{{userInfo.WakeUpTime}}
-                </span>
-                <span v-else>
-                  起きる時間:設定されていません
-                </span>
-              </p>
-            </div>
-            <div>
-              <h2>投稿</h2>
-              <p v-for="article in mypageArticle" :key="article">
-                {{article.body}}
-                <span v-for="count in countData" :key="count">
-                  <span v-if="count.ArticleId == article.ID">
-                    いいね数:{{count.Count}}
-                  </span>
-                </span>
-                <span v-for="result in results" :key="result">
-                  <span v-if="result.ArticleId == article.ID">
-                    <button @click="registerLikes(article.ID)" v-if="result.Count">
-                      いいね
-                    </button>
-                    <button @click="deleteLikes(article.ID)" v-else>
-                      いいね解除
-                    </button>
-                  </span>
-                </span>
-              </p>
-            </div>
-            <div>
-              <h2>いいね</h2>
-              <p v-for="likedPost in likedPosts" :key="likedPost">
-                {{likedPost.Name}}:
-                {{likedPost.Body}}
-                いいね数:{{likedPost.Count}}
-              </p>
+            <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">投稿</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">いいね</button>
+              </li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+              <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
+                <div class="card" v-for="article in mypageArticle" :key="article">
+                  <div class="card-header">
+                    ユーザー名
+                  </div>
+                    <div class="card-body">
+                      <p class="card-text">
+                        {{article.body}}
+                      </p>
+                      <div class="card-footer text-end">
+                        <fa icon="comment-alt" class="comment-icon" />
+                        <span v-for="result in results" :key="result">
+                          <span v-if="result.ArticleId == article.ID">
+                            <span @click="registerLikes(article.ID)" v-if="result.Count">
+                              <fa icon="heart" class="like-btn"/>
+                            </span>
+                            <span @click="deleteLikes(article.ID)" v-else>
+                              <fa icon="heart" class="unlike-btn"/>
+                            </span>
+                          </span>
+                        </span>
+                        <span v-for="count in countData" :key="count">
+                          <span v-if="count.ArticleId == article.ID">
+                            {{count.Count}}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="card" v-for="likedPost in likedPosts" :key="likedPost">
+                  <div class="card-header">
+                    {{likedPost.Name}}
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text">
+                      {{likedPost.Body}}
+                    </p>
+                  </div>
+                  <div class="card-footer text-end">
+                    <fa icon="heart" class="like-btn"/>{{likedPost.Count}}
+                  </div>
+                </div>
+                <p >
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -490,8 +514,41 @@ export default {
 
 <style scoped>
 img {
-  border-radius: 50%;
   width: 180px;
   height: 180px;
+  margin-bottom: 30px;
+}
+
+.row {
+  margin-top: 50px;
+}
+
+.link {
+  text-decoration: none;
+  text-align: left;
+  color:black;
+}
+
+.like-btn {
+ width: 18px;
+ height: 18px;
+ font-size: 25px;
+ color: #808080;
+ margin-left: 20px;
+ margin-right: 5px;
+}
+
+.unlike-btn {
+ width: 18px;
+ height: 18px;
+ font-size: 25px;
+ color: #e54747;
+ margin-left: 20px;
+ margin-right: 5px;
+ }
+
+ .card {
+  margin-top: 50px;
+  margin-bottom: 20px;
 }
 </style>
