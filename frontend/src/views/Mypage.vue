@@ -108,7 +108,12 @@
                         {{article.body}}
                       </p>
                       <div class="card-footer text-end">
-                        <fa icon="comment-alt" class="comment-icon" />
+                        <span v-for="commentCount in commentCounts" :key="commentCount">
+                          <span v-if="commentCount.ArticleId == article.ID">
+                            <fa icon="comment-alt" class="comment-icon" />
+                            {{commentCount.Count}}
+                          </span>
+                        </span>
                         <span v-for="result in results" :key="result">
                           <span v-if="result.ArticleId == article.ID">
                             <span @click="registerLikes(article.ID)" v-if="result.Count">
@@ -181,6 +186,7 @@ export default {
       results: [],
       likedPosts:[],
       userName: '',
+      commentCounts: '',
     }
   },
   components: { Header },
@@ -411,6 +417,8 @@ export default {
           this.mypageArticle = resultMypageArticle
           var resultUserName = response.data.userName
           this.userName = resultUserName[0]
+          var resultCommentCounts = response.data.commentCount
+          this.commentCounts = resultCommentCounts
         }
       })
     },
