@@ -1,98 +1,125 @@
 <template>
   <div>
     <Header></Header>
-    <h1>プロフィール</h1>
-    <div>
-      <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
-      <p v-if="url">
-        <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
-        <img :src="url" width="100" />
-      </p>
-      <p>
-        <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
-        <button v-on:click="fileUpload()">アップロード</button>
-      </p>
-    </div>
-    <div>
-      <p>
-        <router-link :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}} フォロー</router-link>
-        <router-link :to="{name: 'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} フォロワー</router-link>
-      </p>
-      <div v-if="!isMyOwnPage">
-        <button v-if="!isFollowedBy" @click="registerFollow">フォローする</button>
-        <button v-else @click="deleteFollow">フォロー中</button>
-      </div>
-    </div>
-    <div>
-      <p v-if="isEdit">
-        <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName" >{{userInfo.name}}*クリックで編集*</span>
-        <span v-else >
-          <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
-          <button @click="updateName">登録</button>
-        </span>
-      </p>
-      <p v-else>
-        アカウント名:{{userInfo.name}}
-      </p>
-    </div>
-    <div>
-      <p v-if="isEdit">
-        寝る時間:
-        <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">{{userInfo.SleepTime}}*クリックで編集*</span>
-        <span v-else >
-          <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
-          <button @click="updateSleepTime">登録</button>
-        </span>
-      </p>
-      <p v-else>
-        <span v-if="userInfo.SleepTime != null">
-          寝る時間:{{userInfo.SleepTime}}
-        </span>
-        <span v-else>
-          寝る時間:設定されていません。
-        </span>
-      </p>
-    </div>
-    <div>
-      <p v-if="isEdit">
-        起きる時間設定:
-        <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">{{userInfo.WakeUpTime}}*クリックで編集*</span>
-        <span v-else >
-          <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
-          <button @click="updateWakeUpTime">登録</button>
-        </span>
-      </p>
-      <p v-else>
-        <span v-if="userInfo.WakeUpTime != null">
-          起きる時間:{{userInfo.WakeUpTime}}
-        </span>
-        <span v-else>
-          起きる時間:設定されていません
-        </span>
-      </p>
-    </div>
-    <div>
-      <h2>投稿</h2>
-      <p v-for="article in mypageArticle" :key="article">
-        {{article.body}}
-        <span v-for="count in countData" :key="count">
-          <span v-if="count.ArticleId == article.ID">いいね数:{{count.Count}}</span>
-        </span>
-        <span v-for="result in results" :key="result">
-          <span v-if="result.ArticleId == article.ID">
-            <button @click="registerLikes(article.ID)" v-if="result.Count">いいね</button>
-            <button @click="deleteLikes(article.ID)" v-else>いいね解除</button>
-          </span>
-        </span>
-      </p>
-    </div>
-    <div>
-      <h2>いいね</h2>
-      <p v-for="likedPost in likedPosts" :key="likedPost">
-        {{likedPost.Name}}:
-        {{likedPost.Body}}
-        いいね数:{{likedPost.Count}}
-      </p>
+    <div class="container">
+      <div class="row">
+          <div class="col-md-5">
+            <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
+            <p v-if="url">
+              <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
+              <img :src="url" width="100" />
+            </p>
+            <p>
+              <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
+              <button v-on:click="fileUpload()">アップロード</button>
+            </p>
+            <p>
+              <router-link :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
+                フォロー
+              </router-link>
+              <router-link :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} 
+                フォロワー
+              </router-link>
+              <span v-if="!isMyOwnPage">
+                <button v-if="!isFollowedBy" @click="registerFollow">
+                  フォローする
+                </button>
+                <button v-else @click="deleteFollow">
+                  フォロー中
+                </button>
+              </span>
+            </p>
+            <p v-if="isEdit">
+              <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName" >
+                {{userInfo.name}}*クリックで編集*
+              </span>
+              <span v-else >
+                <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
+                <button @click="updateName">
+                  登録
+                </button>
+              </span>
+            </p>
+            <p v-else>
+              アカウント名:{{userInfo.name}}
+            </p>
+          </div>
+          <div class="col-md-6">
+            <div>
+              <p v-if="isEdit">
+                寝る時間:
+                <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">
+                  {{userInfo.SleepTime}}*クリックで編集*
+                </span>
+                <span v-else >
+                  <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
+                  <button @click="updateSleepTime">
+                    登録
+                  </button>
+                </span>
+              </p>
+              <p v-else>
+                <span v-if="userInfo.SleepTime != null">
+                  寝る時間:{{userInfo.SleepTime}}
+                </span>
+                <span v-else>
+                  寝る時間:設定されていません。
+                </span>
+              </p>
+            </div>
+            <div>
+              <p v-if="isEdit">
+                起きる時間設定:
+                <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">
+                  {{userInfo.WakeUpTime}}*クリックで編集*
+                </span>
+                <span v-else >
+                  <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
+                  <button @click="updateWakeUpTime">
+                    登録
+                  </button>
+                </span>
+              </p>
+              <p v-else>
+                <span v-if="userInfo.WakeUpTime != null">
+                  起きる時間:{{userInfo.WakeUpTime}}
+                </span>
+                <span v-else>
+                  起きる時間:設定されていません
+                </span>
+              </p>
+            </div>
+            <div>
+              <h2>投稿</h2>
+              <p v-for="article in mypageArticle" :key="article">
+                {{article.body}}
+                <span v-for="count in countData" :key="count">
+                  <span v-if="count.ArticleId == article.ID">
+                    いいね数:{{count.Count}}
+                  </span>
+                </span>
+                <span v-for="result in results" :key="result">
+                  <span v-if="result.ArticleId == article.ID">
+                    <button @click="registerLikes(article.ID)" v-if="result.Count">
+                      いいね
+                    </button>
+                    <button @click="deleteLikes(article.ID)" v-else>
+                      いいね解除
+                    </button>
+                  </span>
+                </span>
+              </p>
+            </div>
+            <div>
+              <h2>いいね</h2>
+              <p v-for="likedPost in likedPosts" :key="likedPost">
+                {{likedPost.Name}}:
+                {{likedPost.Body}}
+                いいね数:{{likedPost.Count}}
+              </p>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>
