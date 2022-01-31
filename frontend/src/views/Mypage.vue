@@ -87,10 +87,14 @@
           <div class="col-md-6">
             <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
               <li class="nav-item" role="presentation">
-                <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">投稿</button>
+                <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+                  投稿
+                </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">いいね</button>
+                <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                  いいね
+                </button>
               </li>
             </ul>
             <div id="myTabContent" class="tab-content">
@@ -125,7 +129,10 @@
                 </div>
               </div>
               <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="card" v-for="likedPost in likedPosts" :key="likedPost">
+                <div v-if="likedPosts == 0">
+                  まだいいねしていません。
+                </div>
+                <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
                   <div class="card-header">
                     {{likedPost.Name}}
                   </div>
@@ -505,6 +512,7 @@ export default {
         } else {
           var likedPostResult = response.data
           this.likedPosts = likedPostResult
+          console.log(this.likedPosts)
         }
       })
     },
