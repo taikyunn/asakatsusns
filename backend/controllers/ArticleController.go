@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +16,7 @@ type Result struct {
 	Name      string
 	Body      string
 	UserId    int
-	CreatedAt time.Time
+	CreatedAt string
 }
 
 type DbTagResult struct {
@@ -108,7 +107,8 @@ func GetAllArticles(c *gin.Context) {
 	for _, av := range articles {
 		for _, uv := range user {
 			if av.UserId == uv.ID {
-				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), av.CreatedAt})
+				t := av.CreatedAt.Format("2006/01/02 15:04:05")
+				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), t})
 			}
 		}
 	}

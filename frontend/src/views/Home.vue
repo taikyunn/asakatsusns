@@ -12,11 +12,12 @@
           <div class="card w-75" v-for="article in articles" :key="article">
             <div class="card-header">
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
-                {{article.Name}}さん
+                {{article.Name}}
               </router-link>
+              {{article.CreatedAt}}
               <span  v-if="article.UserId == currentUserId">
                 <span class="dropdown">
-                  <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <fa icon="ellipsis-v" class="ellipsis" />
                   </a>
                   <ul class="dropdown-menu" justify-content-end >
@@ -40,7 +41,6 @@
             </div>
             <div class="card-body">
               <p class="card-text">
-                {{article.CreatedAt}}
                 <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
                   {{article.Body}}
                 </router-link>
@@ -115,7 +115,6 @@ export default {
       } else {
         var resultArticles = response.data.article
         this.articles = resultArticles
-        console.log(this.articles)
         var resultTags = response.data.tag
         this.tags = resultTags
       }
