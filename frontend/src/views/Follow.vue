@@ -18,17 +18,17 @@
         <p v-if="followLists == 0">
           フォロしているアカウントはありません。
         </p>
-          <div class="card" v-for="followList in followLists" :key="followList" v-else>
-            <div class="card-header">
-              <router-link :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">{{followList.Name}}</router-link>
-              <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
-                フォローする
-              </button>
-              <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
-                フォロー中
-              </button>
-            </div>
+        <div class="card" v-for="followList in followLists" :key="followList" v-else>
+          <div class="card-header">
+            <router-link :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">{{followList.Name}}</router-link>
+            <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
+              フォローする
+            </button>
+            <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
+              フォロー中
+            </button>
           </div>
+        </div>
       </div>
       <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab">
         <p v-if="followerLists == 0">
@@ -61,8 +61,8 @@ export default {
   data() {
     return {
       followLists: [],
+      followerLists: [],
       isFollowedBy: false,
-      followerLists: []
     }
   },
   components: { Header },
@@ -74,7 +74,6 @@ export default {
     getFollow() {
       const params = new URLSearchParams()
       params.append('follower_id', this.id)
-      console.log(this.id)
       axios.post('getFollow', params)
       .then(response => {
         if (response.status != 200) {
@@ -137,7 +136,6 @@ export default {
         const params = new URLSearchParams()
         params.append('follower_id', localStorage.getItem('userId'))
         params.append('followed_id', followedId)
-        console.log(params)
         axios.post('deleteFollow', params)
         .then(response => {
           if (response.status != 200) {

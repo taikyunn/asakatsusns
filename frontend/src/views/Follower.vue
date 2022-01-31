@@ -15,6 +15,20 @@
     </ul>
     <div id="myTabContent" class="tab-content">
       <div id="home" class="tab-pane" role="tabpanel" aria-labelledby="home-tab">
+        <p v-if="followLists == 0">
+          フォロしているアカウントはありません。
+        </p>
+        <div class="card" v-for="followList in followLists" :key="followList" v-else>
+          <div class="card-header">
+            <router-link :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">{{followList.Name}}</router-link>
+            <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
+              フォローする
+            </button>
+            <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
+              フォロー中
+            </button>
+          </div>
+        </div>
       </div>
       <div id="profile" class="tab-pane active" role="tabpanel" aria-labelledby="profile-tab">
         <p v-if="followerLists == 0">
@@ -47,6 +61,7 @@ export default {
   data() {
     return {
       followerLists: [],
+      followLists: [],
       isFollowedBy: false,
     }
   },
@@ -54,6 +69,7 @@ export default {
   created() {
     this.getFollower()
     this.checkFollow()
+    this.getFollow()
   },
   methods:{
     getFollower() {
@@ -77,6 +93,19 @@ export default {
       .then(response => {
         var followResult = response.data
         this.isFollowedBy = followResult
+      })
+    },
+    getFollow() {
+      const params = new URLSearchParams()
+      params.append('follower_id', this.id)
+      axios.post('getFollow', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var followResult = response.data
+          this.followLists = followResult
+        }
       })
     },
     registerFollow() {

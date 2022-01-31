@@ -512,7 +512,6 @@ export default {
         } else {
           var likedPostResult = response.data
           this.likedPosts = likedPostResult
-          console.log(this.likedPosts)
         }
       })
     },
