@@ -193,3 +193,9 @@ func GetArticleDetail(c *gin.Context) {
 
 	c.JSON(200, detailData)
 }
+
+// メインタグ情報の取得
+func GetMainTag(c *gin.Context) {
+	mainTag := db.GetMainTag()
+	c.JSON(200, mainTag)
+}

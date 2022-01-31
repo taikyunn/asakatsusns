@@ -88,6 +88,9 @@ func serve() {
 		auth.POST("/insertComment", controller.InsertComment)
 	}
 
+	// メインタグ除法取得
+	r.GET("/getMainTag", controller.GetMainTag)
+
 	// 投稿全件取得
 	r.GET("/getAllArticles", controller.GetAllArticles)
 

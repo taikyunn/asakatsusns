@@ -4,8 +4,14 @@
     <div class="container">
       <div class="row">
         <div class="col-md-5">
-          <div>
-            <h2>メインタグ</h2>
+          <MainTag />
+          <div class="card w-75">
+            <div class="card-header text-center">
+              早起き達成ランキンング
+              <fa icon="crown" class="crown"/>
+            </div>
+            <div class="card-body">
+            </div>
           </div>
         </div>
         <div class="col-md-6">
@@ -93,6 +99,7 @@
 <script>
 import axios from 'axios'
 import Header from './Header.vue'
+import MainTag from './MainTag.vue'
 
 export default {
   data() {
@@ -106,7 +113,7 @@ export default {
       commentCounts:[],
     }
   },
-  components: { Header },
+  components: { Header, MainTag },
   created() {
     axios.get('getAllArticles')
     .then(response => {
@@ -279,5 +286,9 @@ export default {
 .tag {
   color: green;
   white-space: nowrap;
+}
+
+.crown {
+  color: #DAAF08;
 }
 </style>

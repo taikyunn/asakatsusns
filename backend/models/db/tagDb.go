@@ -194,3 +194,14 @@ func GetOneTagData(ArticleId int) []string {
 	}
 	return tagNames
 }
+
+// メインタグ情報の取得
+func GetMainTag() []entity.Tag {
+	db := gormConnect()
+	var tag []entity.Tag
+
+	if err := db.Select("name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	return tag
+}
