@@ -147,6 +147,12 @@
                     </p>
                   </div>
                   <div class="card-footer text-end">
+                    <span v-for="likedCommentCount in likedCommentCounts" :key="likedCommentCount">
+                      <span v-if="likedCommentCount.ArticleId == likedPost.ArticleId">
+                        <fa icon="comment-alt" class="comment-icon" />
+                        {{likedCommentCount.Count}}
+                      </span>
+                    </span>
                     <fa icon="heart" class="like-btn"/>{{likedPost.Count}}
                   </div>
                 </div>
@@ -187,6 +193,7 @@ export default {
       likedPosts:[],
       userName: '',
       commentCounts: '',
+      likedCommentCounts: '',
     }
   },
   components: { Header },
@@ -521,8 +528,11 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          var likedPostResult = response.data
+          var likedPostResult = response.data.favoritePostData
           this.likedPosts = likedPostResult
+          console.log(this.likedPosts)
+          var resultLikedCommentCounts = response.data.commentCount
+          this.likedCommentCounts = resultLikedCommentCounts
         }
       })
     },

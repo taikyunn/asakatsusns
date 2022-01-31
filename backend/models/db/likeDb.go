@@ -15,10 +15,11 @@ type Favoritedata struct {
 }
 
 type FavoritePostData struct {
-	UserId int
-	Name   string
-	Body   string
-	Count  int
+	UserId    int
+	ArticleId int
+	Name      string
+	Body      string
+	Count     int
 }
 
 // いいね登録
@@ -148,7 +149,7 @@ func GetLikedPost(articleIds []int) []*FavoritePostData {
 		if err := db.Where("article_id = ?", v).Find(&likes).Count(&count).Error; err != nil {
 			panic(err.Error())
 		}
-		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), user[0].Name, article[0].Body, count})
+		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), v, user[0].Name, article[0].Body, count})
 	}
 
 	return favoritePostData
