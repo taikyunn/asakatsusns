@@ -159,8 +159,9 @@ func GetMypageArticle(c *gin.Context) {
 	userID, _ := strconv.Atoi(userIdStr)
 
 	mypageArticle, _ := db.GetMypageArticle(userID)
+	userName := db.GetUserName(uint(userID))
 
-	c.JSON(200, mypageArticle)
+	c.JSON(200, gin.H{"mypageArticle": mypageArticle, "userName": userName})
 }
 
 // いいねしているか判定(マイページ)

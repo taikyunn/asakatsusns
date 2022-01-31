@@ -101,7 +101,7 @@
               <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
                 <div class="card" v-for="article in mypageArticle" :key="article">
                   <div class="card-header">
-                    ユーザー名
+                    {{userName.name}}
                   </div>
                     <div class="card-body">
                       <p class="card-text">
@@ -180,6 +180,7 @@ export default {
       countData: '',
       results: [],
       likedPosts:[],
+      userName: '',
     }
   },
   components: { Header },
@@ -406,8 +407,10 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          var resultMypageArticle = response.data
+          var resultMypageArticle = response.data.mypageArticle
           this.mypageArticle = resultMypageArticle
+          var resultUserName = response.data.userName
+          this.userName = resultUserName[0]
         }
       })
     },
