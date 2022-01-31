@@ -40,6 +40,7 @@
             </div>
             <div class="card-body">
               <p class="card-text">
+                {{article.CreatedAt}}
                 <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
                   {{article.Body}}
                 </router-link>
@@ -114,6 +115,7 @@ export default {
       } else {
         var resultArticles = response.data.article
         this.articles = resultArticles
+        console.log(this.articles)
         var resultTags = response.data.tag
         this.tags = resultTags
       }

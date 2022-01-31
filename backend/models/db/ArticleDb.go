@@ -87,7 +87,7 @@ func GetALLArticle() []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
 
-	if err := db.Limit(10).Order("id DESC").Find(&articles).Error; err != nil {
+	if err := db.Select("id, user_id, body, created_at").Limit(10).Order("id DESC").Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()

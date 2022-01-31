@@ -7,15 +7,17 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Result struct {
-	Id     int
-	Name   string
-	Body   string
-	UserId int
+	Id        int
+	Name      string
+	Body      string
+	UserId    int
+	CreatedAt time.Time
 }
 
 type DbTagResult struct {
@@ -88,7 +90,7 @@ func CreateArticle(c *gin.Context) {
 
 // 投稿全件取得
 func GetAllArticles(c *gin.Context) {
-	// 投稿を10件取得
+	// 投稿IDを10件取得
 	articles := db.GetALLArticle()
 
 	userID := make([]uint, len(articles))
@@ -96,6 +98,19 @@ func GetAllArticles(c *gin.Context) {
 	for i, v := range articles {
 		userID[i] = v.UserId
 		articleID[i] = v.ID
+	}
+	// idより投稿者を取得
+	user := db.GetNameById(userID)
+
+	result := []*Result{}
+
+	// 返すデータの作成
+	for _, av := range articles {
+		for _, uv := range user {
+			if av.UserId == uv.ID {
+				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), av.CreatedAt})
+			}
+		}
 	}
 
 	// タグ情報の取得
@@ -107,24 +122,7 @@ func GetAllArticles(c *gin.Context) {
 		dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, v.Name})
 	}
 
-	// idより投稿者を取得
-	user := db.GetNameById(userID)
-
-	result := []*Result{}
-
-	// 返すデータの作成
-	for _, av := range articles {
-		for _, uv := range user {
-			if av.UserId == uv.ID {
-				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId)})
-			}
-		}
-	}
-
-	c.JSON(200, gin.H{
-		"article": result,
-		"tag":     dbTagResult,
-	})
+	c.JSON(200, gin.H{"article": result, "tag": dbTagResult})
 }
 
 // 投稿削除
