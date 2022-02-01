@@ -3,7 +3,7 @@
     <Header />
     <div class="container">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 position-sticky">
           <MainTag />
           <div class="card w-75">
             <div class="card-header text-center">
@@ -291,4 +291,9 @@ export default {
 .crown {
   color: #DAAF08;
 }
+
+.container {
+  padding-top: 5rem;
+}
+
 </style>

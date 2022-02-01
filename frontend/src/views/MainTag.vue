@@ -1,5 +1,6 @@
 <template>
-  <div class="card w-75">
+<div class="sidebar_fixed">
+    <div class="card w-75">
     <div class="card-header text-center">
       <fa icon="tag" />
       メインタグ
@@ -8,6 +9,7 @@
       #{{mainTag.name}}
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -38,3 +40,9 @@ export default {
 }
 </script>
 
+<style scoped>
+.sidebar_fixed {
+  position: sticky;
+  top: 5rem;
+}
+</style>

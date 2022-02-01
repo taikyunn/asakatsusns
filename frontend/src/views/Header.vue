@@ -1,6 +1,6 @@
 <template>
   <div id="nav">
-    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <router-link class="title" to="/">
