@@ -258,20 +258,9 @@ export default {
 </script>
 
 <style scoped>
-img {
-  width: 180px;
-  height: 180px;
-  margin-bottom: 30px;
-}
 
 .row {
   margin-top: 50px;
-}
-
-.link {
-  text-decoration: none;
-  text-align: left;
-  color:black;
 }
 
 .like-btn {

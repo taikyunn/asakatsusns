@@ -5,7 +5,7 @@
       <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
       <img :src="url" width="100" />
     </p>
-    <p>
+    <p v-if="isMyOwnPage">
       <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
       <button v-on:click="fileUpload()">アップロード</button>
     </p>
@@ -13,7 +13,7 @@
       <router-link class="link" :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
         フォロー
       </router-link>
-      <router-link class="link" :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}} 
+      <router-link class="link" :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}}
         フォロワー
       </router-link>
       <span v-if="!isMyOwnPage">
@@ -320,5 +320,11 @@ export default {
 .sidebar_fixed {
   position: sticky;
   top: 5rem;
+}
+
+.link {
+  text-decoration: none;
+  text-align: left;
+  color:black;
 }
 </style>
