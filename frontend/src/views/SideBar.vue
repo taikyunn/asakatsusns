@@ -1,15 +1,23 @@
 <template>
-<div class="sidebar_fixed">
+  <div class="sidebar_fixed">
     <div class="card w-75">
-    <div class="card-header text-center">
-      <fa icon="tag" />
-      メインタグ
+      <div class="card-header text-center">
+        <fa icon="tag" />
+        メインタグ
+      </div>
+      <div class="card-body text-center" v-for="mainTag in mainTags" :key="mainTag">
+        #{{mainTag.name}}
+      </div>
     </div>
-    <div class="card-body text-center" v-for="mainTag in mainTags" :key="mainTag">
-      #{{mainTag.name}}
+    <div class="card w-75 ranking">
+      <div class="card-header text-center">
+        早起き達成ランキンング
+        <fa icon="crown" class="crown"/>
+      </div>
+      <div class="card-body">
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -35,7 +43,7 @@ export default {
           this.mainTags = resultMainTag
         }
       })
-    }
+    },
   }
 }
 </script>
@@ -45,4 +53,14 @@ export default {
   position: sticky;
   top: 5rem;
 }
+
+.crown {
+  color: #DAAF08;
+}
+
+.ranking {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 </style>

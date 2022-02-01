@@ -3,16 +3,8 @@
     <Header />
     <div class="container">
       <div class="row">
-        <div class="col-md-5 position-sticky">
-          <MainTag />
-          <div class="card w-75">
-            <div class="card-header text-center">
-              早起き達成ランキンング
-              <fa icon="crown" class="crown"/>
-            </div>
-            <div class="card-body">
-            </div>
-          </div>
+        <div class="col-md-5">
+          <SideBar />
         </div>
         <div class="col-md-6">
           <div class="card w-75" v-for="article in articles" :key="article">
@@ -99,7 +91,7 @@
 <script>
 import axios from 'axios'
 import Header from './Header.vue'
-import MainTag from './MainTag.vue'
+import SideBar from './SideBar.vue'
 
 export default {
   data() {
@@ -113,7 +105,7 @@ export default {
       commentCounts:[],
     }
   },
-  components: { Header, MainTag },
+  components: { Header, SideBar},
   created() {
     axios.get('getAllArticles')
     .then(response => {
@@ -260,13 +252,13 @@ export default {
  .heart {
    margin-right: 20px;
  }
+
 .comment-icon {
   margin-right: 5px;
 }
 
 .card {
-  margin-top: 50px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .link {
@@ -286,10 +278,6 @@ export default {
 .tag {
   color: green;
   white-space: nowrap;
-}
-
-.crown {
-  color: #DAAF08;
 }
 
 .container {
