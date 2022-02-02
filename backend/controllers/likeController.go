@@ -95,7 +95,7 @@ func GetLikedPost(c *gin.Context) {
 	// いいね記事の中身を取得
 	favoritePostData := db.GetLikedPost(articleIDs)
 
-	// コメント数の取得
+	// コメント件数取得
 	commentCount := db.GetCommentCount(articleIDs)
 
 	c.JSON(200, gin.H{"favoritePostData": favoritePostData, "commentCount": commentCount})

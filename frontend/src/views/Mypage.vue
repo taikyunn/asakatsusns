@@ -55,11 +55,8 @@
                     </div>
                 </div>
               </div>
-              <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab">
-                <div v-if="likedPosts == 0">
-                  まだいいねしていません。
-                </div>
-                <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
+              <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab" v-for="article in mypageArticle" :key="article">
+                <div class="card" v-for="likedPost in likedPosts" :key="likedPost">
                   <div class="card-header">
                     {{likedPost.Name}}
                   </div>
@@ -69,17 +66,15 @@
                     </p>
                   </div>
                   <div class="card-footer text-end">
-                    <span v-for="likedCommentCount in likedCommentCounts" :key="likedCommentCount">
-                      <span v-if="likedCommentCount.ArticleId == likedPost.ArticleId">
-                        <fa icon="comment-alt" class="comment-icon" />
-                        {{likedCommentCount.Count}}
+                    <span v-for="commentCount in commentCounts" :key="commentCount">
+                      <span v-if="likedPost.ArticleId == commentCount.ArticleId">
+                        <fa icon="comment-alt" />
+                        {{commentCount.Count}}
                       </span>
                     </span>
-                    <fa icon="heart" class="like-btn"/>{{likedPost.Count}}
+                    いいね数{{likedPost.Count}}
                   </div>
                 </div>
-                <p >
-                </p>
               </div>
             </div>
           </div>
@@ -108,9 +103,9 @@ export default {
       results: [],
       likedPosts:[],
       userName: '',
-      commentCounts: '',
       likedCommentCounts: '',
-      propData: this.id
+      propData: this.id,
+      commentCounts: '',
     }
   },
   components: { Header , Profile},
@@ -246,10 +241,10 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          var likedPostResult = response.data.favoritePostData
-          this.likedPosts = likedPostResult
-          var resultLikedCommentCounts = response.data.commentCount
-          this.likedCommentCounts = resultLikedCommentCounts
+          this.likedPosts = response.data.favoritePostData
+          console.log(response.data.favoritePostData)
+          console.log(this.likedPosts)
+          this.commentCounts = response.data.commentCount
         }
       })
     },
