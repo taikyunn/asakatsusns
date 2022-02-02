@@ -24,7 +24,6 @@ type FavoritePostData struct {
 	ArticleId int
 	Name      string
 	Body      string
-	Count     int
 }
 
 // いいね登録
@@ -140,8 +139,6 @@ func GetLikedPost(articleIds []int) []*FavoritePostData {
 	db := gormConnect()
 	var article []entity.Article
 	var user []entity.User
-	var likes []entity.Likes
-	var count int
 	favoritePostData := []*FavoritePostData{}
 
 	for _, v := range articleIds {
@@ -151,10 +148,7 @@ func GetLikedPost(articleIds []int) []*FavoritePostData {
 		if err := db.Select("name").Where("id = ?", article[0].UserId).Find(&user).Error; err != nil {
 			panic(err.Error())
 		}
-		if err := db.Where("article_id = ?", v).Find(&likes).Count(&count).Error; err != nil {
-			panic(err.Error())
-		}
-		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), v, user[0].Name, article[0].Body, count})
+		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), v, user[0].Name, article[0].Body})
 	}
 
 	return favoritePostData
