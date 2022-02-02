@@ -208,3 +208,42 @@ func GetMainTag() []entity.Tag {
 	}
 	return tag
 }
+
+// tagIdをもとにarticleIdを取得
+func GetArticleIdByTagId(tagId int) []uint {
+	db := gormConnect()
+	var atricleTag []entity.ArticleTag
+
+	if err := db.Select("article_id").Where("tag_id = ?", tagId).Limit(10).Order("id DESC").Find(&atricleTag).Error; err != nil {
+		panic(err.Error())
+	}
+	articleIds := make([]uint, len(atricleTag))
+	for i, v := range atricleTag {
+		articleIds[i] = uint(v.ArticleId)
+	}
+
+	return articleIds
+}
+
+// Idに紐づいた中身を取得
+func GetTagNameById(tagId int) []entity.Tag {
+	db := gormConnect()
+	var tag []entity.Tag
+
+	if err := db.Select("name").Where("id = ?", tagId).Limit(10).Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	return tag
+}
+
+// Idに紐づいたタグの件数を取得
+func GetTagCount(tagId int) int {
+	db := gormConnect()
+	var articleTag []entity.ArticleTag
+	var count int
+
+	if err := db.Model(&articleTag).Where("tag_id = ?", tagId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	return count
+}

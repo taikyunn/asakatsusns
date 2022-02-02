@@ -135,7 +135,6 @@ func GetAllArticles(c *gin.Context) {
 			}
 		}
 	}
-
 	c.JSON(200, gin.H{"article": result, "tag": dbTagResult})
 }
 

@@ -13,7 +13,7 @@
                 {{article.Name}}
               </router-link>
               {{article.CreatedAt}}
-              <span  v-if="article.UserId == currentUserId">
+              <span v-if="article.UserId == currentUserId">
                 <span class="dropdown">
                   <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <fa icon="ellipsis-v" class="ellipsis" />
@@ -58,7 +58,7 @@
                 <div v-if="likesCount.ArticleId == article.Id">
                   <span v-for="commentCount in commentCounts" :key="commentCount">
                     <span v-if="commentCount.ArticleId == article.Id">
-                      <fa icon="comment-alt" class="comment-icon" />
+                      <fa icon="comment-alt" />
                       {{commentCount.Count}}
                     </span>
                   </span>
@@ -96,7 +96,6 @@ import SideBar from './SideBar.vue'
 export default {
   data() {
     return {
-      msg: '朝活SNS',
       currentUserId: localStorage.getItem('userId'),
       articles:[],
       tags:[],
@@ -225,7 +224,7 @@ export default {
         var resultCommentCount = response.data
         this.commentCounts = resultCommentCount
       })
-    }
+    },
   }
 }
 </script>

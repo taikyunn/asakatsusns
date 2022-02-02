@@ -160,5 +160,8 @@ func serve() {
 	// フォロワー一覧取得
 	r.POST("/getFollower", controller.GetFollower)
 
+	// タグごとの投稿一覧取得
+	r.POST("/getTagArticles", controller.GetTagArticles)
+
 	r.Run(":3000")
 }
