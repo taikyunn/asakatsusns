@@ -163,5 +163,8 @@ func serve() {
 	// タグごとの投稿一覧取得
 	r.POST("/getTagArticles", controller.GetTagArticles)
 
+	// いいねしているか判定(いいねした投稿
+	r.POST("/checkFavoriteLikedPost", controller.CheckFavoriteLikedPost)
+
 	r.Run(":3000")
 }

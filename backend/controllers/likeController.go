@@ -100,3 +100,18 @@ func GetLikedPost(c *gin.Context) {
 
 	c.JSON(200, gin.H{"favoritePostData": favoritePostData, "commentCount": commentCount})
 }
+
+func CheckFavoriteLikedPost(c *gin.Context) {
+	mypageUserIdStr := c.PostForm("mypageUserId")
+	mypageUserId, _ := strconv.Atoi(mypageUserIdStr)
+	visiterUserIdStr := c.PostForm("visiterUserId")
+	visiterUserID, _ := strconv.Atoi(visiterUserIdStr)
+
+	// いいねした記事のidを取得
+	articleIDs := db.GetLikedPostId(mypageUserId)
+
+	// いいね済みか判別
+	favoriteData := db.CheckFavorite(articleIDs, visiterUserID)
+
+	c.JSON(200, favoriteData)
+}

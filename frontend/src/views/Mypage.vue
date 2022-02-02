@@ -72,13 +72,17 @@
                         {{commentCount.Count}}
                       </span>
                     </span>
-                    <span @click="registerLikes(article.ID)" v-if="likedPostCount">
-                      <fa icon="heart" class="like-btn"/>
+                    <span v-for="favoriteLikedPostCount in favoriteLikedPostCounts" :key="favoriteLikedPostCount">
+                      <span v-if="favoriteLikedPostCount.ArticleId == likedPost.ArticleId">
+                        <span @click="registerLikes(likedPost.ArticleId)" v-if="favoriteLikedPostCount.Count">
+                          <fa icon="heart" class="like-btn"/>
+                        </span>
+                        <span @click="deleteLikes(likedPost.ArticleId)" v-else>
+                          <fa icon="heart" class="unlike-btn"/>
+                        </span>
+                        {{likedPost.Count}}
+                      </span>
                     </span>
-                    <span @click="deleteLikes(article.ID)" v-else>
-                      <fa icon="heart" class="unlike-btn"/>
-                    </span>
-                    {{likedPost.Count}}
                   </div>
                 </div>
               </div>
@@ -113,7 +117,7 @@ export default {
       propData: this.id,
       commentCounts: '',
       mypageCommentCounts: '',
-      likedPostCount: false,
+      favoriteLikedPostCounts: '',
     }
   },
   components: { Header , Profile},
@@ -122,6 +126,7 @@ export default {
     this.checkFavoriteMypage()
     this.getCountFavoriteMypage()
     this.getLikedPost()
+    this.checkFavoriteLikedPost()
   },
   created() {
     const params = new URLSearchParams()
@@ -174,7 +179,6 @@ export default {
         } else {
           var resultCheckFavorite = response.data
           this.results = resultCheckFavorite
-          console.log(this.results)
         }
       })
     },
@@ -252,6 +256,21 @@ export default {
         } else {
           this.likedPosts = response.data.favoritePostData
           this.commentCounts = response.data.commentCount
+        }
+      })
+    },
+    checkFavoriteLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId',this.id)
+      params.append('visiterUserId', localStorage.getItem('userId'))
+      axios.post('checkFavoriteLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          console.log(response.data)
+          var resultCheckFavoriteLikedPost = response.data
+          this.favoriteLikedPostCounts = resultCheckFavoriteLikedPost
         }
       })
     },
