@@ -30,10 +30,10 @@
                         {{article.body}}
                       </p>
                       <div class="card-footer text-end">
-                        <span v-for="commentCount in commentCounts" :key="commentCount">
-                          <span v-if="commentCount.ArticleId == article.ID">
+                        <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
+                          <span v-if="mypageCommentCount.ArticleId == article.ID">
                             <fa icon="comment-alt" class="comment-icon" />
-                            {{commentCount.Count}}
+                            {{mypageCommentCount.Count}}
                           </span>
                         </span>
                         <span v-for="result in results" :key="result">
@@ -106,6 +106,7 @@ export default {
       likedCommentCounts: '',
       propData: this.id,
       commentCounts: '',
+      mypageCommentCounts: ''
     }
   },
   components: { Header , Profile},
@@ -138,7 +139,7 @@ export default {
           var resultUserName = response.data.userName
           this.userName = resultUserName[0]
           var resultCommentCounts = response.data.commentCount
-          this.commentCounts = resultCommentCounts
+          this.mypageCommentCounts = resultCommentCounts
         }
       })
     },
@@ -242,8 +243,6 @@ export default {
           throw new Error("レスポンスエラー")
         } else {
           this.likedPosts = response.data.favoritePostData
-          console.log(response.data.favoritePostData)
-          console.log(this.likedPosts)
           this.commentCounts = response.data.commentCount
         }
       })
