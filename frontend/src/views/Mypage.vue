@@ -56,7 +56,10 @@
                 </div>
               </div>
               <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab" v-for="article in mypageArticle" :key="article">
-                <div class="card" v-for="likedPost in likedPosts" :key="likedPost">
+                <p v-if="likedPosts.length == 0">
+                  いいねした投稿がありません。
+                </p>
+                <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
                   <div class="card-header">
                     {{likedPost.Name}}
                   </div>
@@ -74,10 +77,10 @@
                     </span>
                     <span v-for="favoriteLikedPostCount in favoriteLikedPostCounts" :key="favoriteLikedPostCount">
                       <span v-if="favoriteLikedPostCount.ArticleId == likedPost.ArticleId">
-                        <span @click="registerLikes(likedPost.ArticleId)" v-if="favoriteLikedPostCount.Count">
+                        <span v-if="favoriteLikedPostCount.Count">
                           <fa icon="heart" class="like-btn"/>
                         </span>
-                        <span @click="deleteLikes(likedPost.ArticleId)" v-else>
+                        <span v-else>
                           <fa icon="heart" class="unlike-btn"/>
                         </span>
                       </span>
