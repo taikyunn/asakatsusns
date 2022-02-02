@@ -101,6 +101,7 @@ func GetLikedPost(c *gin.Context) {
 	c.JSON(200, gin.H{"favoritePostData": favoritePostData, "commentCount": commentCount})
 }
 
+// いいねしているか判定(いいねした投稿)
 func CheckFavoriteLikedPost(c *gin.Context) {
 	mypageUserIdStr := c.PostForm("mypageUserId")
 	mypageUserId, _ := strconv.Atoi(mypageUserIdStr)
@@ -114,4 +115,17 @@ func CheckFavoriteLikedPost(c *gin.Context) {
 	favoriteData := db.CheckFavorite(articleIDs, visiterUserID)
 
 	c.JSON(200, favoriteData)
+}
+
+func GetCountFavoriteLikedPost(c *gin.Context) {
+	mypageUserIdStr := c.PostForm("mypageUserId")
+	mypageUserId, _ := strconv.Atoi(mypageUserIdStr)
+
+	// いいねした記事のidを取得
+	articleIDs := db.GetLikedPostId(mypageUserId)
+
+	// いいね記事の中身を取得
+	countData := db.GetLikedPostCount(articleIDs)
+
+	c.JSON(200, countData)
 }

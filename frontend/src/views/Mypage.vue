@@ -80,7 +80,11 @@
                         <span @click="deleteLikes(likedPost.ArticleId)" v-else>
                           <fa icon="heart" class="unlike-btn"/>
                         </span>
-                        {{likedPost.Count}}
+                      </span>
+                    </span>
+                    <span v-for="countData in likedPostCountData" :key="countData">
+                      <span v-if="countData.ArticleId == likedPost.ArticleId">
+                        {{countData.Count}}
                       </span>
                     </span>
                   </div>
@@ -118,6 +122,7 @@ export default {
       commentCounts: '',
       mypageCommentCounts: '',
       favoriteLikedPostCounts: '',
+      likedPostCountData: '',
     }
   },
   components: { Header , Profile},
@@ -127,6 +132,7 @@ export default {
     this.getCountFavoriteMypage()
     this.getLikedPost()
     this.checkFavoriteLikedPost()
+    this.getCountFavoriteLikedPost()
   },
   created() {
     const params = new URLSearchParams()
@@ -268,9 +274,21 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          console.log(response.data)
           var resultCheckFavoriteLikedPost = response.data
           this.favoriteLikedPostCounts = resultCheckFavoriteLikedPost
+        }
+      })
+    },
+    getCountFavoriteLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId', this.id)
+      axios.post('getCountFavoriteLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultLikedPostCountData = response.data
+          this.likedPostCountData = resultLikedPostCountData
         }
       })
     },
