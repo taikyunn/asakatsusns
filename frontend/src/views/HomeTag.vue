@@ -143,6 +143,84 @@ export default {
         }
       })
     },
+    deleteArticle(article) {
+      confirm('削除してもよろしいですか。')
+      const params = new URLSearchParams()
+      params.append('articleId', article.Id)
+      axios.post('deleteArticle', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          alert('削除しました。')
+        }
+      })
+    },
+    registerLikes(article) {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('articleId', article.Id)
+        params.append('userId', localStorage.getItem('userId'))
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          }
+        }
+        axios.post('/post/registerLikes', params, config)
+        .then(response => {
+          if (response.status == 201) {
+            if (response.data.Body != '') {
+              alert("ログインからやり直してください。")
+              this.$router.push('/login')
+            }
+          } else if (response.status != 200) {
+            throw new Error('レスポンスエラー')
+          } else {
+            this.countFavorites()
+            this.checkFavorite()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    },
+    deleteLikes(article) {
+      try {
+        if (localStorage.getItem('jwt') == '') {
+          throw new Error('終了します');
+        }
+        const params = new URLSearchParams()
+        params.append('articleId', article.Id)
+        params.append('userId', localStorage.getItem('userId'))
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+          }
+        }
+        axios.post('/post/deleteLikes', params, config)
+        .then(response => {
+          if (response.status == 201) {
+            if (response.data.Body != '') {
+              alert("ログインからやり直してください。")
+              this.$router.push('/login')
+            }
+          } else if (response.status != 200) {
+            throw new Error('レスポンスエラー')
+          } else {
+            this.countFavorites()
+            this.checkFavorite()
+          }
+        })
+      } catch {
+        alert("ログインからやり直してください。")
+        this.$router.push('/login')
+      }
+    },
     countFavorites() {
       axios.get('getCountFavorites')
       .then(response => {
