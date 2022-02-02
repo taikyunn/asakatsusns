@@ -203,7 +203,7 @@ func GetMainTag() []entity.Tag {
 	db := gormConnect()
 	var tag []entity.Tag
 
-	if err := db.Select("name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
+	if err := db.Select("id,name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
 	return tag

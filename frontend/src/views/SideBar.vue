@@ -5,8 +5,10 @@
         <fa icon="tag" />
         メインタグ
       </div>
-      <div class="card-body text-center" v-for="mainTag in mainTags" :key="mainTag">
-        #{{mainTag.name}}
+      <div class="card-body text-center" v-for="(mainTag, index) in mainTags" :key="mainTag">
+        <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(index))}}">
+          #{{mainTag}}
+        </router-link>
       </div>
     </div>
     <div class="card w-75 ranking">
@@ -62,5 +64,12 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+.tag {
+  color: green;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
 
 </style>
