@@ -61,6 +61,12 @@ const routes = [
     props: true,
     component: () => import('../views/Follower.vue')
   },
+  {
+    path: '/tags/:id',
+    name: 'HomeTag',
+    props: true,
+    component: () => import('../views/HomeTag.vue')
+},
 ]
 
 const router = createRouter({

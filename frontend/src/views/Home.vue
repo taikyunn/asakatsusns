@@ -45,9 +45,10 @@
               </p>
               <div v-for="tag in tags" :key="tag">
                 <div v-if="article.Id == tag.ArticleId">
-                  <span v-if="article.UserId == currentUserId" class="tag">
-                    #{{tag.Value}}
-                    {{tag.Key}}
+                  <span v-if="article.UserId == currentUserId" >
+                    <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                      #{{tag.Value}}
+                    </router-link>
                   </span>
                 </div>
               </div>
@@ -277,6 +278,7 @@ export default {
 .tag {
   color: green;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .container {
