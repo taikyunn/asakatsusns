@@ -72,7 +72,13 @@
                         {{commentCount.Count}}
                       </span>
                     </span>
-                    いいね数{{likedPost.Count}}
+                    <span @click="registerLikes(article.ID)" v-if="likedPostCount">
+                      <fa icon="heart" class="like-btn"/>
+                    </span>
+                    <span @click="deleteLikes(article.ID)" v-else>
+                      <fa icon="heart" class="unlike-btn"/>
+                    </span>
+                    {{likedPost.Count}}
                   </div>
                 </div>
               </div>
@@ -106,7 +112,8 @@ export default {
       likedCommentCounts: '',
       propData: this.id,
       commentCounts: '',
-      mypageCommentCounts: ''
+      mypageCommentCounts: '',
+      likedPostCount: false,
     }
   },
   components: { Header , Profile},
@@ -167,6 +174,7 @@ export default {
         } else {
           var resultCheckFavorite = response.data
           this.results = resultCheckFavorite
+          console.log(this.results)
         }
       })
     },
