@@ -44,12 +44,11 @@
                 </router-link>
               </p>
               <div v-for="tag in tags" :key="tag">
-                <div v-if="article.Id == tag.Id">
-                  <div v-for="t in tag.Tag" :key="t">
-                    <span v-if="article.UserId == currentUserId" class="tag">
-                      {{t}}
-                    </span>
-                  </div>
+                <div v-if="article.Id == tag.ArticleId">
+                  <span v-if="article.UserId == currentUserId" class="tag">
+                    #{{tag.Value}}
+                    {{tag.Key}}
+                  </span>
                 </div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import (
 
 type TagInfo struct {
 	ArticleId int
+	TagId     []uint
 	Name      []string
 }
 
@@ -37,14 +38,16 @@ func GetTagInfo(articleID []uint) []*TagInfo {
 		}
 
 		// タグの中身を取得
-		if err := db.Select("name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
+		if err := db.Select("id,name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
 			panic(err.Error())
 		}
 		tagNames := make([]string, len(tag))
+		tagIds := make([]uint, len(tag))
 		for i, v := range tag {
 			tagNames[i] = v.Name
+			tagIds[i] = v.ID
 		}
-		tagInfo = append(tagInfo, &TagInfo{int(value), tagNames})
+		tagInfo = append(tagInfo, &TagInfo{int(value), tagIds, tagNames})
 	}
 	return tagInfo
 }

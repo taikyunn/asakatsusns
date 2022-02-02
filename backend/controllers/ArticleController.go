@@ -20,8 +20,9 @@ type Result struct {
 }
 
 type DbTagResult struct {
-	Id  int
-	Tag []string
+	ArticleId int
+	Key       uint
+	Value     string
 }
 
 type EditData struct {
@@ -116,10 +117,23 @@ func GetAllArticles(c *gin.Context) {
 	// タグ情報の取得
 	tagInfo := db.GetTagInfo(articleID)
 
+	tagMap := make(map[uint]string, len(tagInfo))
+	for _, v := range tagInfo {
+		for i := 0; i < len(v.Name); i++ {
+			tagMap[v.TagId[i]] = v.Name[i]
+		}
+	}
+
 	dbTagResult := []*DbTagResult{}
 
 	for _, v := range tagInfo {
-		dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, v.Name})
+		for i := 0; i < len(v.TagId); i++ {
+			for key := range tagMap {
+				if (v.TagId[i]) == key {
+					dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, key, tagMap[key]})
+				}
+			}
+		}
 	}
 
 	c.JSON(200, gin.H{"article": result, "tag": dbTagResult})
