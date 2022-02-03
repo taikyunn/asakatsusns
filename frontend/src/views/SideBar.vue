@@ -16,7 +16,10 @@
         早起き達成ランキンング
         <fa icon="crown" class="crown"/>
       </div>
-      <div class="card-body">
+      <div class="card-body text-center" v-for="(ranking, index) in rankings" :key="ranking">
+        {{index + 1}}位:
+        {{ranking.Name}}さん
+        {{ranking.Count}}回
       </div>
     </div>
   </div>
@@ -29,10 +32,12 @@ export default {
   data() {
     return {
       mainTags: [],
+      rankings: [],
     }
   },
   created() {
     this.getMainTag()
+    this.getWakeUpRanking()
   },
   methods: {
     getMainTag() {
@@ -46,6 +51,17 @@ export default {
         }
       })
     },
+    getWakeUpRanking() {
+      axios.get('getWakeUpRanking')
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var rankingResult =response.data
+          this.rankings = rankingResult
+        }
+      })
+    }
   }
 }
 </script>

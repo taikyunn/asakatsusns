@@ -169,5 +169,8 @@ func serve() {
 	//いいね数の取得(いいねした投稿)
 	r.POST("/getCountFavoriteLikedPost", controller.GetCountFavoriteLikedPost)
 
+	// ランキング取得
+	r.GET("/getWakeUpRanking", controller.GetWakeUpRanking)
+
 	r.Run(":3000")
 }
