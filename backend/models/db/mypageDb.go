@@ -51,6 +51,17 @@ func GetWakeUpTimeById(userID int) []entity.User {
 	return user
 }
 
+// 起きる時間を取得
+func GetWakeUpData(userID int) []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	db.Select("wake_up_time, range_of_success").Where("id = ?", userID).Find(&user)
+
+	defer db.Close()
+	return user
+}
+
 // 画像ファイルのパスを保存
 func UpdateFilePath(id int, file_path string) {
 	db := gormConnect()

@@ -126,4 +126,8 @@ export default {
   font-size: 13px;
 }
 
+.text-center {
+  padding-top: 5rem;
+}
+
 </style>
