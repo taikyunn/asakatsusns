@@ -100,8 +100,13 @@ export default {
           } else if (response.status != 200) {
             throw new Error('レスポンスエラー')
           } else {
-            alert("投稿しました。")
-            this.$router.push('/')
+            if (response.data != '') {
+              alert("早起き達成" + response.data + "日目!!")
+              this.$router.push('/')
+            } else {
+              alert("投稿しました。")
+              this.$router.push('/')
+            }
           }
         })
       } catch(error) {

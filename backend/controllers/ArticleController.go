@@ -88,9 +88,11 @@ func CreateArticle(c *gin.Context) {
 	db.InsertTags(ArticleID, tagData)
 
 	// 早起きチェック
-	checkWakeUptime(UserId)
+	count := checkWakeUptime(UserId)
 
-	c.JSON(200, gin.H{"mesage": "clear"})
+	if count != 0 {
+		c.JSON(200, count)
+	}
 }
 
 // 投稿全件取得
@@ -224,7 +226,7 @@ func GetMainTag(c *gin.Context) {
 }
 
 // 早起きチェック
-func checkWakeUptime(userId uint) {
+func checkWakeUptime(userId uint) int {
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		panic(err)
@@ -273,6 +275,11 @@ func checkWakeUptime(userId uint) {
 	targetTime := time.Date(year, time.Month(month), day, hour, minute, 00, 0, time.Local)
 
 	if startTime.Before(targetTime) && targetTime.Before(endTime) {
-		db.RegisterAchievementDay(targetTime, userId)
+		count := db.RegisterAchievementDay(targetTime, userId)
+
+		if count != 0 {
+			return count
+		}
 	}
+	return 0
 }
