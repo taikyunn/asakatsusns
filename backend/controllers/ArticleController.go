@@ -270,9 +270,9 @@ func checkWakeUptime(userId uint) {
 
 	startTime := time.Date(year, time.Month(month), day, startHour, wakeUpMinute, 00, 0, time.Local)
 	endTime := time.Date(year, time.Month(month), day, wakeUpHour, wakeUpMinute, 00, 0, time.Local)
-	testTime := time.Date(year, time.Month(month), day, hour, minute, 00, 0, time.Local)
+	targetTime := time.Date(year, time.Month(month), day, hour, minute, 00, 0, time.Local)
 
-	if startTime.Before(testTime) && testTime.Before(endTime) {
-		db.RegisterAchievementDay(testTime, userId)
+	if startTime.Before(targetTime) && targetTime.Before(endTime) {
+		db.RegisterAchievementDay(targetTime, userId)
 	}
 }
