@@ -2,6 +2,7 @@ package db
 
 import (
 	entity "app/models/entity"
+	"log"
 )
 
 type TagInfo struct {
@@ -55,9 +56,28 @@ func GetTagInfo(articleID []uint) []*TagInfo {
 // タグ削除
 func DeleteTags(articleId int) {
 	db := gormConnect()
+	var count int
 	var articleTag []entity.ArticleTag
+	var tag []entity.Tag
 
-	db.Where("article_id = ?", articleId).Delete(&articleTag)
+	if err := db.Where("article_id = ?", articleId).Delete(&articleTag).Error; err != nil {
+		panic(err.Error())
+	}
+
+	if err := db.Table("article_tag").Select("count(article_tag.id)").Where("article_id = ? AND article_tag.deleted_at IS NULL", articleId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+
+	if count == 0 {
+		if err := db.Select("tag_id").Where("id = ?", articleId).Delete(&articleTag).Error; err != nil {
+			panic(err.Error())
+		}
+		if err := db.Where("id = ?", articleTag[0].TagId).Delete(&tag).Error; err != nil {
+			panic(err.Error())
+		}
+	}
+	log.Println("count:", count)
+
 	defer db.Close()
 }
 
