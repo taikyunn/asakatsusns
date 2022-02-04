@@ -4,6 +4,18 @@
   </div>
 </template>
 
-<style>
-
-</style>
+<script>
+export default {
+  mounted() {
+    var routeInstance = this.$route;
+    this.createTitleDesc(routeInstance);
+  },
+  methods : {
+    createTitleDesc(routeInstance){
+      if (!routeInstance.meta.title) {
+        document.title = 'ASAKATSUSNS'
+      }
+    }
+  }
+}
+</script>
