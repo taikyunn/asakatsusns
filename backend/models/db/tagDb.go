@@ -144,7 +144,7 @@ func UpdateTagData(articleId int, tags []entity.TagData) {
 
 		// article_tagテーブルに登録
 		var articleTag = entity.ArticleTag{
-			ArticleID: int(articleId),
+			ArticleId: int(articleId),
 			TagId:     int(tagId),
 		}
 		db.Create(&articleTag)
@@ -219,7 +219,7 @@ func GetArticleIdByTagId(tagId int) []uint {
 	}
 	articleIds := make([]uint, len(atricleTag))
 	for i, v := range atricleTag {
-		articleIds[i] = uint(v.ArticleID)
+		articleIds[i] = uint(v.ArticleId)
 	}
 
 	return articleIds
