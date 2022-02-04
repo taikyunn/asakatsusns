@@ -12,9 +12,9 @@
       </div>
     </div>
     <div class="card w-75 ranking">
-      <div class="card-header text-center ">
-        早起き達成ランキンング
+      <div class="card-header text-center">
         <fa icon="crown" class="crown"/>
+        早起き達成ランキンング
       </div>
       <div class="card-body" v-for="(ranking, index) in rankings" :key="ranking">
         <span class="card-body text-start">{{index + 1}}位:</span>
