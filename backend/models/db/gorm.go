@@ -51,7 +51,5 @@ func gormConnect() *gorm.DB {
 	db.AutoMigrate(&entity.Likes{})
 	db.AutoMigrate(&entity.Tag{})
 
-	fmt.Println("db connected ", &db)
-
 	return db
 }

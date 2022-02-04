@@ -139,7 +139,6 @@ export default {
           this.tag = resultTag[0]
           var resultCount = response.data.count
           this.count = resultCount
-          console.log(this.count)
         }
       })
     },

@@ -57,7 +57,7 @@ func DeleteTags(articleId int) {
 	db := gormConnect()
 	var articleTag []entity.ArticleTag
 
-	db.Delete(&articleTag, articleId)
+	db.Where("article_id = ?", articleId).Delete(&articleTag)
 	defer db.Close()
 }
 
@@ -144,7 +144,7 @@ func UpdateTagData(articleId int, tags []entity.TagData) {
 
 		// article_tagテーブルに登録
 		var articleTag = entity.ArticleTag{
-			ArticleId: int(articleId),
+			ArticleID: int(articleId),
 			TagId:     int(tagId),
 		}
 		db.Create(&articleTag)
@@ -219,7 +219,7 @@ func GetArticleIdByTagId(tagId int) []uint {
 	}
 	articleIds := make([]uint, len(atricleTag))
 	for i, v := range atricleTag {
-		articleIds[i] = uint(v.ArticleId)
+		articleIds[i] = uint(v.ArticleID)
 	}
 
 	return articleIds
