@@ -7,20 +7,24 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Result struct {
-	Id     int
-	Name   string
-	Body   string
-	UserId int
+	Id        int
+	Name      string
+	Body      string
+	UserId    int
+	CreatedAt string
 }
 
 type DbTagResult struct {
-	Id  int
-	Tag []string
+	ArticleId int
+	Key       uint
+	Value     string
 }
 
 type EditData struct {
@@ -83,12 +87,17 @@ func CreateArticle(c *gin.Context) {
 	// tag,article_tagテーブルにデータを登録
 	db.InsertTags(ArticleID, tagData)
 
-	c.JSON(200, gin.H{"mesage": "clear"})
+	// 早起きチェック
+	count := checkWakeUptime(UserId)
+
+	if count != 0 {
+		c.JSON(200, count)
+	}
 }
 
 // 投稿全件取得
 func GetAllArticles(c *gin.Context) {
-	// 投稿を10件取得
+	// 投稿IDを10件取得
 	articles := db.GetALLArticle()
 
 	userID := make([]uint, len(articles))
@@ -97,16 +106,6 @@ func GetAllArticles(c *gin.Context) {
 		userID[i] = v.UserId
 		articleID[i] = v.ID
 	}
-
-	// タグ情報の取得
-	tagInfo := db.GetTagInfo(articleID)
-
-	dbTagResult := []*DbTagResult{}
-
-	for _, v := range tagInfo {
-		dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, v.Name})
-	}
-
 	// idより投稿者を取得
 	user := db.GetNameById(userID)
 
@@ -116,15 +115,34 @@ func GetAllArticles(c *gin.Context) {
 	for _, av := range articles {
 		for _, uv := range user {
 			if av.UserId == uv.ID {
-				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId)})
+				t := av.CreatedAt.Format("2006/01/02 15:04:05")
+				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), t})
 			}
 		}
 	}
 
-	c.JSON(200, gin.H{
-		"article": result,
-		"tag":     dbTagResult,
-	})
+	// タグ情報の取得
+	tagInfo := db.GetTagInfo(articleID)
+
+	tagMap := make(map[uint]string, len(tagInfo))
+	for _, v := range tagInfo {
+		for i := 0; i < len(v.Name); i++ {
+			tagMap[v.TagId[i]] = v.Name[i]
+		}
+	}
+
+	dbTagResult := []*DbTagResult{}
+
+	for _, v := range tagInfo {
+		for i := 0; i < len(v.TagId); i++ {
+			for key := range tagMap {
+				if (v.TagId[i]) == key {
+					dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, key, tagMap[key]})
+				}
+			}
+		}
+	}
+	c.JSON(200, gin.H{"article": result, "tag": dbTagResult})
 }
 
 // 投稿削除
@@ -194,4 +212,74 @@ func GetArticleDetail(c *gin.Context) {
 	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagData, commentData})
 
 	c.JSON(200, detailData)
+}
+
+// メインタグ情報の取得
+func GetMainTag(c *gin.Context) {
+	mainTag := db.GetMainTag()
+	mainTagMap := make(map[uint]string, len(mainTag))
+	for _, v := range mainTag {
+		mainTagMap[v.ID] = v.Name
+	}
+
+	c.JSON(200, mainTagMap)
+}
+
+// 早起きチェック
+func checkWakeUptime(userId uint) int {
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		panic(err)
+	}
+	nowJST := time.Now().In(jst)
+
+	const layout = "2006-01-02 15:04"
+	yymmddmmssStr := nowJST.Format(layout)
+	yymmddmmss := strings.Split(yymmddmmssStr, " ")
+
+	yymmddData := yymmddmmss[0]
+	mmssData := yymmddmmss[1]
+
+	yymmddStr := strings.Split(yymmddData, "-")
+	mmssStr := strings.Split(mmssData, ":")
+
+	yearStr := yymmddStr[0]
+	monthStr := yymmddStr[1]
+	dayStr := yymmddStr[2]
+
+	year, _ := strconv.Atoi(yearStr)
+	month, _ := strconv.Atoi(monthStr)
+	day, _ := strconv.Atoi(dayStr)
+
+	hourStr := mmssStr[0]
+	minuteStr := mmssStr[1]
+
+	hour, _ := strconv.Atoi(hourStr)
+	minute, _ := strconv.Atoi(minuteStr)
+
+	wakeUpData := db.GetWakeUpData(int(userId))
+	wakeUpTime := *wakeUpData[0].WakeUpTime
+	wakeUphhmm := strings.Split(wakeUpTime, ":")
+	rangeOfSuccess := wakeUpData[0].RangeOfSuccess
+
+	wakeUpHourStr := wakeUphhmm[0]
+	wakeUpMinuteStr := wakeUphhmm[1]
+
+	wakeUpHour, _ := strconv.Atoi(wakeUpHourStr)
+	wakeUpMinute, _ := strconv.Atoi(wakeUpMinuteStr)
+
+	startHour := wakeUpHour - rangeOfSuccess
+
+	startTime := time.Date(year, time.Month(month), day, startHour, wakeUpMinute, 00, 0, time.Local)
+	endTime := time.Date(year, time.Month(month), day, wakeUpHour, wakeUpMinute, 00, 0, time.Local)
+	targetTime := time.Date(year, time.Month(month), day, hour, minute, 00, 0, time.Local)
+
+	if startTime.Before(targetTime) && targetTime.Before(endTime) {
+		count := db.RegisterAchievementDay(targetTime, userId)
+
+		if count != 0 {
+			return count
+		}
+	}
+	return 0
 }

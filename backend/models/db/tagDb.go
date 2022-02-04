@@ -6,6 +6,7 @@ import (
 
 type TagInfo struct {
 	ArticleId int
+	TagId     []uint
 	Name      []string
 }
 
@@ -37,14 +38,16 @@ func GetTagInfo(articleID []uint) []*TagInfo {
 		}
 
 		// タグの中身を取得
-		if err := db.Select("name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
+		if err := db.Select("id,name").Where("id IN (?)", tagIDs).Find(&tag).Error; err != nil {
 			panic(err.Error())
 		}
 		tagNames := make([]string, len(tag))
+		tagIds := make([]uint, len(tag))
 		for i, v := range tag {
 			tagNames[i] = v.Name
+			tagIds[i] = v.ID
 		}
-		tagInfo = append(tagInfo, &TagInfo{int(value), tagNames})
+		tagInfo = append(tagInfo, &TagInfo{int(value), tagIds, tagNames})
 	}
 	return tagInfo
 }
@@ -193,4 +196,54 @@ func GetOneTagData(ArticleId int) []string {
 		tagNames[i] = v.Name
 	}
 	return tagNames
+}
+
+// メインタグ情報の取得
+func GetMainTag() []entity.Tag {
+	db := gormConnect()
+	var tag []entity.Tag
+
+	if err := db.Select("id,name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	return tag
+}
+
+// tagIdをもとにarticleIdを取得
+func GetArticleIdByTagId(tagId int) []uint {
+	db := gormConnect()
+	var atricleTag []entity.ArticleTag
+
+	if err := db.Select("article_id").Where("tag_id = ?", tagId).Limit(10).Order("id DESC").Find(&atricleTag).Error; err != nil {
+		panic(err.Error())
+	}
+	articleIds := make([]uint, len(atricleTag))
+	for i, v := range atricleTag {
+		articleIds[i] = uint(v.ArticleId)
+	}
+
+	return articleIds
+}
+
+// Idに紐づいた中身を取得
+func GetTagNameById(tagId int) []entity.Tag {
+	db := gormConnect()
+	var tag []entity.Tag
+
+	if err := db.Select("name").Where("id = ?", tagId).Limit(10).Find(&tag).Error; err != nil {
+		panic(err.Error())
+	}
+	return tag
+}
+
+// Idに紐づいたタグの件数を取得
+func GetTagCount(tagId int) int {
+	db := gormConnect()
+	var articleTag []entity.ArticleTag
+	var count int
+
+	if err := db.Model(&articleTag).Where("tag_id = ?", tagId).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	return count
 }

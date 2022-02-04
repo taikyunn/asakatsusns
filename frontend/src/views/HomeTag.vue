@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
     <Header />
     <div class="container">
       <div class="row">
@@ -7,6 +7,16 @@
           <SideBar />
         </div>
         <div class="col-md-6">
+          <div class="card w-75">
+            <div class="card-body">
+              <p class="card-text tag">
+                #{{tag.name}}
+              </p>
+              <p class="card-text text-end">
+                {{count}}件
+              </p>
+            </div>
+          </div>
           <div class="card w-75" v-for="article in articles" :key="article">
             <div class="card-header">
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
@@ -27,11 +37,11 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
-                          <button class="btn btn-warning" @click="deleteArticle(article)">
-                            削除
-                          </button>
-                        </a>
+                      <a class="dropdown-item" href="#">
+                        <button class="btn btn-warning" @click="deleteArticle(article)">
+                          削除
+                        </button>
+                      </a>
                     </li>
                   </ul>
                 </span>
@@ -58,7 +68,7 @@
                 <div v-if="likesCount.ArticleId == article.Id">
                   <span v-for="commentCount in commentCounts" :key="commentCount">
                     <span v-if="commentCount.ArticleId == article.Id">
-                      <fa icon="comment-alt" />
+                      <fa icon="comment-alt" class="comment-icon" />
                       {{commentCount.Count}}
                     </span>
                   </span>
@@ -94,36 +104,45 @@ import Header from './Header.vue'
 import SideBar from './SideBar.vue'
 
 export default {
+  props:["id"],
+  components: { Header, SideBar},
   data() {
     return {
       currentUserId: localStorage.getItem('userId'),
-      articles:[],
-      tags:[],
+      articles: [],
+      tags: [],
       likesCounts: [],
-      results:[],
-      commentCounts:[],
+      tag: '',
+      count:'',
     }
   },
-  components: { Header, SideBar},
-  created() {
-    axios.get('getAllArticles')
-    .then(response => {
-      if (response.status != 200) {
-        throw new Error('レスポンスエラー')
-      } else {
-        var resultArticles = response.data.article
-        this.articles = resultArticles
-        var resultTags = response.data.tag
-        this.tags = resultTags
-      }
-    })
-  },
-  mounted () {
+  mounted() {
+    this.getTagArticles()
     this.countFavorites()
     this.checkFavorite()
     this.countComments()
   },
-  methods:{
+  methods: {
+    getTagArticles() {
+      const params = new URLSearchParams()
+      params.append('tagId', this.id)
+      axios.post('getTagArticles', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var resultArticles = response.data.article
+          this.articles = resultArticles
+          var resultTags = response.data.tag
+          this.tags = resultTags
+          var resultTag = response.data.topTag
+          this.tag = resultTag[0]
+          var resultCount = response.data.count
+          this.count = resultCount
+          console.log(this.count)
+        }
+      })
+    },
     deleteArticle(article) {
       confirm('削除してもよろしいですか。')
       const params = new URLSearchParams()
@@ -225,8 +244,9 @@ export default {
         this.commentCounts = resultCommentCount
       })
     },
-  }
+  },
 }
+
 </script>
 
 <style scoped>

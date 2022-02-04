@@ -82,12 +82,12 @@ func GetArticleID() []entity.Article {
 	return article
 }
 
-// 投稿全件取得
+// 直近10件の取得
 func GetALLArticle() []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
 
-	if err := db.Limit(10).Order("id DESC").Find(&articles).Error; err != nil {
+	if err := db.Select("id, user_id, body, created_at").Limit(10).Order("id DESC").Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
@@ -131,4 +131,16 @@ func GetArticleBody(articleID int) []entity.Article {
 		panic(err.Error())
 	}
 	return article
+}
+
+// 直近10件の取得
+func GetArticleByTag(articleID []uint) []entity.Article {
+	db := gormConnect()
+	var articles []entity.Article
+
+	if err := db.Select("id, user_id, body, created_at").Where("id IN (?)", articleID).Find(&articles).Error; err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	return articles
 }

@@ -1,15 +1,58 @@
 <template>
   <div>
-    <Header></Header>
-    <h1>フォロー一覧</h1>
-    <p v-if="followLists == 0">
-      フォロしているアカウントはありません。
-    </p>
-    <p v-for="followList in followLists" :key="followList" v-else>
-      <router-link :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">{{followList.Name}}</router-link>
-      <button v-if="isFollowedBy" @click="registerFollow(followList.UserId)">フォローする</button>
-      <button v-else @click="deleteFollow(followList.UserId)">フォロー中</button>
-    </p>
+    <Header />
+    <div class="text-center">
+      <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+            フォロー中
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+            フォロワー
+          </button>
+        </li>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+        <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
+          <p v-if="followLists == 0">
+            フォロしているアカウントはありません。
+          </p>
+          <div class="card" v-for="followList in followLists" :key="followList" v-else>
+            <div class="card-header">
+              <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">
+                {{followList.Name}}
+              </router-link>
+              <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
+                フォローする
+              </button>
+              <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
+                フォロー中
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab">
+          <p v-if="followerLists == 0">
+            フォロワーはいません。
+          </p>
+          <div class="card" v-for="followerList in followerLists" :key="followerList">
+            <div class="card-header">
+              <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followerList.UserId))}}">
+                {{followerList.Name}}
+              </router-link>
+              <button v-if="!isFollowedBy" @click="registerFollow">
+                フォローする
+              </button>
+              <button v-else @click="deleteFollow()">
+                フォロー中
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -22,12 +65,14 @@ export default {
   data() {
     return {
       followLists: [],
+      followerLists: [],
       isFollowedBy: false,
     }
   },
   components: { Header },
   created() {
     this.getFollow()
+    this.getFollower()
   },
   methods:{
     getFollow() {
@@ -51,6 +96,19 @@ export default {
       .then(response => {
         var followResult = response.data
         this.isFollowedBy = followResult
+      })
+    },
+    getFollower() {
+      const params = new URLSearchParams()
+      params.append('followed_id', this.id)
+      axios.post('getFollower', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var followerResult = response.data
+          this.followerLists = followerResult
+        }
       })
     },
     registerFollow(followedId) {
@@ -82,7 +140,6 @@ export default {
         const params = new URLSearchParams()
         params.append('follower_id', localStorage.getItem('userId'))
         params.append('followed_id', followedId)
-        console.log(params)
         axios.post('deleteFollow', params)
         .then(response => {
           if (response.status != 200) {
@@ -99,3 +156,14 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.text-center {
+  padding-top: 5rem;
+}
+.link {
+  text-decoration: none;
+  text-align: left;
+  color:black;
+}
+</style>

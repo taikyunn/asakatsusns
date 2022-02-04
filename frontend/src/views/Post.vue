@@ -1,22 +1,29 @@
 <template>
   <div>
     <Header></Header>
-    <h1>投稿内容</h1>
-    <div v-if="apiErrors.length">
-      <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+    <div class="text-center">
+      <h1>投稿内容</h1>
+      <div v-if="apiErrors.length">
+        <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+      </div>
+        <div class="mb-3">
+          <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
+        </div>
+        <div class="mb-3 mx-auto">
+          <input type="hidden" id="tags" :value="tagsJson">
+          <vue-tags-input
+          v-model="tag"
+          :tags="tags"
+          placeholder="タグを5個まで入力できます"
+          :autocomplete-items="filteredItems"
+          @tags-changed="newTags => tags = newTags"
+          class="mx-auto"
+          />
+        </div>
+        <div class="mb-3">
+          <button @click='createArticle'>投稿する</button>
+        </div>
     </div>
-    <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
-    <div>
-      <input type="hidden" id="tags" :value="tagsJson">
-      <vue-tags-input
-      v-model="tag"
-      :tags="tags"
-      placeholder="タグを5個まで入力できます"
-      :autocomplete-items="filteredItems"
-      @tags-changed="newTags => tags = newTags"
-      />
-    </div>
-    <button @click='createArticle'>投稿する</button>
   </div>
 </template>
 
@@ -93,8 +100,13 @@ export default {
           } else if (response.status != 200) {
             throw new Error('レスポンスエラー')
           } else {
-            alert("投稿しました。")
-            this.$router.push('/')
+            if (response.data != '') {
+              alert("早起き達成" + response.data + "日目!!")
+              this.$router.push('/')
+            } else {
+              alert("投稿しました。")
+              this.$router.push('/')
+            }
           }
         })
       } catch(error) {
@@ -107,7 +119,7 @@ export default {
 
 <style scoped>
 .vue-tags-input {
-  max-width: inherit;
+  max-width: 50%;
 }
 
 .vue-tags-input .ti-tag {
@@ -118,4 +130,9 @@ export default {
   border-radius: 0px;
   font-size: 13px;
 }
+
+.text-center {
+  padding-top: 5rem;
+}
+
 </style>

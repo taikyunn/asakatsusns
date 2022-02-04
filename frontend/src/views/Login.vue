@@ -1,23 +1,35 @@
 <template>
   <div>
     <Header></Header>
-    <h1>ログインフォーム</h1>
-    <div v-if="errors.length">
-      <p v-for="error in errors" :key="error">{{ error }}</p>
+    <div class="text-center">
+      <h1 class="title">ログインフォーム</h1>
+      <div v-if="errors.length">
+        <p v-for="error in errors" :key="error">{{ error }}</p>
+      </div>
+      <div v-if="apiErrors.length">
+        <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+      </div>
+        <div class="mb-3">
+          <label for="name">お名前:</label>
+          <input type="text" placeholder="name" name='name' v-model="name">
+        </div>
+        <div class="mb-3">
+          <label for="name">メールアドレス:</label>
+          <input type="email" placeholder="email" name='name' v-model="email">
+        </div>
+        <div class="mb-3">
+          <label for="password">パスワード:</label>
+          <input type="password" placeholder="password" name='password' v-model="password">
+        </div>
+        <div class="mb-3">
+          <button @click="loginFirebase">ログイン</button>
+      </div>
+      <div class="mb-3">
+          <p>You don't have an account?
+            <router-link to="/signup">create account now!!</router-link>
+          </p>
+      </div>
     </div>
-    <div v-if="apiErrors.length">
-      <p v-for="error in apiErrors" :key="error">{{ error }}</p>
-    </div>
-    <label for="name">お名前:</label>
-    <input type="text" placeholder="name" name='name' v-model="name"><br />
-    <label for="name">メールアドレス：:</label>
-    <input type="email" placeholder="email" name='name' v-model="email"><br />
-    <label for="password">パスワード:</label>
-    <input type="password" placeholder="password" name='password' v-model="password"><br />
-    <button @click="loginFirebase">ログイン</button>
-    <p>You don't have an account?
-        <router-link to="/signup">create account now!!</router-link>
-    </p>
   </div>
 </template>
 
@@ -61,7 +73,6 @@ export default {
       })
     },
     login() {
-      console.log('ここが動いています')
       const params = new URLSearchParams
       params.append('name', this.name)
       params.append('password', this.password)
@@ -86,33 +97,8 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.signin {
-  margin-top: 20px;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center
-}
-input {
-  margin: 10px 0;
-  padding: 10px;
-}
-button {
-  margin: 10px 0;
-  padding: 10px;
+.title {
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 </style>

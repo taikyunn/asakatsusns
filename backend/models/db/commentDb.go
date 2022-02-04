@@ -56,7 +56,7 @@ func GetCommentData(articleId int) []*CommentData {
 	return commentData
 }
 
-// コメント件巣を取得
+// コメント件数を取得
 func GetCommentCount(articleIds []int) []*CommentCount {
 	db := gormConnect()
 	var comment []entity.Comment

@@ -88,6 +88,9 @@ func serve() {
 		auth.POST("/insertComment", controller.InsertComment)
 	}
 
+	// メインタグ除法取得
+	r.GET("/getMainTag", controller.GetMainTag)
+
 	// 投稿全件取得
 	r.GET("/getAllArticles", controller.GetAllArticles)
 
@@ -156,6 +159,18 @@ func serve() {
 
 	// フォロワー一覧取得
 	r.POST("/getFollower", controller.GetFollower)
+
+	// タグごとの投稿一覧取得
+	r.POST("/getTagArticles", controller.GetTagArticles)
+
+	// いいねしているか判定(いいねした投稿)
+	r.POST("/checkFavoriteLikedPost", controller.CheckFavoriteLikedPost)
+
+	//いいね数の取得(いいねした投稿)
+	r.POST("/getCountFavoriteLikedPost", controller.GetCountFavoriteLikedPost)
+
+	// ランキング取得
+	r.GET("/getWakeUpRanking", controller.GetWakeUpRanking)
 
 	r.Run(":3000")
 }
