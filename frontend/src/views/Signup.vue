@@ -80,7 +80,6 @@ export default {
       axios.post('/signUp', params)
       .then(response => {
         if (response.status == 201) {
-          // エラーハンドリング
           this.apiErrors.push(response.data.Name)
           this.apiErrors.push(response.data.Email)
           this.apiErrors.push(response.data.Password)
