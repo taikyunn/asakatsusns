@@ -12,14 +12,14 @@
       </div>
     </div>
     <div class="card w-75 ranking">
-      <div class="card-header text-center">
+      <div class="card-header text-center ">
         早起き達成ランキンング
         <fa icon="crown" class="crown"/>
       </div>
-      <div class="card-body text-center" v-for="(ranking, index) in rankings" :key="ranking">
-        {{index + 1}}位:
-        {{ranking.Name}}さん
-        {{ranking.Count}}回
+      <div class="card-body" v-for="(ranking, index) in rankings" :key="ranking">
+        <span class="card-body text-start">{{index + 1}}位:</span>
+        <span class="card-body text-center">{{ranking.Name}}さん</span>
+        <span class="card-body text-end">{{ranking.Count}}回</span>
       </div>
     </div>
   </div>
@@ -86,6 +86,5 @@ export default {
   white-space: nowrap;
   text-decoration: none;
 }
-
 
 </style>
