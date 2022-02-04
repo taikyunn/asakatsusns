@@ -24,8 +24,6 @@ func serve() {
 		AllowMethods: []string{
 			"POST",
 			"GET",
-			"DELETE",
-			"PUT",
 		},
 		AllowHeaders:     []string{"Origin", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
