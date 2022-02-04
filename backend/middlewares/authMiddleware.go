@@ -36,7 +36,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(201, gin.H{"message": "Error"})
 			c.Abort()
-			return
 		} else {
 			log.Printf("Verified ID token: %v\n", token)
 			c.Next()
