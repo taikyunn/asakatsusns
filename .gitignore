@@ -1,4 +1,5 @@
 *.env
+/backend/firebase-adminsdk.json
 /backend/tmp/
 /backend/download1.jpeg
 /backend/download1.png
