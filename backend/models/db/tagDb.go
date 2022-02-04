@@ -202,8 +202,7 @@ func GetOneTagData(ArticleId int) []string {
 func GetMainTag() []entity.Tag {
 	db := gormConnect()
 	var tag []entity.Tag
-
-	if err := db.Select("id,name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
+	if err := db.Where("article_tag.deleted_at IS NULL").Select("tag.id,name").Joins("INNER JOIN article_tag ON tag.id = article_tag.tag_id").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
 	return tag
