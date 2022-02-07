@@ -85,7 +85,7 @@ func DownloadS3Bucket(filepath string) (*os.File, string) {
 
 // 認証情報の関数
 func Credentials() *session.Session {
-	err := godotenv.Load()
+	err := godotenv.Load("env/dev.env")
 	if err != nil {
 		log.Fatal("Error Loading .env file")
 	}

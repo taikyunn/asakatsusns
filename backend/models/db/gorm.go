@@ -11,7 +11,7 @@ import (
 )
 
 func gormConnect() *gorm.DB {
-	err := godotenv.Load()
+	err := godotenv.Load("env/dev.env")
 	if err != nil {
 		log.Fatal("Error Loading .env file")
 	}
