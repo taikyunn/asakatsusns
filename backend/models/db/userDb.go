@@ -35,33 +35,33 @@ func gormConnect() *gorm.DB {
 		db.AutoMigrate(&entity.User{})
 
 		log.Println("db connected ", &db)
+		return db
+	} else {
+		DBMS := "mysql"
+		DBNAME := os.Getenv("DB_NAME")
+		USER := os.Getenv("API_USER")
+		PASS := os.Getenv("API_PASS")
+		ADDRESS := os.Getenv("API_ADDRESS")
+
+		// コンテナ名:ポート番号を指定する
+		CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
+		log.Println(CONNECT)
+
+		db, err := gorm.Open(DBMS, CONNECT)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		db.LogMode(true)
+
+		db.SingularTable(true)
+
+		db.AutoMigrate(&entity.User{})
+
+		log.Println("db connected ", &db)
+		return db
 	}
-
-	DBMS := "mysql"
-	DBNAME := os.Getenv("DB_NAME")
-	USER := os.Getenv("API_USER")
-	PASS := os.Getenv("API_PASS")
-	ADDRESS := os.Getenv("API_ADDRESS")
-
-	// コンテナ名:ポート番号を指定する
-	CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
-	log.Println(CONNECT)
-
-	db, err := gorm.Open(DBMS, CONNECT)
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	db.LogMode(true)
-
-	db.SingularTable(true)
-
-	db.AutoMigrate(&entity.User{})
-
-	log.Println("db connected ", &db)
-
-	return db
 }
 
 // ユーザーデータ登録
