@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
+	"github.com/joho/godotenv"
 )
 
 // ユーザーデータ登録
@@ -18,7 +19,7 @@ func InsertUser(signUp *entity.User) {
 }
 
 func gormConnect() *gorm.DB {
-	// err := godotenv.Load()
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("ここでエラーです。")
 	}
