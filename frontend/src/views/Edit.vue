@@ -1,21 +1,27 @@
 <template>
   <div>
     <Header></Header>
-    <h1>編集ページ</h1>
-    <h2>投稿内容</h2>
-    <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
-    <div>
-      <input type="hidden" id="tags" :value="tagsJson">
-      <vue-tags-input
-      v-model="tag"
-      :tags="tags"
-      placeholder="タグを5個まで入力できます"
-      :autocomplete-items="filteredItems"
-      @tags-changed="newTags => tags = newTags"
-      />
-    </div>
-    <button @click="updateBody">編集する</button>
-    <button @click="back">戻る</button>
+     <div class="text-center">
+      <h1>編集ページ</h1>
+      <h2>投稿内容</h2>
+      <div class="mb-3">
+        <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
+      </div>
+        <div class="mb-3 mx-auto">
+        <input type="hidden" id="tags" :value="tagsJson">
+        <vue-tags-input
+        v-model="tag"
+        :tags="tags"
+        placeholder="タグを5個まで入力できます"
+        :autocomplete-items="filteredItems"
+        @tags-changed="newTags => tags = newTags"
+        />
+      </div>
+      <div class="mb-3">
+        <button @click="updateBody">編集する</button>
+        <button @click="back">戻る</button>
+      </div>
+     </div>
   </div>
 </template>
 
@@ -115,7 +121,7 @@ export default {
 
 <style scoped>
 .vue-tags-input {
-  max-width: inherit;
+  max-width: 50%;
 }
 
 .vue-tags-input .ti-tag {
