@@ -1,45 +1,66 @@
 package db
 
-// func gormConnect() *gorm.DB {
-// 	err := godotenv.Load("local.env")
-// 	if err != nil {
-// 		log.Fatal("ここでエラーが発生。")
-// 	}
+import (
+	entity "app/models/entity"
+	"log"
+	"os"
 
-// 	USER := os.Getenv("API_USER")
-// 	PASS := os.Getenv("API_PASS")
-// 	ADDRESS := os.Getenv("API_ADDRESS")
-// 	DBMS := "mysql"
-// 	DBNAME := os.Getenv("DB_NAME")
+	"github.com/jinzhu/gorm"
+	"github.com/joho/godotenv"
+)
 
-// 	if os.Getenv("DB_ENV") == "production" {
-// 		USER = os.Getenv("DB_USER")
-// 		PASS = os.Getenv("DB_PASS")
-// 		ADDRESS = os.Getenv("DB_ADDRESS")
-// 	}
+func gormConnect() *gorm.DB {
+	err := godotenv.Load()
+	// todo環境変数が本番環境だと読み込めていない。
+	if err != nil {
+		DBMS := "mysql"
+		DBNAME := "asakatsusns"
+		USER := "admin"
+		PASS := "password"
+		ADDRESS := "asakatsusns.cvfat2usql6c.ap-northeast-1.rds.amazonaws.com"
 
-// 	// コンテナ名:ポート番号を指定する
-// 	CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
-// 	fmt.Println(CONNECT)
+		// コンテナ名:ポート番号を指定する
+		CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
+		log.Println(CONNECT)
 
-// 	db, err := gorm.Open(DBMS, CONNECT)
+		db, err := gorm.Open(DBMS, CONNECT)
 
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
+		if err != nil {
+			panic(err.Error())
+		}
 
-// 	db.LogMode(true)
+		db.LogMode(true)
 
-// 	db.SingularTable(true)
+		db.SingularTable(true)
 
-// 	db.AutoMigrate(&entity.User{})
-// 	db.AutoMigrate(&entity.AchievementDay{})
-// 	db.AutoMigrate(&entity.Article{})
-// 	db.AutoMigrate(&entity.ArticleTag{})
-// 	db.AutoMigrate(&entity.Comment{})
-// 	db.AutoMigrate(&entity.Follow{})
-// 	db.AutoMigrate(&entity.Likes{})
-// 	db.AutoMigrate(&entity.Tag{})
+		db.AutoMigrate(&entity.User{})
 
-// 	return db
-// }
+		log.Println("db connected ", &db)
+	}
+
+	DBMS := "mysql"
+	DBNAME := os.Getenv("DB_NAME")
+	USER := os.Getenv("API_USER")
+	PASS := os.Getenv("API_PASS")
+	ADDRESS := os.Getenv("API_ADDRESS")
+
+	// コンテナ名:ポート番号を指定する
+	CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
+	log.Println(CONNECT)
+
+	db, err := gorm.Open(DBMS, CONNECT)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	db.LogMode(true)
+
+	db.SingularTable(true)
+
+	db.AutoMigrate(&entity.User{})
+
+	log.Println("db connected ", &db)
+
+	return db
+}

@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"github.com/joho/godotenv"
 )
 
 func UploadS3Bucket(file *multipart.FileHeader, filename string) {
@@ -85,12 +84,17 @@ func DownloadS3Bucket(filepath string) (*os.File, string) {
 
 // 認証情報の関数
 func Credentials() *session.Session {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error Loading .env file")
-	}
+	// todo環境変数が本番環境だと読み込めていない。
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error Loading .env file")
+	// }
 
-	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
+	AWS_ACCESS_KEY := "AKIA5PLM4KRIFRQ3FI7N"
+	AWS_SECRET_ACCESS_KEY := "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"
+
+	creds := credentials.NewStaticCredentials(AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, "")
+	// creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
 
 	sess, err := session.NewSession(&aws.Config{
 		Credentials: creds,
