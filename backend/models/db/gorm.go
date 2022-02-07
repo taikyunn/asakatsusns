@@ -11,7 +11,7 @@ import (
 )
 
 func gormConnect() *gorm.DB {
-	err := godotenv.Load()
+	err := godotenv.Load("local.env")
 	if err != nil {
 		log.Fatal("ここでエラーが発生。")
 	}
