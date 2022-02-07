@@ -13,7 +13,7 @@ import (
 func gormConnect() *gorm.DB {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error Loading .env file")
+		log.Fatal("ここでエラーが発生。")
 	}
 
 	USER := os.Getenv("API_USER")
