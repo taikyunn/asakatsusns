@@ -1,55 +1,45 @@
 package db
 
-import (
-	entity "app/models/entity"
-	"fmt"
-	"log"
-	"os"
+// func gormConnect() *gorm.DB {
+// 	err := godotenv.Load("local.env")
+// 	if err != nil {
+// 		log.Fatal("ここでエラーが発生。")
+// 	}
 
-	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
-)
+// 	USER := os.Getenv("API_USER")
+// 	PASS := os.Getenv("API_PASS")
+// 	ADDRESS := os.Getenv("API_ADDRESS")
+// 	DBMS := "mysql"
+// 	DBNAME := os.Getenv("DB_NAME")
 
-func gormConnect() *gorm.DB {
-	err := godotenv.Load("local.env")
-	if err != nil {
-		log.Fatal("ここでエラーが発生。")
-	}
+// 	if os.Getenv("DB_ENV") == "production" {
+// 		USER = os.Getenv("DB_USER")
+// 		PASS = os.Getenv("DB_PASS")
+// 		ADDRESS = os.Getenv("DB_ADDRESS")
+// 	}
 
-	USER := os.Getenv("API_USER")
-	PASS := os.Getenv("API_PASS")
-	ADDRESS := os.Getenv("API_ADDRESS")
-	DBMS := "mysql"
-	DBNAME := os.Getenv("DB_NAME")
+// 	// コンテナ名:ポート番号を指定する
+// 	CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
+// 	fmt.Println(CONNECT)
 
-	if os.Getenv("DB_ENV") == "production" {
-		USER = os.Getenv("DB_USER")
-		PASS = os.Getenv("DB_PASS")
-		ADDRESS = os.Getenv("DB_ADDRESS")
-	}
+// 	db, err := gorm.Open(DBMS, CONNECT)
 
-	// コンテナ名:ポート番号を指定する
-	CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
-	fmt.Println(CONNECT)
+// 	if err != nil {
+// 		panic(err.Error())
+// 	}
 
-	db, err := gorm.Open(DBMS, CONNECT)
+// 	db.LogMode(true)
 
-	if err != nil {
-		panic(err.Error())
-	}
+// 	db.SingularTable(true)
 
-	db.LogMode(true)
+// 	db.AutoMigrate(&entity.User{})
+// 	db.AutoMigrate(&entity.AchievementDay{})
+// 	db.AutoMigrate(&entity.Article{})
+// 	db.AutoMigrate(&entity.ArticleTag{})
+// 	db.AutoMigrate(&entity.Comment{})
+// 	db.AutoMigrate(&entity.Follow{})
+// 	db.AutoMigrate(&entity.Likes{})
+// 	db.AutoMigrate(&entity.Tag{})
 
-	db.SingularTable(true)
-
-	db.AutoMigrate(&entity.User{})
-	db.AutoMigrate(&entity.AchievementDay{})
-	db.AutoMigrate(&entity.Article{})
-	db.AutoMigrate(&entity.ArticleTag{})
-	db.AutoMigrate(&entity.Comment{})
-	db.AutoMigrate(&entity.Follow{})
-	db.AutoMigrate(&entity.Likes{})
-	db.AutoMigrate(&entity.Tag{})
-
-	return db
-}
+// 	return db
+// }
