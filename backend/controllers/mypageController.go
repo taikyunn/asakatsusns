@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -100,16 +101,18 @@ func FileUpload(c *gin.Context) {
 func GetUserProfile(c *gin.Context) {
 	userIdStr := c.PostForm("userId")
 	userID, _ := strconv.Atoi(userIdStr)
+	var image *os.File
+	var extension string
 
 	// filepathの取得
 	user := db.GetFilePathById(userID)
-	// デフォルト画像設定
-	if len(user[0].ProfileImagePath) == 0 {
-		user[0].ProfileImagePath = "images/default.png"
-	}
 
-	// filepathよりS3のデータを取得
-	image, extension := db.DownloadS3Bucket(user[0].ProfileImagePath)
+	// 画像取得
+	if len(user[0].ProfileImagePath) == 0 {
+		image, extension = GetDefaultImage(c)
+	} else {
+		image, extension = db.DownloadS3Bucket(user[0].ProfileImagePath)
+	}
 
 	var imageBytes []byte
 	if extension == "png" {
@@ -191,4 +194,15 @@ func GetCountFavoriteMypage(c *gin.Context) {
 	// いいね数を取得
 	countData := db.GetLikeCount(articleIds)
 	c.JSON(200, countData)
+}
+
+// デフォルト画像の取得
+func GetDefaultImage(c *gin.Context) (*os.File, string) {
+	image, err := os.Open("images/default.png")
+	if err != nil {
+		panic(err)
+	}
+	extension := "png"
+
+	return image, extension
 }
