@@ -18,6 +18,7 @@ func UploadS3Bucket(file *multipart.FileHeader, filename string) {
 
 	src, err := file.Open()
 	if err != nil {
+		log.Println("エラー発生2")
 		log.Fatal(err)
 	}
 	defer src.Close()

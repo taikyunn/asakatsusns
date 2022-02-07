@@ -79,16 +79,19 @@ func FileUpload(c *gin.Context) {
 	var request entity.Request
 	err := c.Bind(&request)
 	if err != nil {
+		log.Println("エラー発生")
 		c.Status(http.StatusBadRequest)
 	}
 	files := form.File["file"]
 
 	// 乱数作成
 	guid := xid.New()
+	log.Println("乱数:", guid)
 
 	for _, file := range files {
 		db.UploadS3Bucket(file, guid.String()+file.Filename)
 		filepath := "images/" + guid.String() + file.Filename
+		log.Println("filepath:", filepath)
 		todoIdStr := request.ID
 		todoID, _ := strconv.Atoi(todoIdStr)
 		// filepathをmysqlに保存する

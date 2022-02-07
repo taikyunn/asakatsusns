@@ -105,7 +105,8 @@ export default {
         localStorage.removeItem('jwt')
         localStorage.removeItem('userName')
         localStorage.removeItem('userId')
-        this.$router.go({path: this.$router.push('/login'), force: true})
+        // this.$router.go({path: this.$router.push('/'), force: true})
+        this.$router.push('/')
         alert("ログアウトしました。")
       })
     }
