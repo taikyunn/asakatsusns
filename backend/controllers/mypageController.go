@@ -8,7 +8,6 @@ import (
 	"image/png"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -79,19 +78,16 @@ func FileUpload(c *gin.Context) {
 	var request entity.Request
 	err := c.Bind(&request)
 	if err != nil {
-		log.Println("エラー発生")
 		c.Status(http.StatusBadRequest)
 	}
 	files := form.File["file"]
 
 	// 乱数作成
 	guid := xid.New()
-	log.Println("乱数:", guid)
 
 	for _, file := range files {
 		db.UploadS3Bucket(file, guid.String()+file.Filename)
 		filepath := "images/" + guid.String() + file.Filename
-		log.Println("filepath:", filepath)
 		todoIdStr := request.ID
 		todoID, _ := strconv.Atoi(todoIdStr)
 		// filepathをmysqlに保存する
@@ -104,18 +100,16 @@ func FileUpload(c *gin.Context) {
 func GetUserProfile(c *gin.Context) {
 	userIdStr := c.PostForm("userId")
 	userID, _ := strconv.Atoi(userIdStr)
-	var image *os.File
-	var extension string
 
 	// filepathの取得
 	user := db.GetFilePathById(userID)
-
-	// 画像取得
+	// デフォルト画像設定
 	if len(user[0].ProfileImagePath) == 0 {
-		image, extension = GetDefaultImage(c)
-	} else {
-		image, extension = db.DownloadS3Bucket(user[0].ProfileImagePath)
+		user[0].ProfileImagePath = "images/default.png"
 	}
+
+	// filepathよりS3のデータを取得
+	image, extension := db.DownloadS3Bucket(user[0].ProfileImagePath)
 
 	var imageBytes []byte
 	if extension == "png" {
@@ -199,13 +193,13 @@ func GetCountFavoriteMypage(c *gin.Context) {
 	c.JSON(200, countData)
 }
 
-// デフォルト画像の取得
-func GetDefaultImage(c *gin.Context) (*os.File, string) {
-	image, err := os.Open("images/default.png")
-	if err != nil {
-		panic(err)
-	}
-	extension := "png"
+// // デフォルト画像の取得
+// func GetDefaultImage(c *gin.Context) (*os.File, string) {
+// 	image, err := os.Open("images/default.png")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	extension := "png"
 
-	return image, extension
-}
+// 	return image, extension
+// }
