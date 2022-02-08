@@ -83,21 +83,24 @@ export default {
     }
   },
   mounted(){
-    const params = new URLSearchParams()
-    params.append('id', localStorage.getItem('userId'))
-    axios.post('getHeader', params)
-    .then(response => {
-      if (response.data != '') {
-      this.authenticatedUser = true
-      this.notAuthenticatedUser = false
-      } else {
-        this.authenticatedUser = false
-        this.notAuthenticatedUser = true
-      }
-      this.currentUserId = response.data
-    })
+    this.getHeader()
   },
   methods: {
+    getHeader() {
+      const params = new URLSearchParams()
+      params.append('id', localStorage.getItem('userId'))
+      axios.post('getHeader', params)
+      .then(response => {
+        if (response.data != '') {
+        this.authenticatedUser = true
+        this.notAuthenticatedUser = false
+        } else {
+          this.authenticatedUser = false
+          this.notAuthenticatedUser = true
+        }
+        this.currentUserId = response.data
+      })
+    },
     signOut() {
       confirm('ログアウトしてもよろしいですか。')
       firebase.auth().signOut()

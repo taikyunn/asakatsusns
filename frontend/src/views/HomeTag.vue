@@ -117,12 +117,31 @@ export default {
     }
   },
   mounted() {
-    this.getTagArticles()
-    this.countFavorites()
-    this.checkFavorite()
-    this.countComments()
+    this.process()
   },
   methods: {
+    async process() {
+      await Promise.all([
+        this.countFavorites(),
+        this.countComments(),
+      ])
+      await this.getTagArticles()
+      await this.checkFavorite()
+    },
+    countFavorites() {
+      axios.get('getCountFavorites')
+      .then(response => {
+        var resultLikesCount = response.data
+        this.likesCounts = resultLikesCount
+      })
+    },
+    countComments() {
+      axios.get('getCountComments')
+      .then(response => {
+        var resultCommentCount = response.data
+        this.commentCounts = resultCommentCount
+      })
+    },
     getTagArticles() {
       const params = new URLSearchParams()
       params.append('tagId', this.id)
@@ -139,8 +158,16 @@ export default {
           this.tag = resultTag[0]
           var resultCount = response.data.count
           this.count = resultCount
-          console.log(this.count)
         }
+      })
+    },
+    checkFavorite() {
+      const params = new URLSearchParams()
+      params.append("userId", localStorage.getItem('userId'))
+      axios.post("checkFavorite", params)
+      .then(response => {
+        var resultCheckFavorite = response.data
+        this.results = resultCheckFavorite
       })
     },
     deleteArticle(article) {
@@ -220,29 +247,6 @@ export default {
         alert("ログインからやり直してください。")
         this.$router.push('/login')
       }
-    },
-    countFavorites() {
-      axios.get('getCountFavorites')
-      .then(response => {
-        var resultLikesCount = response.data
-        this.likesCounts = resultLikesCount
-      })
-    },
-    checkFavorite() {
-      const params = new URLSearchParams()
-      params.append("userId", localStorage.getItem('userId'))
-      axios.post("checkFavorite", params)
-      .then(response => {
-        var resultCheckFavorite = response.data
-        this.results = resultCheckFavorite
-      })
-    },
-    countComments() {
-      axios.get('getCountComments')
-      .then(response => {
-        var resultCommentCount = response.data
-        this.commentCounts = resultCommentCount
-      })
     },
   },
 }
