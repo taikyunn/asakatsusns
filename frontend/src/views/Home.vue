@@ -105,25 +105,31 @@ export default {
     }
   },
   components: { Header, SideBar},
-  created() {
-    axios.get('getAllArticles')
-    .then(response => {
-      if (response.status != 200) {
-        throw new Error('レスポンスエラー')
-      } else {
-        var resultArticles = response.data.article
-        this.articles = resultArticles
-        var resultTags = response.data.tag
-        this.tags = resultTags
-      }
-    })
-  },
   mounted () {
-    this.countFavorites()
-    this.checkFavorite()
-    this.countComments()
+    this.process()
   },
   methods:{
+    async process() {
+      await this.getAllArticles()
+      await Promise.all([
+        this.countFavorites(),
+        this.checkFavorite(),
+        this.countComments(),
+      ]);
+    },
+    getAllArticles() {
+    axios.get('getAllArticles')
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var resultArticles = response.data.article
+          this.articles = resultArticles
+          var resultTags = response.data.tag
+          this.tags = resultTags
+        }
+      })
+    },
     deleteArticle(article) {
       confirm('削除してもよろしいですか。')
       const params = new URLSearchParams()
