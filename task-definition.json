@@ -30,7 +30,7 @@
               "value": "admin"
             },
             {
-              "name": "DBNAME",
+              "name": "DB_NAME",
               "value": "asakatsusns"
             }
           ],
