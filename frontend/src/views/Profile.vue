@@ -109,23 +109,33 @@ export default {
       wakeUpTime:'',
     }
   },
-  created() {
-    const params = new URLSearchParams()
-    params.append('userId', this.id)
-    axios.post('getUserData', params)
-    .then(response => {
-      var resultUser = response.data
-      this.userInfo = resultUser[0]
-    })
-  },
   mounted() {
-    this.checkMyOwnPage()
-    this.getUserProfile()
-    this.getFollowData()
-    this.checkFollow()
-    this.checkIsEdit()
+    this.process()
   },
   methods: {
+    async process() {
+      await Promise.all([
+        this.checkMyOwnPage(),
+        this.checkIsEdit(),
+      ])
+      await this.getUserData()
+      await this.getUserProfile()
+      await this.getFollowData()
+      await this.checkFollow()
+    },
+    getUserData() {
+      const params = new URLSearchParams()
+      params.append('userId', this.id)
+      axios.post('getUserData', params)
+      .then(response => {
+        var resultUser = response.data
+        this.userInfo = resultUser[0]
+      })
+    },
+    checkMyOwnPage() {
+      if (this.id == localStorage.getItem('userId'))
+      this.isMyOwnPage = true
+    },
     getUserProfile() {
       const params = new URLSearchParams()
       params.append('userId', this.id)
@@ -134,6 +144,30 @@ export default {
         const blob = new Blob([response.data])
         this.profileDataUrl = URL.createObjectURL(blob);
       })
+    },
+    getFollowData() {
+      const params = new URLSearchParams()
+      params.append('userId',this.id)
+      axios.post('getFollowData', params)
+      .then(response => {
+        var followDataResult = response.data
+        this.followData = followDataResult[0]
+      })
+    },
+    checkFollow() {
+      const params = new URLSearchParams()
+      params.append('follower_id',localStorage.getItem('userId'))
+      params.append('followed_id',this.id)
+      axios.post("checkFollow", params)
+      .then(response => {
+        var followResult = response.data
+        this.isFollowedBy = followResult
+      })
+    },
+    checkIsEdit() {
+      if (this.id == localStorage.getItem('userId')) {
+        this.isEdit = true
+      }
     },
     deletePreview(){
       this.url = ''
@@ -159,29 +193,6 @@ export default {
           alert('登録しました。')
           this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
-      })
-    },
-    getFollowData() {
-      const params = new URLSearchParams()
-      params.append('userId',this.id)
-      axios.post('getFollowData', params)
-      .then(response => {
-        var followDataResult = response.data
-        this.followData = followDataResult[0]
-      })
-    },
-    checkMyOwnPage() {
-      if (this.id == localStorage.getItem('userId'))
-      this.isMyOwnPage = true
-    },
-    checkFollow() {
-      const params = new URLSearchParams()
-      params.append('follower_id',localStorage.getItem('userId'))
-      params.append('followed_id',this.id)
-      axios.post("checkFollow", params)
-      .then(response => {
-        var followResult = response.data
-        this.isFollowedBy = followResult
       })
     },
     registerFollow() {
@@ -226,11 +237,6 @@ export default {
       } catch {
         alert("ログインからやり直してください。")
         this.$router.push('/login')
-      }
-    },
-    checkIsEdit() {
-      if (this.id == localStorage.getItem('userId')) {
-        this.isEdit = true
       }
     },
     doEditName() {

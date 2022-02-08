@@ -57,21 +57,24 @@ export default {
     },
   },
   mounted() {
-    axios.get("/getAutocompleteItems")
-    .then (response => {
-      var resultAutocompleteItems = response.data
-      if (resultAutocompleteItems != null) {
-        var target = []
-        for (var i = 0; i < resultAutocompleteItems.length; i++) {
-          target[i] = {text: resultAutocompleteItems[i]}
-        }
-        const handler1 = {};
-        const proxy1 = new Proxy(target, handler1);
-        this.autocompleteItems = proxy1
-      }
-    })
+    this.getAutocompleteItems()
   },
   methods: {
+    getAutocompleteItems() {
+      axios.get("/getAutocompleteItems")
+      .then (response => {
+        var resultAutocompleteItems = response.data
+        if (resultAutocompleteItems != null) {
+          var target = []
+          for (var i = 0; i < resultAutocompleteItems.length; i++) {
+            target[i] = {text: resultAutocompleteItems[i]}
+          }
+          const handler1 = {};
+          const proxy1 = new Proxy(target, handler1);
+          this.autocompleteItems = proxy1
+        }
+      })
+    },
     createArticle() {
     try {
         if (this.body == '') {
