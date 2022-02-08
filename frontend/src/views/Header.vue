@@ -52,9 +52,9 @@
                   </li>
                   <li>
                     <a class="dropdown-item" href="#">
-                      <button class="btn btn-warning" @click="signOut" v-if="authenticatedUser">
+                      <router-link class="btn btn-warning"  to="/logout" @click="signOut" v-if="authenticatedUser">
                         ログアウト
-                      </button>
+                      </router-link>
                     </a>
                   </li>
                 </ul>

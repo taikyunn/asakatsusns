@@ -101,4 +101,8 @@ export default {
   margin-top: 50px;
   margin-bottom: 50px;
 }
+
+.text-center {
+  padding-top: 5rem;
+}
 </style>
