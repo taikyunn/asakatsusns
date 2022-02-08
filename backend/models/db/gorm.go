@@ -3,7 +3,6 @@ package db
 import (
 	entity "app/models/entity"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -12,9 +11,10 @@ import (
 
 func gormConnect() *gorm.DB {
 	err := godotenv.Load("env/dev.env")
-	if err != nil {
-		log.Fatal("Error Loading .env file")
-	}
+	// if err != nil {
+	// 	log.Fatal("Error Loading .env file")
+	// }
+	fmt.Printf("%s is %s. years old\n", os.Getenv("API_USER"), os.Getenv("API_PASS"))
 
 	USER := os.Getenv("API_USER")
 	PASS := os.Getenv("API_PASS")
