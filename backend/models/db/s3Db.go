@@ -85,12 +85,19 @@ func DownloadS3Bucket(filepath string) (*os.File, string) {
 
 // 認証情報の関数
 func Credentials() *session.Session {
-	err := godotenv.Load()
+	var AWS_ACCESS_KEY string
+	var AWS_SECRET_ACCESS_KEY string
+
+	err := godotenv.Load("env/dev.env")
 	if err != nil {
-		log.Fatal("Error Loading .env file")
+		AWS_ACCESS_KEY = os.Getenv("AWS_ACCESS_KEY")
+		AWS_SECRET_ACCESS_KEY = os.Getenv("AWS_SECRET_ACCESS_KEY")
+	} else {
+		AWS_ACCESS_KEY = os.Getenv("AWS_ACCESS_KEY")
+		AWS_SECRET_ACCESS_KEY = os.Getenv("AWS_SECRET_ACCESS_KEY")
 	}
 
-	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
+	creds := credentials.NewStaticCredentials(AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, "")
 
 	sess, err := session.NewSession(&aws.Config{
 		Credentials: creds,

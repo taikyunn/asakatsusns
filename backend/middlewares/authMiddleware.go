@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"app/models/db"
 	"context"
 	"fmt"
 	"log"
@@ -8,14 +9,50 @@ import (
 	"strings"
 
 	firebase "firebase.google.com/go"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"google.golang.org/api/option"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var bucket string
+		var key string
+
+		err := godotenv.Load("env/dev.env")
+		if err != nil {
+			bucket = os.Getenv("BUCKET_NAME")
+			key = os.Getenv("FILE_PATH")
+		} else {
+			bucket = os.Getenv("BUCKET_NAME")
+			key = os.Getenv("FILE_PATH")
+		}
+		// sessionの作成
+		sess := db.Credentials()
+
+		// S3オブジェクトを書き込むファイルの作成
+		f, err := os.Create("firebase-admin-sdk.json")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Downloaderを作成し、S3オブジェクトをダウンロード
+		downloader := s3manager.NewDownloader(sess)
+		n, err := downloader.Download(f, &s3.GetObjectInput{
+			Bucket: aws.String(bucket),
+			Key:    aws.String(key),
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("DownloadedSize: %d byte", n)
+
 		// Firebase SDK のセットアップ
-		opt := option.WithCredentialsFile("firebase-adminsdk.json")
+		opt := option.WithCredentialsFile("firebase-admin-sdk.json")
 		app, err := firebase.NewApp(context.Background(), nil, opt)
 		if err != nil {
 			fmt.Printf("error: %v\n", err)
@@ -35,7 +72,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		token, err := auth.VerifyIDToken(context.Background(), idToken)
 		if err != nil {
 			c.JSON(201, gin.H{"message": "エラー"})
-			return
+			c.Abort()
 		} else {
 			log.Printf("Verified ID token: %v\n", token)
 			c.Next()
