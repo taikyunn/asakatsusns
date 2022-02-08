@@ -1,6 +1,7 @@
 *.env
-/backend/firebase-adminsdk.json
+/backend/firebase-admin-sdk.json
 /backend/tmp/
 /backend/download1.jpeg
 /backend/download1.png
 /backend/download1.jpg
+task-definition.json
