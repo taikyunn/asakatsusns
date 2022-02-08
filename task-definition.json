@@ -32,6 +32,18 @@
             {
               "name": "DB_NAME",
               "value": "asakatsusns"
+            },
+            {
+              "name": "AWS_ACCESS_KEY",
+              "value": "AKIA5PLM4KRIFRQ3FI7N"
+            },
+            {
+              "name": "AWS_SECRET_ACCESS_KEY",
+              "value": "ss35ePaLq2nG4wWhqHyug4rcVJwM9mPQrqIdmfLW"
+            },
+            {
+              "name": "BUCKET_NAME",
+              "value": "asakatsusns-data"
             }
           ],
           "command": [
