@@ -47,4 +47,5 @@ func gormConnect() *gorm.DB {
 	fmt.Println("db connected ", &db)
 
 	return db
+
 }
