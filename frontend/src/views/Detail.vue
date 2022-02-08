@@ -1,30 +1,32 @@
 <template>
   <div>
     <Header></Header>
-    <div>
-      <p>{{ArticleData.Name}}さん</p>
-      <p>内容:{{ArticleData.Body}}</p>
-        <span v-for="result in results" :key="result">
-          <button @click="registerLikes()" v-if="result.Count">いいね</button>
-          <button @click="deleteLikes()" v-else>いいね解除</button>
-        </span>
-      <p>いいね数:{{count}}</p>
-      <span v-for="tag in ArticleData.Tags" :key="tag">
-        {{tag}}&nbsp;
-      </span>
-    </div>
-    <div>
-      <h2>コメントを追加する</h2>
-      <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
+    <div class="text-center">
       <div>
-        <button @click='insertComment()'>コメントする</button>
+        <p>{{ArticleData.Name}}さん</p>
+        <p>内容:{{ArticleData.Body}}</p>
+          <span v-for="result in results" :key="result">
+            <button @click="registerLikes()" v-if="result.Count">いいね</button>
+            <button @click="deleteLikes()" v-else>いいね解除</button>
+          </span>
+        <p>いいね数:{{count}}</p>
+        <span v-for="tag in ArticleData.Tags" :key="tag">
+          {{tag}}&nbsp;
+        </span>
       </div>
-    </div>
-    <div>
-      <h2>コメント一覧</h2>
-      <p v-for="commentData in ArticleData.Comments" :key="commentData">
-        {{commentData.Name}}さん:{{commentData.Comment}}
-      </p>
+      <div>
+        <h2>コメントを追加する</h2>
+        <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
+        <div>
+          <button @click='insertComment()'>コメントする</button>
+        </div>
+      </div>
+      <div>
+        <h2>コメント一覧</h2>
+        <p v-for="commentData in ArticleData.Comments" :key="commentData">
+          {{commentData.Name}}さん:{{commentData.Comment}}
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -50,11 +52,16 @@ export default {
   },
   components: { Header },
   mounted() {
-    this.getArticleDetail()
-    this.countFavorites()
-    this.checkFavorite()
+    this.process()
   },
   methods: {
+    async process() {
+      await Promise.all([
+        this.countFavorites(),
+        this.checkFavorite(),
+      ]);
+      await this.getArticleDetail()
+    },
     getArticleDetail() {
       const params = new URLSearchParams()
       params.append('articleId', this.id)
@@ -183,3 +190,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.text-center {
+  padding-top: 5rem;
+}
+</style>
