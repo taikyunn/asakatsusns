@@ -35,11 +35,14 @@ export default {
       rankings: [],
     }
   },
-  created() {
-    this.getMainTag()
-    this.getWakeUpRanking()
+  mounted() {
+    this.process()
   },
   methods: {
+    async process() {
+      await this.getMainTag()
+      await this.getWakeUpRanking()
+    },
     getMainTag() {
       axios.get('getMainTag')
       .then(response => {

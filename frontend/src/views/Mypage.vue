@@ -130,23 +130,29 @@ export default {
   },
   components: { Header , Profile},
   mounted() {
-    this.getMypageArticle()
-    this.checkFavoriteMypage()
-    this.getCountFavoriteMypage()
-    this.getLikedPost()
-    this.checkFavoriteLikedPost()
-    this.getCountFavoriteLikedPost()
-  },
-  created() {
-    const params = new URLSearchParams()
-    params.append('userId', this.id)
-    axios.post('getUserData', params)
-    .then(response => {
-      var resultUser = response.data
-      this.userInfo = resultUser[0]
-    })
+    this.process()
   },
   methods: {
+    async process() {
+      await Promise.all([
+        this.getUserData(),
+        this.getMypageArticle(),
+      ])
+      await this.checkFavoriteMypage()
+      await this.getCountFavoriteMypage()
+      await this.getLikedPost()
+      await this.checkFavoriteLikedPost()
+      await this.getCountFavoriteLikedPost()
+    },
+    getUserData(){
+    const params = new URLSearchParams()
+      params.append('userId', this.id)
+      axios.post('getUserData', params)
+      .then(response => {
+        var resultUser = response.data
+        this.userInfo = resultUser[0]
+      })
+    },
     getMypageArticle() {
       const params = new URLSearchParams()
       params.append('userId',this.id)
@@ -188,6 +194,46 @@ export default {
         } else {
           var resultCheckFavorite = response.data
           this.results = resultCheckFavorite
+        }
+      })
+    },
+    getLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId', this.id)
+      axios.post('getLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          this.likedPosts = response.data.favoritePostData
+          this.commentCounts = response.data.commentCount
+        }
+      })
+    },
+    checkFavoriteLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId',this.id)
+      params.append('visiterUserId', localStorage.getItem('userId'))
+      axios.post('checkFavoriteLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultCheckFavoriteLikedPost = response.data
+          this.favoriteLikedPostCounts = resultCheckFavoriteLikedPost
+        }
+      })
+    },
+    getCountFavoriteLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId', this.id)
+      axios.post('getCountFavoriteLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultLikedPostCountData = response.data
+          this.likedPostCountData = resultLikedPostCountData
         }
       })
     },
@@ -254,46 +300,6 @@ export default {
         alert("ログインからやり直してください。")
         this.$router.push('/login')
       }
-    },
-    getLikedPost() {
-      const params = new URLSearchParams()
-      params.append('mypageUserId', this.id)
-      axios.post('getLikedPost', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          this.likedPosts = response.data.favoritePostData
-          this.commentCounts = response.data.commentCount
-        }
-      })
-    },
-    checkFavoriteLikedPost() {
-      const params = new URLSearchParams()
-      params.append('mypageUserId',this.id)
-      params.append('visiterUserId', localStorage.getItem('userId'))
-      axios.post('checkFavoriteLikedPost', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          var resultCheckFavoriteLikedPost = response.data
-          this.favoriteLikedPostCounts = resultCheckFavoriteLikedPost
-        }
-      })
-    },
-    getCountFavoriteLikedPost() {
-      const params = new URLSearchParams()
-      params.append('mypageUserId', this.id)
-      axios.post('getCountFavoriteLikedPost', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          var resultLikedPostCountData = response.data
-          this.likedPostCountData = resultLikedPostCountData
-        }
-      })
     },
   }
 }
