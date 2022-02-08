@@ -70,12 +70,15 @@ export default {
     }
   },
   components: { Header },
-  created() {
-    this.getFollower()
-    this.checkFollow()
-    this.getFollow()
+  mounted() {
+    this.process()
   },
   methods:{
+    async process() {
+      await this.getFollower()
+      await this.getFollow()
+      await this.checkFollow()
+    },
     getFollower() {
       const params = new URLSearchParams()
       params.append('followed_id', this.id)
