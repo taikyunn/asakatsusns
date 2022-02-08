@@ -28,6 +28,10 @@
             {
               "name": "DB_USER",
               "value": "admin"
+            },
+            {
+              "name": "DBNAME",
+              "value": "asakatsusns"
             }
           ],
           "command": [

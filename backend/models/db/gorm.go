@@ -2,7 +2,7 @@ package db
 
 import (
 	entity "app/models/entity"
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -10,27 +10,28 @@ import (
 )
 
 func gormConnect() *gorm.DB {
+	var USER string
+	var PASS string
+	var ADDRESS string
+	var DBNAME string
+
 	err := godotenv.Load("env/dev.env")
-	// if err != nil {
-	// 	log.Fatal("Error Loading .env file")
-	// }
-	fmt.Printf("%s is %s. years old\n", os.Getenv("API_USER"), os.Getenv("API_PASS"))
-
-	USER := os.Getenv("API_USER")
-	PASS := os.Getenv("API_PASS")
-	ADDRESS := os.Getenv("API_ADDRESS")
-	DBMS := "mysql"
-	DBNAME := os.Getenv("DB_NAME")
-
-	if os.Getenv("DB_ENV") == "production" {
+	if err != nil {
 		USER = os.Getenv("DB_USER")
 		PASS = os.Getenv("DB_PASS")
 		ADDRESS = os.Getenv("DB_ADDRESS")
+		DBNAME = os.Getenv("DB_NAME")
+	} else {
+		USER = os.Getenv("API_USER")
+		PASS = os.Getenv("API_PASS")
+		ADDRESS = os.Getenv("API_ADDRESS")
+		DBNAME = os.Getenv("DB_NAME")
 	}
+	DBMS := "mysql"
 
 	// コンテナ名:ポート番号を指定する
 	CONNECT := USER + ":" + PASS + "@tcp(" + ADDRESS + ":3306)" + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
-	fmt.Println(CONNECT)
+	log.Println(CONNECT)
 
 	db, err := gorm.Open(DBMS, CONNECT)
 
@@ -44,7 +45,7 @@ func gormConnect() *gorm.DB {
 
 	db.AutoMigrate(&entity.User{})
 
-	fmt.Println("db connected ", &db)
+	log.Println("db connected ", &db)
 
 	return db
 
