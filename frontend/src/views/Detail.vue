@@ -59,7 +59,7 @@ export default {
       await Promise.all([
         this.countFavorites(),
         this.checkFavorite(),
-      ]);
+      ])
       await this.getArticleDetail()
     },
     getArticleDetail() {

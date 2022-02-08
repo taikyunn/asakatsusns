@@ -59,38 +59,45 @@ export default {
       return JSON.stringify(this.tags)
     },
   },
-  created() {
-    const params = new URLSearchParams()
-    params.append('id', this.id)
-    axios.post('getOneArticle', params)
-    .then(response => {
-      if (response.status != 200) {
-        throw new Error('レスポンスエラー')
-      } else {
-        var resultArticle = response.data
-        this.body = resultArticle[0].Body
-        if (resultArticle[0].Tags != null) {
-          this.tags = resultArticle[0].Tags
-        }
-      }
-    })
-  },
   mounted() {
-    axios.get("/getAutocompleteItems")
-    .then (response => {
-      var resultAutocompleteItems = response.data
-      if (resultAutocompleteItems != null) {
-        var target = []
-        for (var i = 0; i < resultAutocompleteItems.length; i++) {
-          target[i] = {text: resultAutocompleteItems[i]}
-        }
-        const handler1 = {};
-        const proxy1 = new Proxy(target, handler1);
-        this.autocompleteItems = proxy1
-      }
-    })
+    this.process()
   },
   methods: {
+    async process() {
+      await this.getAutocompleteItems()
+      await this.getOneArticle()
+    },
+    getOneArticle() {
+      const params = new URLSearchParams()
+      params.append('id', this.id)
+      axios.post('getOneArticle', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var resultArticle = response.data
+          this.body = resultArticle[0].Body
+          if (resultArticle[0].Tags != null) {
+            this.tags = resultArticle[0].Tags
+          }
+        }
+      })
+    },
+    getAutocompleteItems() {
+      axios.get("/getAutocompleteItems")
+      .then (response => {
+        var resultAutocompleteItems = response.data
+        if (resultAutocompleteItems != null) {
+          var target = []
+          for (var i = 0; i < resultAutocompleteItems.length; i++) {
+            target[i] = {text: resultAutocompleteItems[i]}
+          }
+          const handler1 = {};
+          const proxy1 = new Proxy(target, handler1);
+          this.autocompleteItems = proxy1
+        }
+      })
+    },
     updateBody(){
       const params = new FormData()
       const tags = document.getElementById("tags").value;
