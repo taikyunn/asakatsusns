@@ -23,6 +23,9 @@
         <div class="mb-3">
           <button @click='createArticle'>投稿する</button>
         </div>
+        <div class="vue-infinite-loading">
+          <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+        </div>
     </div>
   </div>
 </template>
@@ -31,11 +34,13 @@
 import axios from 'axios'
 import VueTagsInput from '@sipec/vue3-tags-input'
 import Header from './Header.vue'
+import InfiniteLoading from 'infinite-loading-vue3'
 
 export default {
   components: {
     VueTagsInput,
     Header,
+    InfiniteLoading,
   },
   data() {
     return {
@@ -74,6 +79,31 @@ export default {
           this.autocompleteItems = proxy1
         }
       })
+    },
+    // infinite-loadingが表示された際の処理
+    async infiniteHandler($state) {
+      // 記事データの取得
+      const data = await this.fetchData()
+      if (!data) {
+        $state.error()
+      } else if (data.length) {
+        this.list.push(...data)
+        $state.loaded()
+      } else if (data.length === 0) {
+        $state.complete()
+      }
+    },
+    // 記事データ取得処理
+    async fetchData() {
+      // axios等で記事を取得する 以下、モック用データを生成
+      let data = []
+      let num = this.list.length
+      if (num < 200) { // 最大200件まで
+        for (let i = 1; i <= 20; i++) {
+          data.push({ id: num + i , title: `記事タイトル${num + i}` })
+        }
+      }
+      return data
     },
     createArticle() {
     try {
