@@ -11,7 +11,6 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import InfiniteLoading from 'infinite-loading-vue3'
 
 library.add(fas)
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
@@ -27,5 +26,5 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-createApp(App).use(store).use(router).use(InfiniteLoading).component('fa', FontAwesomeIcon).mount('#app')
+createApp(App).use(store).use(router).component('fa', FontAwesomeIcon).mount('#app')
 

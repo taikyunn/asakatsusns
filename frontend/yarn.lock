@@ -3939,11 +3939,6 @@ infer-owner@^1.0.3:
   resolved "https://registry.npmjs.org/infer-owner/-/infer-owner-1.0.4.tgz"
   integrity sha512-IClj+Xz94+d7irH5qRyfJonOdfTzuDaifE6ZPWfx0N0+/ATZCbuTPq2prFl526urkQd90WyUKIh1DfBQ2hMz9A==
 
-infinite-loading-vue3@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/infinite-loading-vue3/-/infinite-loading-vue3-1.0.1.tgz"
-  integrity sha512-3akMDvIMUv2Vsyt/HY+peLGVg3R/vozrLEv8Hz3EmoB/GQX2fdjzTmMKUPKrytBizAbA36UKI0yRJ2Ej3w8Ebw==
-
 inflight@^1.0.4:
   version "1.0.6"
   resolved "https://registry.npmjs.org/inflight/-/inflight-1.0.6.tgz"
