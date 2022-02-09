@@ -89,7 +89,7 @@ func serve() {
 	// メインタグ除法取得
 	r.GET("/getMainTag", controller.GetMainTag)
 
-	// 投稿全件取得
+	// 直近10件分のデータを取得
 	r.GET("/getAllArticles", controller.GetAllArticles)
 
 	// 無限スクロールのデータ取得

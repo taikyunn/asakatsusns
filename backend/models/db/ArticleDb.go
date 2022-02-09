@@ -100,15 +100,23 @@ func GetArticleID() []entity.Article {
 }
 
 // 直近10件の取得
-func GetALLArticle() []entity.Article {
+func GetALLArticle() []*NextArticleResult {
 	db := gormConnect()
-	var articles []entity.Article
+	nextArticle := []*NextArticle{}
+	nextArticleResult := []*NextArticleResult{}
+	column := "article.id, user_id, body, article.updated_at, name"
+	table := "INNER JOIN user ON article.user_id = user.id"
 
-	if err := db.Select("id, user_id, body, updated_at").Limit(10).Order("updated_at DESC").Find(&articles).Error; err != nil {
+	if err := db.Table("article").Select(column).Joins(table).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
 		panic(err.Error())
 	}
+	for _, v := range nextArticle {
+		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name})
+	}
 	defer db.Close()
-	return articles
+
+	return nextArticleResult
 }
 
 // 投稿削除
@@ -192,8 +200,10 @@ func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 	db := gormConnect()
 	nextArticle := []*NextArticle{}
 	nextArticleResult := []*NextArticleResult{}
+	column := "article.id, user_id, body, article.updated_at, name"
+	table := "INNER JOIN user ON article.user_id = user.id"
 
-	if err := db.Table("article").Select("article.id, user_id, body, article.updated_at, name").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
+	if err := db.Table("article").Select(column).Joins(table).Where("article.updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
 		panic(err.Error())
 	}
 	for _, v := range nextArticle {

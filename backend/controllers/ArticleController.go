@@ -95,30 +95,14 @@ func CreateArticle(c *gin.Context) {
 	}
 }
 
-// 投稿全件取得
+// 直近10件分のデータを取得
 func GetAllArticles(c *gin.Context) {
-	// 投稿IDを10件取得
+	// 直近10件分の投稿データを取得
 	articles := db.GetALLArticle()
 
-	userID := make([]uint, len(articles))
 	articleID := make([]uint, len(articles))
 	for i, v := range articles {
-		userID[i] = v.UserId
-		articleID[i] = v.ID
-	}
-	// idより投稿者を取得
-	user := db.GetNameById(userID)
-
-	result := []*Result{}
-
-	// 返すデータの作成
-	for _, av := range articles {
-		for _, uv := range user {
-			if av.UserId == uv.ID {
-				t := av.UpdatedAt.Format("2006/01/02 15:04:05")
-				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), t})
-			}
-		}
+		articleID[i] = uint(v.Id)
 	}
 
 	// タグ情報の取得
@@ -142,7 +126,7 @@ func GetAllArticles(c *gin.Context) {
 			}
 		}
 	}
-	c.JSON(200, gin.H{"article": result, "tag": dbTagResult})
+	c.JSON(200, gin.H{"article": articles, "tag": dbTagResult})
 }
 
 // 投稿削除
