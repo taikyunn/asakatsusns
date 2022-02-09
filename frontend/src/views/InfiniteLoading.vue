@@ -22,7 +22,7 @@
   import "v3-infinite-loading/lib/style.css";
 
   let articles = ref([]);
-  let count = 10;
+  let count = 1;
   const load = async $state => {
     const params = new URLSearchParams()
     console.log("count",count)
@@ -30,17 +30,18 @@
     try {
       const response = await axios.post('getNextArticles', params);
       const json = await response.data;
+      console.log(json.length)
       if (json.length < 10) {
-        $state.complete();
+        $state.complete()
       } else {
         articles.value.push(...json);
-        $state.loaded();
+        $state.loaded()
       }
-      count = count + 10;
+      count ++;
     } catch (error) {
-      $state.error();
+      $state.error()
     }
-  };
+  }
 </script>
 
 <style>

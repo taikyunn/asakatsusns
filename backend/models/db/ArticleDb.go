@@ -150,11 +150,13 @@ func GetArticleByTag(articleID []uint) []entity.Article {
 func GetUpdatedAt(count int) time.Time {
 	db := gormConnect()
 	var articles []entity.Article
+	count = count * 10
 
 	if err := db.Select("updated_at").Order("updated_at DESC").Limit(count).Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
-	updatedAt := articles[9].UpdatedAt
+	length := len(articles) - 1
+	updatedAt := articles[length].UpdatedAt
 	defer db.Close()
 
 	return updatedAt
