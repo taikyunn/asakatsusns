@@ -225,6 +225,20 @@ func GetMainTag(c *gin.Context) {
 	c.JSON(200, mainTagMap)
 }
 
+// 無限スクロールのデータ取得
+func GetNextArticles(c *gin.Context) {
+	countStr := c.PostForm("count")
+	count, _ := strconv.Atoi(countStr)
+
+	// 一番古い投稿のupdatedAtを取得
+	updatedAt := db.GetUpdatedAt(count)
+
+	// 次の10件分のデータを取得
+	nextArticles := db.GetNextArticles(updatedAt)
+
+	c.JSON(200, nextArticles)
+}
+
 // 早起きチェック
 func checkWakeUptime(userId uint) int {
 	jst, err := time.LoadLocation("Asia/Tokyo")

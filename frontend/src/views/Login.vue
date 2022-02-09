@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="text-center">
       <h1 class="title">ログインフォーム</h1>
       <div v-if="errors.length">

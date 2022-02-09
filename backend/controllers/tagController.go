@@ -22,7 +22,7 @@ type ArticleResult struct {
 	Name      string
 	Body      string
 	UserId    int
-	CreatedAt string
+	UpdatedAt string
 }
 
 // 自動補完データの取得
@@ -61,7 +61,7 @@ func GetTagArticles(c *gin.Context) {
 	for _, av := range articles {
 		for _, uv := range user {
 			if av.UserId == uv.ID {
-				t := av.CreatedAt.Format("2006/01/02 15:04:05")
+				t := av.UpdatedAt.Format("2006/01/02 15:04:05")
 				articleResult = append(articleResult, &ArticleResult{int(av.ID), uv.Name, av.Body, int(av.UserId), t})
 			}
 		}

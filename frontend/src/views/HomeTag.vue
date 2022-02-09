@@ -22,7 +22,7 @@
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
                 {{article.Name}}
               </router-link>
-              {{article.CreatedAt}}
+              {{article.UpdatedAt}}
               <span v-if="article.UserId == currentUserId">
                 <span class="dropdown">
                   <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">

@@ -1,36 +1,42 @@
 <template>
   <div>
-    <div class="result" v-for="comment in comments" :key="comment.id">
-      <div>{{ comment.email }}</div>
-      <div>{{ comment.id }}</div>
+    <div class="card w-75" v-for="article in articles" :key="article">
+      <div class="card-header">
+        {{article.ID}}
+        {{article.UpdatedAt}}
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          {{article.body}}
+        </p>
+      </div>
     </div>
-    <InfiniteLoading :comments="comments" @infinite="load" />
+    <InfiniteLoading :articles="articles" @infinite="load" />
   </div>
 </template>
 
 <script setup>
+  import axios from 'axios'
   import { ref } from "vue";
   import InfiniteLoading from "v3-infinite-loading";
   import "v3-infinite-loading/lib/style.css";
 
-  let comments = ref([]);
-  let page = 1;
+  let articles = ref([]);
+  let count = 10;
   const load = async $state => {
-    console.log("loading...");
+    const params = new URLSearchParams()
+    console.log("count",count)
+    params.append('count', count)
     try {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/comments?_limit=10&_page=" + page
-      );
-      console.log(response)
-      const json = await response.json();
-      console.log(json)
+      const response = await axios.post('getNextArticles', params);
+      const json = await response.data;
       if (json.length < 10) {
         $state.complete();
       } else {
-        comments.value.push(...json);
+        articles.value.push(...json);
         $state.loaded();
       }
-      page++;
+      count = count + 10;
     } catch (error) {
       $state.error();
     }
@@ -59,4 +65,8 @@
     background: #eceef0;
     border-radius: 10px;
   }
+
+.card {
+  margin-bottom: 40px;
+}
 </style>

@@ -2,6 +2,7 @@ package db
 
 import (
 	entity "app/models/entity"
+	"time"
 )
 
 // userIdの取得
@@ -138,7 +139,33 @@ func GetArticleByTag(articleID []uint) []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
 
-	if err := db.Select("id, user_id, body, created_at").Where("id IN (?)", articleID).Find(&articles).Error; err != nil {
+	if err := db.Select("id, user_id, body, updated_at").Where("id IN (?)", articleID).Find(&articles).Error; err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	return articles
+}
+
+// 指定したupdated_atを取得
+func GetUpdatedAt(count int) time.Time {
+	db := gormConnect()
+	var articles []entity.Article
+
+	if err := db.Select("updated_at").Order("updated_at DESC").Limit(count).Find(&articles).Error; err != nil {
+		panic(err.Error())
+	}
+	updatedAt := articles[9].UpdatedAt
+	defer db.Close()
+
+	return updatedAt
+}
+
+// 次の10件分のデータを取得
+func GetNextArticles(updatedAt time.Time) []entity.Article {
+	db := gormConnect()
+	var articles []entity.Article
+
+	if err := db.Select("id, user_id, body, updated_at").Where("updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()

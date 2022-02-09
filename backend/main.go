@@ -92,6 +92,9 @@ func serve() {
 	// 投稿全件取得
 	r.GET("/getAllArticles", controller.GetAllArticles)
 
+	// 無限スクロールのデータ取得
+	r.POST("/getNextArticles", controller.GetNextArticles)
+
 	// 投稿削除
 	r.POST("/deleteArticle", controller.DeleteArticle)
 

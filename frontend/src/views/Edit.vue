@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
      <div class="text-center">
       <h1>編集ページ</h1>
       <h2>投稿内容</h2>

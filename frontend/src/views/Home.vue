@@ -110,7 +110,7 @@ export default {
     Header,
     SideBar,
     InfiniteLoading,
-    },
+  },
   mounted () {
     this.process()
   },

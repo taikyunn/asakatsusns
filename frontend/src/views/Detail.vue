@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="text-center">
       <div>
         <p>{{ArticleData.Name}}さん</p>
