@@ -12,7 +12,7 @@
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
                 {{article.Name}}
               </router-link>
-              {{article.CreatedAt}}
+              {{article.UpdatedAt}}
               <span v-if="article.UserId == currentUserId">
                 <span class="dropdown">
                   <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,6 +82,7 @@
               </div>
             </div>
           </div>
+          <InfiniteLoading />
         </div>
       </div>
     </div>
@@ -92,6 +93,7 @@
 import axios from 'axios'
 import Header from './Header.vue'
 import SideBar from './SideBar.vue'
+import InfiniteLoading from './InfiniteLoading.vue'
 
 export default {
   data() {
@@ -104,7 +106,11 @@ export default {
       commentCounts:[],
     }
   },
-  components: { Header, SideBar},
+  components: {
+    Header,
+    SideBar,
+    InfiniteLoading,
+    },
   mounted () {
     this.process()
   },

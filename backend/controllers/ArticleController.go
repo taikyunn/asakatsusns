@@ -18,7 +18,7 @@ type Result struct {
 	Name      string
 	Body      string
 	UserId    int
-	CreatedAt string
+	UpdatedAt string
 }
 
 type DbTagResult struct {
@@ -115,7 +115,7 @@ func GetAllArticles(c *gin.Context) {
 	for _, av := range articles {
 		for _, uv := range user {
 			if av.UserId == uv.ID {
-				t := av.CreatedAt.Format("2006/01/02 15:04:05")
+				t := av.UpdatedAt.Format("2006/01/02 15:04:05")
 				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), t})
 			}
 		}
