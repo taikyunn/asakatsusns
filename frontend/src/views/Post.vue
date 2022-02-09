@@ -6,23 +6,24 @@
       <div v-if="apiErrors.length">
         <p v-for="error in apiErrors" :key="error">{{ error }}</p>
       </div>
-        <div class="mb-3">
-          <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
-        </div>
-        <div class="mb-3 mx-auto">
-          <input type="hidden" id="tags" :value="tagsJson">
-          <vue-tags-input
-          v-model="tag"
-          :tags="tags"
-          placeholder="タグを5個まで入力できます"
-          :autocomplete-items="filteredItems"
-          @tags-changed="newTags => tags = newTags"
-          class="mx-auto"
-          />
-        </div>
-        <div class="mb-3">
-          <button @click='createArticle'>投稿する</button>
-        </div>
+      <div class="mb-3">
+        <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
+      </div>
+      <div class="mb-3 mx-auto">
+        <input type="hidden" id="tags" :value="tagsJson">
+        <vue-tags-input
+        v-model="tag"
+        :tags="tags"
+        placeholder="タグを5個まで入力できます"
+        :autocomplete-items="filteredItems"
+        @tags-changed="newTags => tags = newTags"
+        class="mx-auto"
+        />
+      </div>
+      <div class="mb-3">
+        <button @click='createArticle'>投稿する</button>
+      </div>
+      <InfiniteLoading @infinite="loadData" />
     </div>
   </div>
 </template>
@@ -31,11 +32,14 @@
 import axios from 'axios'
 import VueTagsInput from '@sipec/vue3-tags-input'
 import Header from './Header.vue'
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 export default {
   components: {
     VueTagsInput,
     Header,
+    InfiniteLoading,
   },
   data() {
     return {
@@ -60,6 +64,10 @@ export default {
     this.getAutocompleteItems()
   },
   methods: {
+    loadData($state) {
+      console.log($state)
+      console.log("動いています。")
+    },
     getAutocompleteItems() {
       axios.get("/getAutocompleteItems")
       .then (response => {
