@@ -229,18 +229,24 @@ func GetMainTag(c *gin.Context) {
 func GetNextArticles(c *gin.Context) {
 	countStr := c.PostForm("count")
 	count, _ := strconv.Atoi(countStr)
+	var nextArticles []*db.NextArticleResult
 
 	// 一番古い投稿のupdatedAtを取得
-	updatedAt := db.GetUpdatedAt(count)
+	updatedAt, result := db.GetUpdatedAt(count)
 
 	// 次の10件分のデータを取得
-	nextArticles := db.GetNextArticles(updatedAt)
-
+	if result {
+		nextArticles = db.GetNextArticles(updatedAt)
+	} else {
+		c.JSON(201, gin.H{"message": "データがありません"})
+		c.Abort()
+	}
 	c.JSON(200, nextArticles)
 }
 
 // 早起きチェック
 func checkWakeUptime(userId uint) int {
+
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		panic(err)

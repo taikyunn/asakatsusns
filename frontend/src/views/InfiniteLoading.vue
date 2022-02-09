@@ -2,12 +2,12 @@
   <div>
     <div class="card w-75" v-for="article in articles" :key="article">
       <div class="card-header">
-        {{article.ID}}
+        {{article.Name}}
         {{article.UpdatedAt}}
       </div>
       <div class="card-body">
         <p class="card-text">
-          {{article.body}}
+          {{article.Body}}
         </p>
       </div>
     </div>
@@ -25,13 +25,11 @@
   let count = 1;
   const load = async $state => {
     const params = new URLSearchParams()
-    console.log("count",count)
     params.append('count', count)
     try {
       const response = await axios.post('getNextArticles', params);
       const json = await response.data;
-      console.log(json.length)
-      if (json.length < 10) {
+      if (json.length < 10 || response.status == 201) {
         $state.complete()
       } else {
         articles.value.push(...json);

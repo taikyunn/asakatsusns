@@ -5,6 +5,22 @@ import (
 	"time"
 )
 
+type NextArticle struct {
+	Id        int
+	UserId    int
+	Body      string
+	UpdatedAt time.Time
+	Name      string
+}
+
+type NextArticleResult struct {
+	Id        int
+	UserId    int
+	Body      string
+	UpdatedAt string
+	Name      string
+}
+
 // userIdの取得
 func GetUserIdByName(name string) []entity.User {
 	db := gormConnect()
@@ -147,29 +163,44 @@ func GetArticleByTag(articleID []uint) []entity.Article {
 }
 
 // 指定したupdated_atを取得
-func GetUpdatedAt(count int) time.Time {
+func GetUpdatedAt(count int) (time.Time, bool) {
 	db := gormConnect()
 	var articles []entity.Article
 	count = count * 10
+	var updatedAt time.Time
+	var result bool
 
 	if err := db.Select("updated_at").Order("updated_at DESC").Limit(count).Find(&articles).Error; err != nil {
 		panic(err.Error())
 	}
+
 	length := len(articles) - 1
-	updatedAt := articles[length].UpdatedAt
+	if count-1 == length {
+		updatedAt = articles[length].UpdatedAt
+		result = true
+	} else {
+		updatedAt = time.Time{}
+		result = false
+	}
 	defer db.Close()
 
-	return updatedAt
+	return updatedAt, result
 }
 
 // 次の10件分のデータを取得
-func GetNextArticles(updatedAt time.Time) []entity.Article {
+func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 	db := gormConnect()
-	var articles []entity.Article
+	nextArticle := []*NextArticle{}
+	nextArticleResult := []*NextArticleResult{}
 
-	if err := db.Select("id, user_id, body, updated_at").Where("updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Find(&articles).Error; err != nil {
+	if err := db.Table("article").Select("article.id, user_id, body, article.updated_at, name").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
 		panic(err.Error())
 	}
+	for _, v := range nextArticle {
+		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name})
+	}
 	defer db.Close()
-	return articles
+
+	return nextArticleResult
 }
