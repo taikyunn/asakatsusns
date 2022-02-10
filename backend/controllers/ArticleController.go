@@ -215,6 +215,8 @@ func GetNextArticles(c *gin.Context) {
 	count, _ := strconv.Atoi(countStr)
 	var nextArticles []*db.NextArticleResult
 	var countData []*db.CountData
+	var commentCount []*db.CommentCount
+	var articleID []int
 
 	// 一番古い投稿のupdatedAtを取得
 	updatedAt, result := db.GetUpdatedAt(count)
@@ -222,12 +224,14 @@ func GetNextArticles(c *gin.Context) {
 	// 次の10件分のデータを取得
 	if result {
 		nextArticles = db.GetNextArticles(updatedAt)
-		countData = db.GetNextLikeCount(updatedAt)
+		articleID = db.GetNextArticleID(updatedAt)
+		countData = db.GetLikeCount(articleID)
+		commentCount = db.GetCommentCount(articleID)
 	} else {
 		c.JSON(201, gin.H{"message": "データがありません"})
 		c.Abort()
 	}
-	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData})
+	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData, "commentCount": commentCount})
 }
 
 // 早起きチェック

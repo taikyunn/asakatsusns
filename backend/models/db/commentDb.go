@@ -64,7 +64,9 @@ func GetCommentCount(articleIds []int) []*CommentCount {
 	commentCount := []*CommentCount{}
 
 	for _, v := range articleIds {
-		db.Where("article_id = ?", v).Find(&comment).Count(&count)
+		if err := db.Where("article_id = ?", v).Find(&comment).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
 		commentCount = append(commentCount, &CommentCount{v, count})
 	}
 	return commentCount

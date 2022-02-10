@@ -71,26 +71,19 @@ func GetLikeCount(articleIds []int) []*CountData {
 	return countData
 }
 
-// 次の10件分のいいね数のデータを取得
-func GetNextLikeCount(updatedAt time.Time) []*CountData {
+// 次の10件分のarticleIdを取得
+func GetNextArticleID(updatedAt time.Time) []int {
 	db := gormConnect()
-	var likes []entity.Likes
 	var article []entity.Article
-	var count int
-	countData := []*CountData{}
 
-	// 10件分のarticleIdを取得
 	if err := db.Select("id").Where("updated_at <  ?", updatedAt).Limit(10).Order("updated_at DESC").Find(&article).Error; err != nil {
 		panic(err.Error())
 	}
-
-	for _, v := range article {
-		if err := db.Where("article_id = ?", v.ID).Find(&likes).Count(&count).Error; err != nil {
-			panic(err.Error())
-		}
-		countData = append(countData, &CountData{int(v.ID), count})
+	articleID := make([]int, len(article))
+	for i, v := range article {
+		articleID[i] = int(v.ID)
 	}
-	return countData
+	return articleID
 }
 
 // ユーザーがいいね済みかチェック

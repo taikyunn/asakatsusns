@@ -13,6 +13,12 @@
       <div class="card-footer text-end">
         <div v-for="likeCount in likeCounts" :key="likeCount">
           <div v-if="likeCount.ArticleId == article.Id">
+            <span v-for="commentCount in commentCounts" :key="commentCount">
+              <span v-if="commentCount.ArticleId == article.Id">
+                <fa icon="comment-alt" />
+                {{commentCount.Count}}
+              </span>
+            </span>
             いいね数:{{likeCount.Count}}
           </div>
         </div>
@@ -30,6 +36,7 @@
 
   let articles = ref([]);
   let likeCounts = ref([]);
+  let commentCounts = ref([]);
   let count = 1;
   const load = async $state => {
     const params = new URLSearchParams()
@@ -38,11 +45,13 @@
       const response = await axios.post('getNextArticles', params);
       const nextArticles = await response.data.nextArticles;
       const countData = await response.data.countData;
+      const commentCount = await response.data.commentCount;
       if (nextArticles.length < 10 || response.status == 201) {
         $state.complete()
       } else {
         articles.value.push(...nextArticles);
         likeCounts.value.push(...countData);
+        commentCounts.value.push(...commentCount);
         $state.loaded()
       }
       count ++;
