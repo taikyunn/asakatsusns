@@ -2,6 +2,7 @@ package db
 
 import (
 	entity "app/models/entity"
+	"time"
 )
 
 type CountData struct {
@@ -66,6 +67,28 @@ func GetLikeCount(articleIds []int) []*CountData {
 			panic(err.Error())
 		}
 		countData = append(countData, &CountData{v, count})
+	}
+	return countData
+}
+
+// 次の10件分のいいね数のデータを取得
+func GetNextLikeCount(updatedAt time.Time) []*CountData {
+	db := gormConnect()
+	var likes []entity.Likes
+	var article []entity.Article
+	var count int
+	countData := []*CountData{}
+
+	// 10件分のarticleIdを取得
+	if err := db.Select("id").Where("updated_at <  ?", updatedAt).Limit(10).Order("updated_at DESC").Find(&article).Error; err != nil {
+		panic(err.Error())
+	}
+
+	for _, v := range article {
+		if err := db.Where("article_id = ?", v.ID).Find(&likes).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
+		countData = append(countData, &CountData{int(v.ID), count})
 	}
 	return countData
 }

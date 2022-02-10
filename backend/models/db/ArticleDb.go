@@ -203,7 +203,7 @@ func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 	column := "article.id, user_id, body, article.updated_at, name"
 	table := "INNER JOIN user ON article.user_id = user.id"
 
-	if err := db.Table("article").Select(column).Joins(table).Where("article.updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
+	if err := db.Table("article").Select(column).Joins(table).Where("article.deleted_at IS NULL AND article.updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
 		panic(err.Error())
 	}
 	for _, v := range nextArticle {

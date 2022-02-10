@@ -10,6 +10,13 @@
           {{article.Body}}
         </p>
       </div>
+      <div class="card-footer text-end">
+        <div v-for="likeCount in likeCounts" :key="likeCount">
+          <div v-if="likeCount.ArticleId == article.Id">
+            いいね数:{{likeCount.Count}}
+          </div>
+        </div>
+      </div>
     </div>
     <InfiniteLoading :articles="articles" @infinite="load" />
   </div>
@@ -22,17 +29,20 @@
   import "v3-infinite-loading/lib/style.css";
 
   let articles = ref([]);
+  let likeCounts = ref([]);
   let count = 1;
   const load = async $state => {
     const params = new URLSearchParams()
     params.append('count', count)
     try {
       const response = await axios.post('getNextArticles', params);
-      const json = await response.data;
-      if (json.length < 10 || response.status == 201) {
+      const nextArticles = await response.data.nextArticles;
+      const countData = await response.data.countData;
+      if (nextArticles.length < 10 || response.status == 201) {
         $state.complete()
       } else {
-        articles.value.push(...json);
+        articles.value.push(...nextArticles);
+        likeCounts.value.push(...countData);
         $state.loaded()
       }
       count ++;
