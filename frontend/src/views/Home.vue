@@ -243,22 +243,22 @@ export default {
 
 <style scoped>
 .like-btn {
- width: 18px;
- height: 18px;
- font-size: 25px;
- color: #808080;
- margin-left: 20px;
- margin-right: 5px;
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #808080;
+  margin-left: 20px;
+  margin-right: 5px;
 }
 
 .unlike-btn {
- width: 18px;
- height: 18px;
- font-size: 25px;
- color: #e54747;
- margin-left: 20px;
- margin-right: 5px;
- }
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #e54747;
+  margin-left: 20px;
+  margin-right: 5px;
+}
 
  .heart {
    margin-right: 20px;

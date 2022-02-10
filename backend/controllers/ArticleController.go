@@ -213,9 +213,13 @@ func GetMainTag(c *gin.Context) {
 func GetNextArticles(c *gin.Context) {
 	countStr := c.PostForm("count")
 	count, _ := strconv.Atoi(countStr)
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
 	var nextArticles []*db.NextArticleResult
 	var countData []*db.CountData
 	var commentCount []*db.CommentCount
+	var favoriteData []*db.Favoritedata
 	var articleID []int
 
 	// 一番古い投稿のupdatedAtを取得
@@ -227,11 +231,12 @@ func GetNextArticles(c *gin.Context) {
 		articleID = db.GetNextArticleID(updatedAt)
 		countData = db.GetLikeCount(articleID)
 		commentCount = db.GetCommentCount(articleID)
+		favoriteData = db.CheckFavorite(articleID, userID)
 	} else {
 		c.JSON(201, gin.H{"message": "データがありません"})
 		c.Abort()
 	}
-	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData, "commentCount": commentCount})
+	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData, "commentCount": commentCount, "favoriteData": favoriteData})
 }
 
 // 早起きチェック

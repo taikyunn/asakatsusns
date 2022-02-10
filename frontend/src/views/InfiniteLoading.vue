@@ -19,7 +19,22 @@
                 {{commentCount.Count}}
               </span>
             </span>
-            いいね数:{{likeCount.Count}}
+            <span v-for="result in results" :key="result">
+              <span v-if="result.ArticleId == article.Id">
+                <span @click="registerLikes(article)" v-if="result.Count">
+                  <fa icon="heart" class="like-btn"/>
+                  <span v-if="likeCount.ArticleId == article.Id" class="heart">
+                    {{likeCount.Count}}
+                  </span>
+                </span>
+                <span @click="deleteLikes(article)" v-else >
+                  <fa icon="heart" class="unlike-btn"/>
+                  <span v-if="likeCount.ArticleId == article.Id" class="heart">
+                    {{likeCount.Count}}
+                  </span>
+                </span>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -37,21 +52,25 @@
   let articles = ref([]);
   let likeCounts = ref([]);
   let commentCounts = ref([]);
+  let results = ref([]);
   let count = 1;
   const load = async $state => {
     const params = new URLSearchParams()
     params.append('count', count)
+    params.append('userId', localStorage.getItem('userId'))
     try {
       const response = await axios.post('getNextArticles', params);
       const nextArticles = await response.data.nextArticles;
       const countData = await response.data.countData;
       const commentCount = await response.data.commentCount;
+      const favoriteData = await response.data.favoriteData;
       if (nextArticles.length < 10 || response.status == 201) {
         $state.complete()
       } else {
         articles.value.push(...nextArticles);
         likeCounts.value.push(...countData);
         commentCounts.value.push(...commentCount);
+        results.value.push(...favoriteData);
         $state.loaded()
       }
       count ++;
@@ -61,28 +80,25 @@
   }
 </script>
 
-<style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-  }
+<style scoped>
 
-  .result {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    font-weight: 300;
-    width: 400px;
-    padding: 10px;
-    text-align: center;
-    margin: 0 auto 10px auto;
-    background: #eceef0;
-    border-radius: 10px;
-  }
+.like-btn {
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #808080;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+.unlike-btn {
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #e54747;
+  margin-left: 20px;
+  margin-right: 5px;
+}
 
 .card {
   margin-bottom: 40px;
