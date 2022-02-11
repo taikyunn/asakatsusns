@@ -182,8 +182,6 @@
       }
       try {
         const response = await axios.post('/post/deleteLikes', params, config)
-        const count = await axios.post('getNextCountFavorites', params);
-        const favorite = await axios.post("checkNextFavorite", params);
         if (response.status == 201) {
           if (response.data.Body != '') {
             alert("ログインからやり直してください。")
@@ -192,6 +190,8 @@
         } else if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
+          const count = await axios.post('getNextCountFavorites', params);
+          const favorite = await axios.post("checkNextFavorite", params);
           var resultLikesCount = count.data[0]
           for (var i = 0; i < likeCounts.value.length; i++) {
             if (likeCounts.value[i].ArticleId == resultLikesCount.ArticleId) {
