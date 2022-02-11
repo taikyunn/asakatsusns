@@ -100,9 +100,9 @@ func GetAllArticles(c *gin.Context) {
 	// 直近10件分の投稿データを取得
 	articles := db.GetALLArticle()
 
-	articleID := make([]uint, len(articles))
+	articleID := make([]int, len(articles))
 	for i, v := range articles {
-		articleID[i] = uint(v.Id)
+		articleID[i] = v.Id
 	}
 
 	// タグ情報の取得
@@ -220,6 +220,7 @@ func GetNextArticles(c *gin.Context) {
 	var countData []*db.CountData
 	var commentCount []*db.CommentCount
 	var favoriteData []*db.Favoritedata
+	var dbTagResult []*DbTagResult
 	var articleID []int
 
 	// 一番古い投稿のupdatedAtを取得
@@ -232,11 +233,30 @@ func GetNextArticles(c *gin.Context) {
 		countData = db.GetLikeCount(articleID)
 		commentCount = db.GetCommentCount(articleID)
 		favoriteData = db.CheckFavorite(articleID, userID)
+		// タグ情報の取得
+		tagInfo := db.GetTagInfo(articleID)
+		tagMap := make(map[uint]string, len(tagInfo))
+		for _, v := range tagInfo {
+			for i := 0; i < len(v.Name); i++ {
+				tagMap[v.TagId[i]] = v.Name[i]
+			}
+		}
+		dbTagResult = []*DbTagResult{}
+
+		for _, v := range tagInfo {
+			for i := 0; i < len(v.TagId); i++ {
+				for key := range tagMap {
+					if (v.TagId[i]) == key {
+						dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, key, tagMap[key]})
+					}
+				}
+			}
+		}
 	} else {
 		c.JSON(201, gin.H{"message": "データがありません"})
 		c.Abort()
 	}
-	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData, "commentCount": commentCount, "favoriteData": favoriteData})
+	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData, "commentCount": commentCount, "favoriteData": favoriteData, "tagData": dbTagResult})
 }
 
 // 早起きチェック

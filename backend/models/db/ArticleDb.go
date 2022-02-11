@@ -159,7 +159,7 @@ func GetArticleBody(articleID int) []entity.Article {
 }
 
 // 直近10件の取得
-func GetArticleByTag(articleID []uint) []entity.Article {
+func GetArticleByTag(articleID []int) []entity.Article {
 	db := gormConnect()
 	var articles []entity.Article
 

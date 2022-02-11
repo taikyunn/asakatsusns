@@ -9,6 +9,13 @@
         <p class="card-text">
           {{article.Body}}
         </p>
+        <div v-for="tag in tags" :key="tag">
+          <div v-if="article.Id == tag.ArticleId">
+            <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+              #{{tag.Value}}
+            </router-link>
+          </div>
+        </div>
       </div>
       <div class="card-footer text-end">
         <div v-for="likeCount in likeCounts" :key="likeCount">
@@ -55,6 +62,7 @@
   let likeCounts = ref([]);
   let commentCounts = ref([]);
   let results = ref([]);
+  let tags = ref([])
   let count = 1;
   const router = useRouter()
 
@@ -68,6 +76,7 @@
       const countData = await response.data.countData;
       const commentCount = await response.data.commentCount;
       const favoriteData = await response.data.favoriteData;
+      const tagData = await response.data.tagData;
       if (nextArticles.length < 10 || response.status == 201) {
         $state.complete()
       } else {
@@ -75,6 +84,7 @@
         likeCounts.value.push(...countData);
         commentCounts.value.push(...commentCount);
         results.value.push(...favoriteData);
+        tags.value.push(...tagData)
         $state.loaded()
       }
       count ++;
@@ -139,7 +149,6 @@
       const params = new URLSearchParams()
       params.append('articleId', articleId)
       params.append('userId', localStorage.getItem('userId'))
-      console.log(params)
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
@@ -147,7 +156,6 @@
       }
       try {
         const response = await axios.post('/post/deleteLikes', params, config)
-        console.log(response)
         const count = await axios.post('getNextCountFavorites', params);
         const favorite = await axios.post("checkNextFavorite", params);
         if (response.status == 201) {
@@ -204,5 +212,11 @@
 
 .card {
   margin-bottom: 40px;
+}
+
+.tag {
+  color: green;
+  white-space: nowrap;
+  text-decoration: none;
 }
 </style>

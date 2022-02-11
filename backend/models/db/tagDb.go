@@ -11,7 +11,7 @@ type TagInfo struct {
 }
 
 // タグ情報取得
-func GetTagInfo(articleID []uint) []*TagInfo {
+func GetTagInfo(articleID []int) []*TagInfo {
 	db := gormConnect()
 	var count int64
 	var articleTag []entity.ArticleTag
@@ -216,16 +216,16 @@ func GetMainTag() []entity.Tag {
 }
 
 // tagIdをもとにarticleIdを取得
-func GetArticleIdByTagId(tagId int) []uint {
+func GetArticleIdByTagId(tagId int) []int {
 	db := gormConnect()
 	var atricleTag []entity.ArticleTag
 
 	if err := db.Select("article_id").Where("tag_id = ?", tagId).Limit(10).Order("id DESC").Find(&atricleTag).Error; err != nil {
 		panic(err.Error())
 	}
-	articleIds := make([]uint, len(atricleTag))
+	articleIds := make([]int, len(atricleTag))
 	for i, v := range atricleTag {
-		articleIds[i] = uint(v.ArticleId)
+		articleIds[i] = int(v.ArticleId)
 	}
 	defer db.Close()
 	return articleIds

@@ -45,11 +45,11 @@
               </p>
               <div v-for="tag in tags" :key="tag">
                 <div v-if="article.Id == tag.ArticleId">
-                  <span v-if="article.UserId == currentUserId" >
+                  <!-- <span v-if="article.UserId == currentUserId" > -->
                     <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
                       #{{tag.Value}}
                     </router-link>
-                  </span>
+                  <!-- </span> -->
                 </div>
               </div>
             </div>
