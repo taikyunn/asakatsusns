@@ -191,7 +191,6 @@ func GetUpdatedAt(count int) (time.Time, bool) {
 		result = false
 	}
 	defer db.Close()
-
 	return updatedAt, result
 }
 
@@ -211,6 +210,5 @@ func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name})
 	}
 	defer db.Close()
-
 	return nextArticleResult
 }

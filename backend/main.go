@@ -119,6 +119,12 @@ func serve() {
 	// いいね数取得(トップページ)
 	r.GET("/getCountFavorites", controller.GetCountFavorites)
 
+	// いいね数取得(無限スクロール)
+	r.POST("/getNextCountFavorites", controller.GetNextCountFavorites)
+
+	// いいねしているかの確認(無限スクロール)
+	r.POST("/checkNextFavorite", controller.CheckNextFavorite)
+
 	// いいね数取得(詳細ページ)
 	r.POST("/getOneCountFavorites", controller.GetOneCountFavorites)
 

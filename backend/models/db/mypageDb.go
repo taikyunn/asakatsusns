@@ -7,7 +7,9 @@ func GetOneUser(userID int) []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Where("id = ?", userID).Find(&user, userID)
+	if err := db.Where("id = ?", userID).Find(&user, userID).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 	return user
 }
@@ -17,7 +19,9 @@ func UpdateSleepTime(sleepTime string, userID int) {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Model(&user).Where("id = ?", userID).Update("sleep_time", sleepTime)
+	if err := db.Model(&user).Where("id = ?", userID).Update("sleep_time", sleepTime).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 }
 
@@ -25,7 +29,9 @@ func UpdateWakeUpTime(wakeUpTime string, userID int) {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Model(&user).Where("id = ?", userID).Update("wake_up_time", wakeUpTime)
+	if err := db.Model(&user).Where("id = ?", userID).Update("wake_up_time", wakeUpTime).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 }
 
@@ -34,7 +40,9 @@ func GetSleepTimeById(userID int) []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Select("sleep_time").Where("id = ?", userID).Find(&user)
+	if err := db.Select("sleep_time").Where("id = ?", userID).Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
 
 	defer db.Close()
 	return user
@@ -45,7 +53,9 @@ func GetWakeUpTimeById(userID int) []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Select("wake_up_time").Where("id = ?", userID).Find(&user)
+	if err := db.Select("wake_up_time").Where("id = ?", userID).Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
 
 	defer db.Close()
 	return user
@@ -56,7 +66,9 @@ func GetWakeUpData(userID int) []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Select("wake_up_time, range_of_success").Where("id = ?", userID).Find(&user)
+	if err := db.Select("wake_up_time, range_of_success").Where("id = ?", userID).Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
 
 	defer db.Close()
 	return user
@@ -67,7 +79,9 @@ func UpdateFilePath(id int, file_path string) {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Model(&user).Where("id = ?", id).Update("profile_image_path", file_path)
+	if err := db.Model(&user).Where("id = ?", id).Update("profile_image_path", file_path).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 }
 
@@ -76,7 +90,9 @@ func GetFilePathById(id int) []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Select("profile_image_path").Where("id = ?", id).Find(&user)
+	if err := db.Select("profile_image_path").Where("id = ?", id).Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 	return user
 }
@@ -86,7 +102,9 @@ func UpdateUserName(id int, name string) {
 	db := gormConnect()
 	var user []entity.User
 
-	db.Model(&user).Where("id = ?", id).Update("name", name)
+	if err := db.Model(&user).Where("id = ?", id).Update("name", name).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 }
 
@@ -95,7 +113,9 @@ func GetMypageArticle(userID int) ([]entity.Article, []int) {
 	db := gormConnect()
 	var article []entity.Article
 
-	db.Limit(10).Order("id DESC").Select("id, body").Where("user_id = ?", userID).Find(&article)
+	if err := db.Limit(10).Order("id DESC").Select("id, body").Where("user_id = ?", userID).Find(&article).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 
 	articleIds := make([]int, len(article))

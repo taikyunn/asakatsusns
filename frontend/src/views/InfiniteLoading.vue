@@ -21,7 +21,7 @@
             </span>
             <span v-for="result in results" :key="result">
               <span v-if="result.ArticleId == article.Id">
-                <span @click="registerLikes(article)" v-if="result.Count">
+                <span @click="registerLikes(article.Id)" v-if="result.Count">
                   <fa icon="heart" class="like-btn"/>
                   <span v-if="likeCount.ArticleId == article.Id" class="heart">
                     {{likeCount.Count}}
@@ -44,16 +44,24 @@
 </template>
 
 <script setup>
+
   import axios from 'axios'
   import { ref } from "vue";
   import InfiniteLoading from "v3-infinite-loading";
   import "v3-infinite-loading/lib/style.css";
+  import { useRouter } from 'vue-router'
 
   let articles = ref([]);
   let likeCounts = ref([]);
   let commentCounts = ref([]);
   let results = ref([]);
   let count = 1;
+  const router = useRouter()
+  // const obj = reactive({
+  //   Target:"",
+  // });
+
+
   const load = async $state => {
     const params = new URLSearchParams()
     params.append('count', count)
@@ -76,6 +84,54 @@
       count ++;
     } catch (error) {
       $state.error()
+    }
+  }
+
+  async function registerLikes(articleId) {
+    try {
+      if (localStorage.getItem('jwt') == '') {
+        throw new Error('終了します');
+      }
+      const params = new URLSearchParams()
+      params.append('articleId', articleId)
+      params.append('userId', localStorage.getItem('userId'))
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      try {
+        const response = await axios.post('/post/registerLikes', params, config);
+        const count = await axios.post('getNextCountFavorites', params);
+        const favorite = await axios.post("checkNextFavorite", params);
+        if (response.status == 201) {
+          if (response.data.Body != '') {
+            alert("ログインからやり直してください。")
+            router.push('/login')
+          }
+        } else if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var resultLikesCount = count.data[0]
+          for (var i = 0; i < likeCounts.value.length; i++) {
+            if (likeCounts.value[i].ArticleId == resultLikesCount.ArticleId) {
+                likeCounts.value[i] = resultLikesCount
+            }
+          }
+          var resultFavorite = favorite.data[0]
+          for (var index = 0; index < results.value.length; index++) {
+            if (results.value[index].ArticleId == resultFavorite.ArticleId) {
+                results.value[index] = resultFavorite
+            }
+          }
+        }
+      } catch {
+        alert("ログインからやり直してください。")
+        router.push('/login')
+      }
+    } catch {
+      alert("ログインからやり直してください。")
+      router.push('/login')
     }
   }
 </script>

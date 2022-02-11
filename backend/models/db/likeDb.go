@@ -40,7 +40,9 @@ func DeleteLikes(articleId int, userId int) {
 	db := gormConnect()
 	var likes []entity.Likes
 
-	db.Where("user_id = ? AND article_id = ? ", userId, articleId).Delete(&likes)
+	if err := db.Where("user_id = ? AND article_id = ? ", userId, articleId).Delete(&likes).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 }
 
@@ -52,6 +54,7 @@ func GetLastTenArticleID() []entity.Article {
 	if err := db.Select("id").Limit(10).Order("id DESC").Find(&article).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return article
 }
 
@@ -68,6 +71,21 @@ func GetLikeCount(articleIds []int) []*CountData {
 		}
 		countData = append(countData, &CountData{v, count})
 	}
+	defer db.Close()
+	return countData
+}
+
+func GetPreviousLikeCount(articleId int) []*CountData {
+	db := gormConnect()
+	var likes []entity.Likes
+	var count int
+	countData := []*CountData{}
+
+	if err := db.Where("article_id = ?", articleId).Find(&likes).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	countData = append(countData, &CountData{articleId, count})
+	defer db.Close()
 	return countData
 }
 
@@ -83,6 +101,7 @@ func GetNextArticleID(updatedAt time.Time) []int {
 	for i, v := range article {
 		articleID[i] = int(v.ID)
 	}
+	defer db.Close()
 	return articleID
 }
 
@@ -94,13 +113,35 @@ func CheckFavorite(articleIds []int, userId int) []*Favoritedata {
 	favoriteData := []*Favoritedata{}
 
 	for _, v := range articleIds {
-		db.Where("article_id = ? AND user_id = ?", v, userId).Find(&likes).Count(&count)
+		if err := db.Where("article_id = ? AND user_id = ?", v, userId).Find(&likes).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
 		if count == 1 {
 			favoriteData = append(favoriteData, &Favoritedata{v, false})
 		} else {
 			favoriteData = append(favoriteData, &Favoritedata{v, true})
 		}
 	}
+	defer db.Close()
+	return favoriteData
+}
+
+// ユーザーがいいね済みかチェック(無限スクロール)
+func CheckNextFavorite(articleId int, userId int) []*Favoritedata {
+	db := gormConnect()
+	var likes []entity.Likes
+	var count int
+	favoriteData := []*Favoritedata{}
+
+	if err := db.Where("article_id = ? AND user_id = ?", articleId, userId).Find(&likes).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	if count == 1 {
+		favoriteData = append(favoriteData, &Favoritedata{articleId, false})
+	} else {
+		favoriteData = append(favoriteData, &Favoritedata{articleId, true})
+	}
+	defer db.Close()
 	return favoriteData
 }
 
@@ -113,6 +154,7 @@ func GetOneLikeCount(articleId int) int {
 	if err := db.Where("article_id = ?", articleId).Find(&likes).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return count
 }
 
@@ -131,6 +173,7 @@ func CheckFavoriteByArticleId(articleId int, userId int) []*Favoritedata {
 	} else {
 		favoriteData = append(favoriteData, &Favoritedata{articleId, true})
 	}
+	defer db.Close()
 	return favoriteData
 }
 
@@ -147,6 +190,7 @@ func GetLikedPostId(userId int) []int {
 	for i, v := range likes {
 		articleIDs[i] = v.ArticleId
 	}
+	defer db.Close()
 	return articleIDs
 }
 
@@ -166,10 +210,11 @@ func GetLikedPost(articleIds []int) []*FavoritePostData {
 		}
 		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), v, user[0].Name, article[0].Body})
 	}
-
+	defer db.Close()
 	return favoritePostData
 }
 
+// いいね記事の中身を取得
 func GetLikedPostCount(articleIds []int) []*FavoriteCountData {
 	db := gormConnect()
 	var likes []entity.Likes
@@ -182,5 +227,6 @@ func GetLikedPostCount(articleIds []int) []*FavoriteCountData {
 		}
 		favoriteCountData = append(favoriteCountData, &FavoriteCountData{v, count})
 	}
+	defer db.Close()
 	return favoriteCountData
 }

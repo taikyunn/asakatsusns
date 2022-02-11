@@ -20,6 +20,7 @@ func CheckNameAndPassword(name string, email string) bool {
 	if err := db.Where("name = ? AND email = ?", name, email).Find(&user).Error; err != nil {
 		return false
 	}
+	defer db.Close()
 	return true
 }
 

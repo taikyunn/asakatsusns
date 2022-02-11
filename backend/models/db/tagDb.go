@@ -49,6 +49,7 @@ func GetTagInfo(articleID []uint) []*TagInfo {
 		}
 		tagInfo = append(tagInfo, &TagInfo{int(value), tagIds, tagNames})
 	}
+	defer db.Close()
 	return tagInfo
 }
 
@@ -94,6 +95,7 @@ func FindTagData(articleId int) []string {
 	for i, v := range tag {
 		tagNames[i] = v.Name
 	}
+	defer db.Close()
 	return tagNames
 }
 
@@ -149,6 +151,7 @@ func UpdateTagData(articleId int, tags []entity.TagData) {
 		}
 		db.Create(&articleTag)
 	}
+	defer db.Close()
 }
 
 // 自動補完機能データ取得
@@ -159,6 +162,7 @@ func GetAutocompleteItems() []entity.Tag {
 	if err := db.Select("name").Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return tag
 }
 
@@ -195,6 +199,7 @@ func GetOneTagData(ArticleId int) []string {
 	for i, v := range tag {
 		tagNames[i] = v.Name
 	}
+	defer db.Close()
 	return tagNames
 }
 
@@ -206,6 +211,7 @@ func GetMainTag() []entity.Tag {
 	if err := db.Select("id,name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return tag
 }
 
@@ -221,7 +227,7 @@ func GetArticleIdByTagId(tagId int) []uint {
 	for i, v := range atricleTag {
 		articleIds[i] = uint(v.ArticleId)
 	}
-
+	defer db.Close()
 	return articleIds
 }
 
@@ -233,6 +239,7 @@ func GetTagNameById(tagId int) []entity.Tag {
 	if err := db.Select("name").Where("id = ?", tagId).Limit(10).Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return tag
 }
 
@@ -245,5 +252,6 @@ func GetTagCount(tagId int) int {
 	if err := db.Model(&articleTag).Where("tag_id = ?", tagId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return count
 }

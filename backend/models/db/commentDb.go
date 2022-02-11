@@ -53,6 +53,7 @@ func GetCommentData(articleId int) []*CommentData {
 			}
 		}
 	}
+	defer db.Close()
 	return commentData
 }
 
@@ -69,5 +70,6 @@ func GetCommentCount(articleIds []int) []*CommentCount {
 		}
 		commentCount = append(commentCount, &CommentCount{v, count})
 	}
+	defer db.Close()
 	return commentCount
 }
