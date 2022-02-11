@@ -57,10 +57,6 @@
   let results = ref([]);
   let count = 1;
   const router = useRouter()
-  // const obj = reactive({
-  //   Target:"",
-  // });
-
 
   const load = async $state => {
     const params = new URLSearchParams()
