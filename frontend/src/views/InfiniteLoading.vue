@@ -27,7 +27,7 @@
                     {{likeCount.Count}}
                   </span>
                 </span>
-                <span @click="deleteLikes(article)" v-else >
+                <span @click="deleteLikes(article.Id)" v-else >
                   <fa icon="heart" class="unlike-btn"/>
                   <span v-if="likeCount.ArticleId == article.Id" class="heart">
                     {{likeCount.Count}}
@@ -98,6 +98,56 @@
       }
       try {
         const response = await axios.post('/post/registerLikes', params, config);
+        const count = await axios.post('getNextCountFavorites', params);
+        const favorite = await axios.post("checkNextFavorite", params);
+        if (response.status == 201) {
+          if (response.data.Body != '') {
+            alert("ログインからやり直してください。")
+            router.push('/login')
+          }
+        } else if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var resultLikesCount = count.data[0]
+          for (var i = 0; i < likeCounts.value.length; i++) {
+            if (likeCounts.value[i].ArticleId == resultLikesCount.ArticleId) {
+                likeCounts.value[i] = resultLikesCount
+            }
+          }
+          var resultFavorite = favorite.data[0]
+          for (var index = 0; index < results.value.length; index++) {
+            if (results.value[index].ArticleId == resultFavorite.ArticleId) {
+                results.value[index] = resultFavorite
+            }
+          }
+        }
+      } catch {
+        alert("ログインからやり直してください。")
+        router.push('/login')
+      }
+    } catch {
+      alert("ログインからやり直してください。")
+      router.push('/login')
+    }
+  }
+
+  async function deleteLikes(articleId) {
+    try {
+      if (localStorage.getItem('jwt') == '') {
+        throw new Error('終了します');
+      }
+      const params = new URLSearchParams()
+      params.append('articleId', articleId)
+      params.append('userId', localStorage.getItem('userId'))
+      console.log(params)
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      }
+      try {
+        const response = await axios.post('/post/deleteLikes', params, config)
+        console.log(response)
         const count = await axios.post('getNextCountFavorites', params);
         const favorite = await axios.post("checkNextFavorite", params);
         if (response.status == 201) {
