@@ -87,7 +87,6 @@ export default {
         } else {
           var resultArticle = response.data
           this.ArticleData = resultArticle[0]
-          console.log(this.ArticleData)
         }
       })
     },
