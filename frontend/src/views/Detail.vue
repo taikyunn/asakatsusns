@@ -1,46 +1,49 @@
 <template>
   <div>
     <Header />
-    <div class="container text-center">
-      <div class="card w-50">
-        <div class="card-header text-start">
-          {{ArticleData.Name}}
-        </div>
-        <div class="card-body">
-          <p class="card-text">
-            {{ArticleData.Body}}
-          </p>
-        </div>
-        <div class="card-footer text-end">
-          <fa icon="comment-alt" />
-          {{ArticleData.Count}}
-          <span v-for="result in results" :key="result">
-            <span @click="registerLikes()" v-if="result.Count">
-             <fa icon="heart" class="like-btn"/>
-             {{count}}
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card w-75">
+            <div class="card-header text-start">
+              {{ArticleData.Name}}
+            </div>
+            <div class="card-body">
+              <p class="card-text">
+                {{ArticleData.Body}}
+              </p>
+            </div>
+            <div class="card-footer text-end">
+              <fa icon="comment-alt" />
+              {{ArticleData.Count}}
+              <span v-for="result in results" :key="result">
+                <span @click="registerLikes()" v-if="result.Count">
+                <fa icon="heart" class="like-btn"/>
+                {{count}}
+                </span>
+                <span @click="deleteLikes()" v-else>
+                  <fa icon="heart" class="unlike-btn"/>
+                  {{count}}
+                </span>
+              </span>
+            </div>
+            <span v-for="tag in ArticleData.Tags" :key="tag">
+              {{tag}}&nbsp;
             </span>
-            <span @click="deleteLikes()" v-else>
-              <fa icon="heart" class="unlike-btn"/>
-              {{count}}
-            </span>
-          </span>
+          </div>
+          <div class="mb-3">
+            <p v-for="commentData in ArticleData.Comments" :key="commentData">
+              {{commentData.Name}}さん:{{commentData.Comment}}
+            </p>
+          </div>
+          <div class="mb-3">
+            <h2>コメントを追加する</h2>
+            <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
+            <div class="mb-3">
+              <button @click='insertComment()'>コメントする</button>
+            </div>
+          </div>
         </div>
-        <span v-for="tag in ArticleData.Tags" :key="tag">
-          {{tag}}&nbsp;
-        </span>
-      </div>
-      <div>
-        <h2>コメントを追加する</h2>
-        <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
-        <div>
-          <button @click='insertComment()'>コメントする</button>
-        </div>
-      </div>
-      <div>
-        <h2>コメント一覧</h2>
-        <p v-for="commentData in ArticleData.Comments" :key="commentData">
-          {{commentData.Name}}さん:{{commentData.Comment}}
-        </p>
       </div>
     </div>
   </div>
@@ -207,7 +210,7 @@ export default {
 </script>
 
 <style scoped>
-.text-center {
+.container {
   padding-top: 5rem;
 }
 
