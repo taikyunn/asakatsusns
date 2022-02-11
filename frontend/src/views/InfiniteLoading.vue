@@ -2,7 +2,9 @@
   <div>
     <div class="card w-75" v-for="article in articles" :key="article">
       <div class="card-header">
-        {{article.Name}}
+        <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
+          {{article.Name}}
+        </router-link>
         {{article.UpdatedAt}}
       </div>
       <div class="card-body">
@@ -210,13 +212,33 @@
   margin-right: 5px;
 }
 
+ .heart {
+   margin-right: 20px;
+ }
+
+ .link {
+  text-decoration: none;
+  text-align: left;
+  color:black;
+ }
+
 .card {
   margin-bottom: 40px;
+}
+
+.ellipsis {
+  float: right;
 }
 
 .tag {
   color: green;
   white-space: nowrap;
   text-decoration: none;
+}
+
+.link {
+  text-decoration: none;
+  text-align: left;
+  color:black;
 }
 </style>

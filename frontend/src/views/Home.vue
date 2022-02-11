@@ -264,10 +264,6 @@ export default {
    margin-right: 20px;
  }
 
-.comment-icon {
-  margin-right: 5px;
-}
-
 .card {
   margin-bottom: 40px;
 }
