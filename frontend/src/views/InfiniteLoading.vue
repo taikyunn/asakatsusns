@@ -21,7 +21,7 @@
               </li>
               <li>
                   <a class="dropdown-item" href="#">
-                    <button class="btn btn-warning" @click="deleteArticle(article)">
+                    <button class="btn btn-warning" @click="deleteArticle(article.Id)">
                       削除
                     </button>
                   </a>
@@ -208,6 +208,24 @@
       } catch {
         alert("ログインからやり直してください。")
         router.push('/login')
+      }
+    } catch {
+      alert("ログインからやり直してください。")
+      router.push('/login')
+    }
+  }
+
+  async function deleteArticle(articleId) {
+    confirm('削除してもよろしいですか。')
+    const params = new URLSearchParams()
+    params.append('articleId', articleId)
+    try {
+      const response = await axios.post('deleteArticle', params)
+      if (response.status != 200) {
+        throw new Error('レスポンスエラー')
+      } else {
+        router.go({path: router.currentRoute.path, force: true})
+        alert('削除しました。')
       }
     } catch {
       alert("ログインからやり直してください。")
