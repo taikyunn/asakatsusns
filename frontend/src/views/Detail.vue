@@ -1,15 +1,30 @@
 <template>
   <div>
     <Header />
-    <div class="text-center">
-      <div>
-        <p>{{ArticleData.Name}}さん</p>
-        <p>内容:{{ArticleData.Body}}</p>
+    <div class="container text-center">
+      <div class="card w-50">
+        <div class="card-header text-start">
+          {{ArticleData.Name}}
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            {{ArticleData.Body}}
+          </p>
+        </div>
+        <div class="card-footer text-end">
+          <fa icon="comment-alt" />
+          {{ArticleData.Count}}
           <span v-for="result in results" :key="result">
-            <button @click="registerLikes()" v-if="result.Count">いいね</button>
-            <button @click="deleteLikes()" v-else>いいね解除</button>
+            <span @click="registerLikes()" v-if="result.Count">
+             <fa icon="heart" class="like-btn"/>
+             {{count}}
+            </span>
+            <span @click="deleteLikes()" v-else>
+              <fa icon="heart" class="unlike-btn"/>
+              {{count}}
+            </span>
           </span>
-        <p>いいね数:{{count}}</p>
+        </div>
         <span v-for="tag in ArticleData.Tags" :key="tag">
           {{tag}}&nbsp;
         </span>
@@ -45,9 +60,9 @@ export default {
   data () {
     return {
       ArticleData: [],
-      results:[],
-      count:'',
-      comment:'',
+      results: [],
+      count: '',
+      comment: '',
     }
   },
   components: { Header },
@@ -70,8 +85,9 @@ export default {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          var ArticleData = response.data
-          this.ArticleData = ArticleData[0]
+          var resultArticle = response.data
+          this.ArticleData = resultArticle[0]
+          console.log(this.ArticleData)
         }
       })
     },
@@ -194,5 +210,23 @@ export default {
 <style scoped>
 .text-center {
   padding-top: 5rem;
+}
+
+.like-btn {
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #808080;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+.unlike-btn {
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #e54747;
+  margin-left: 20px;
+  margin-right: 5px;
 }
 </style>

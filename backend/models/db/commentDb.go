@@ -73,3 +73,17 @@ func GetCommentCount(articleIds []int) []*CommentCount {
 	defer db.Close()
 	return commentCount
 }
+
+// コメント件数を取得(1件)
+func GetOneCommentCount(articleId int) int {
+	db := gormConnect()
+	var comment []entity.Comment
+	var count int
+
+	if err := db.Where("article_id = ?", articleId).Find(&comment).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+
+	defer db.Close()
+	return count
+}

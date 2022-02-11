@@ -44,11 +44,11 @@ export default {
   data() {
     return {
       name: "",
-      email:'',
+      email: '',
       password: "",
       errors: [],
       apiErrors: [],
-      }
+    }
   },
   components: { Header },
   methods: {

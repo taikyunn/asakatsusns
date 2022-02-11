@@ -48,7 +48,7 @@ export default {
       name: "",
       email: "",
       password: "",
-      users:[],
+      users: [],
       errors: [],
       apiErrors: [],
     }

@@ -41,6 +41,7 @@ type DetailData struct {
 	Body      string
 	Tags      []string
 	Comments  []*db.CommentData
+	Count     int
 }
 
 func CreateArticle(c *gin.Context) {
@@ -192,8 +193,11 @@ func GetArticleDetail(c *gin.Context) {
 	// コメントデータ取得
 	commentData := db.GetCommentData(articleID)
 
+	// コメント件数を取得
+	count := db.GetOneCommentCount(articleID)
+
 	detailData := []*DetailData{}
-	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagData, commentData})
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagData, commentData, count})
 
 	c.JSON(200, detailData)
 }

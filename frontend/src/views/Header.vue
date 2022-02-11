@@ -76,10 +76,10 @@ import "firebase/auth"
 export default {
   data() {
     return {
-      authenticatedUser:'',
-      notAuthenticatedUser:'',
-      currentUserId:'',
-      currentUserName:localStorage.getItem('userName'),
+      authenticatedUser: '',
+      notAuthenticatedUser: '',
+      currentUserId: '',
+      currentUserName: localStorage.getItem('userName'),
     }
   },
   mounted(){

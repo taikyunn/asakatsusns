@@ -96,17 +96,17 @@ export default {
   },
   data() {
     return {
-      url:'',
+      url: '',
       profileDataUrl: '',
       followData: [],
       isMyOwnPage: false,
       isFollowedBy: false,
       isEdit: false,
       editName: false,
-      userInfo:[],
+      userInfo: [],
       editSleepTime: false,
       editWakeUpTime: false,
-      wakeUpTime:'',
+      wakeUpTime: '',
     }
   },
   mounted() {

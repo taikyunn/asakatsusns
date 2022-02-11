@@ -109,11 +109,11 @@ export default {
   props:["id"],
   data(){
     return{
-      userInfo:[],
-      sleepTime:'',
-      wakeUpTime:'',
-      url:'',
-      fileInfo:'',
+      userInfo: [],
+      sleepTime: '',
+      wakeUpTime: '',
+      url: '',
+      fileInfo: '',
       profileDataUrl: '',
       mypageArticle: [],
       countData: '',

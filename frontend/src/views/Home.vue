@@ -99,11 +99,11 @@ export default {
   data() {
     return {
       currentUserId: localStorage.getItem('userId'),
-      articles:[],
-      tags:[],
+      articles: [],
+      tags: [],
       likesCounts: [],
-      results:[],
-      commentCounts:[],
+      results: [],
+      commentCounts: [],
     }
   },
   components: {
