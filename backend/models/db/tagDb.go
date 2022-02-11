@@ -10,6 +10,11 @@ type TagInfo struct {
 	Name      []string
 }
 
+type TagResult struct {
+	Id   int
+	Name string
+}
+
 // タグ情報取得
 func GetTagInfo(articleID []int) []*TagInfo {
 	db := gormConnect()
@@ -204,15 +209,18 @@ func GetOneTagData(ArticleId int) []string {
 }
 
 // メインタグ情報の取得
-func GetMainTag() []entity.Tag {
+func GetMainTag() []*TagResult {
 	db := gormConnect()
-	var tag []entity.Tag
+	tagResult := []*TagResult{}
+	table := "INNER JOIN article_tag ON tag.id = article_tag.tag_id"
+	where := "article_tag.deleted_at IS NULL"
 
-	if err := db.Select("id,name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
+	if err := db.Table("tag").Select("tag.id, name").Joins(table).Order("tag.updated_at DESC").Where(where).Limit(5).Scan(&tagResult).Error; err != nil {
 		panic(err.Error())
 	}
+
 	defer db.Close()
-	return tag
+	return tagResult
 }
 
 // tagIdをもとにarticleIdを取得

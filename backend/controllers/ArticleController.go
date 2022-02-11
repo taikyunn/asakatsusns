@@ -201,12 +201,8 @@ func GetArticleDetail(c *gin.Context) {
 // メインタグ情報の取得
 func GetMainTag(c *gin.Context) {
 	mainTag := db.GetMainTag()
-	mainTagMap := make(map[uint]string, len(mainTag))
-	for _, v := range mainTag {
-		mainTagMap[v.ID] = v.Name
-	}
 
-	c.JSON(200, mainTagMap)
+	c.JSON(200, mainTag)
 }
 
 // 無限スクロールのデータ取得

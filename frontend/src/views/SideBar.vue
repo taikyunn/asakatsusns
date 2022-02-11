@@ -5,9 +5,9 @@
         <fa icon="tag" />
         メインタグ
       </div>
-      <div class="card-body text-center" v-for="(mainTag, index) in mainTags" :key="mainTag">
-        <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(index))}}">
-          #{{mainTag}}
+      <div class="card-body text-center" v-for="mainTag in mainTags" :key="mainTag">
+        <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(mainTag.Id))}}">
+          #{{mainTag.Name}}
         </router-link>
       </div>
     </div>
