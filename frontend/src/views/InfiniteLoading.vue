@@ -6,6 +6,29 @@
           {{article.Name}}
         </router-link>
         {{article.UpdatedAt}}
+        <span v-if="article.UserId == currentUserId">
+          <span class="dropdown">
+            <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <fa icon="ellipsis-v" class="ellipsis" />
+            </a>
+            <ul class="dropdown-menu" justify-content-end >
+              <li>
+                  <a class="dropdown-item" href="#">
+                    <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
+                      編集
+                    </router-link>
+                  </a>
+              </li>
+              <li>
+                  <a class="dropdown-item" href="#">
+                    <button class="btn btn-warning" @click="deleteArticle(article)">
+                      削除
+                    </button>
+                  </a>
+              </li>
+            </ul>
+          </span>
+        </span>
       </div>
       <div class="card-body">
         <p class="card-text">
@@ -64,8 +87,9 @@
   let likeCounts = ref([]);
   let commentCounts = ref([]);
   let results = ref([]);
-  let tags = ref([])
+  let tags = ref([]);
   let count = 1;
+  let currentUserId = ref(localStorage.getItem('userId'))
   const router = useRouter()
 
   const load = async $state => {
