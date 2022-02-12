@@ -38,17 +38,23 @@
                 <span class="time">
                   {{commentData.UpdatedAt}}
                 </span>
-                <div class="card-text">
+                <div class="card-text card-text-comment">
                 {{commentData.Comment}}
                 </div>
               </div>
             </div>
-          </div>
-          <div class="mb-3">
-            <h2>コメントを追加する</h2>
-            <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
-            <div class="mb-3">
-              <button @click='insertComment()'>コメントする</button>
+            <div class="card w-75">
+              <div class="card-body">
+                <div class="card-text">
+                  <label for="comment-area" class="form-label">
+                    {{currentUserName}}
+                  </label>
+                  <textarea name="body" class="form-control" id="comment-area" rows="3" v-model="comment"></textarea>
+                </div>
+                <div class="submit">
+                  <button @click='insertComment()' class="btn btn-outline-warning">コメントする</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -74,6 +80,7 @@ export default {
       results: [],
       count: '',
       comment: '',
+      currentUserName: localStorage.getItem('userName'),
     }
   },
   components: { Header },
@@ -244,7 +251,13 @@ export default {
   padding-top: 5rem;
 }
 
-.time {
+.time, .submit {
   float: right;
 }
+
+.card-text-comment, .submit {
+  padding-top: 1rem;
+}
+
+
 </style>
