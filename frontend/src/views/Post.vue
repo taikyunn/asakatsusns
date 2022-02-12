@@ -107,7 +107,6 @@ export default {
               alert("早起き達成" + response.data + "日目!!")
               this.$router.push('/')
             } else {
-              alert("投稿しました。")
               this.$router.push('/')
             }
           }
