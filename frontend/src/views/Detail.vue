@@ -7,6 +7,9 @@
           <div class="card w-75">
             <div class="card-header text-start">
               {{ArticleData.Name}}
+              <span class="time">
+                {{ArticleData.UpdatedAt}}
+              </span>
             </div>
             <div class="card-body">
               <p class="card-text">

@@ -21,6 +21,20 @@ type NextArticleResult struct {
 	Name      string
 }
 
+type ArticleData struct {
+	UserId    int
+	Name      string
+	Body      string
+	UpdatedAt time.Time
+}
+
+type ArticleResult struct {
+	UserId    int
+	Name      string
+	Body      string
+	UpdatedAt string
+}
+
 // userIdの取得
 func GetUserIdByName(name string) []entity.User {
 	db := gormConnect()
@@ -147,15 +161,24 @@ func UpdateArticleData(id int, body string) {
 	defer db.Close()
 }
 
-// body,user_idを取得
-func GetArticleBody(articleID int) []entity.Article {
+// body,user_id, updated_atを取得
+func GetArticleBody(articleID int) []*ArticleResult {
 	db := gormConnect()
-	var article []entity.Article
+	articleData := []*ArticleData{}
+	articleResult := []*ArticleResult{}
+	table := "user_id, name, body, article.updated_at"
+	join := "INNER JOIN user ON article.user_id = user.id"
+	where := "article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?"
 
-	if err := db.Select("user_id, body").Where("id = ?", articleID).Find(&article).Error; err != nil {
+	if err := db.Table("article").Select(table).Joins(join).Where(where, articleID).Scan(&articleData).Error; err != nil {
 		panic(err.Error())
 	}
-	return article
+	for _, v := range articleData {
+		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+		articleResult = append(articleResult, &ArticleResult{int(v.UserId), v.Name, v.Body, t})
+	}
+	defer db.Close()
+	return articleResult
 }
 
 // 直近10件の取得
