@@ -5,28 +5,30 @@
         <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
           {{article.Name}}
         </router-link>
-        {{article.UpdatedAt}}
-        <span v-if="article.UserId == currentUserId">
-          <span class="dropdown">
-            <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              <fa icon="ellipsis-v" class="ellipsis" />
-            </a>
-            <ul class="dropdown-menu" justify-content-end >
-              <li>
-                  <a class="dropdown-item" href="#">
-                    <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
-                      編集
-                    </router-link>
-                  </a>
-              </li>
-              <li>
-                  <a class="dropdown-item" href="#">
-                    <button class="btn btn-warning" @click="deleteArticle(article.Id)">
-                      削除
-                    </button>
-                  </a>
-              </li>
-            </ul>
+        <span class="time">
+          {{article.UpdatedAt}}
+          <span v-if="article.UserId == currentUserId">
+            <span class="dropdown">
+              <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <fa icon="ellipsis-v" class="ellipsis" />
+              </a>
+              <ul class="dropdown-menu" justify-content-end >
+                <li>
+                    <a class="dropdown-item" href="#">
+                      <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
+                        編集
+                      </router-link>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                      <button class="btn btn-warning" @click="deleteArticle(article.Id)">
+                        削除
+                      </button>
+                    </a>
+                </li>
+              </ul>
+            </span>
           </span>
         </span>
       </div>
@@ -269,7 +271,7 @@
 }
 
 .ellipsis {
-  float: right;
+  color:gray
 }
 
 .tag {
@@ -283,4 +285,8 @@
   text-align: left;
   color:black;
 }
+.time {
+  float: right;
+}
+
 </style>

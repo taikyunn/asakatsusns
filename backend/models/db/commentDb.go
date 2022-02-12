@@ -2,11 +2,19 @@ package db
 
 import (
 	"app/models/entity"
+	"time"
 )
 
 type CommentData struct {
-	Name    string
-	Comment string
+	Name      string
+	Comment   string
+	UpdatedAt time.Time
+}
+
+type ResultCommentData struct {
+	Name      string
+	Comment   string
+	UpdatedAt string
 }
 
 type CommentCount struct {
@@ -23,38 +31,20 @@ func InsertComment(comment *entity.Comment) {
 }
 
 // コメント情報取得
-func GetCommentData(articleId int) []*CommentData {
+func GetCommentData(articleId int) []*ResultCommentData {
 	db := gormConnect()
-	var comment []entity.Comment
-	var user []entity.User
-
-	if err := db.Select("user_id, comment").Where("article_id = ?", articleId).Find(&comment).Error; err != nil {
-		panic(err.Error())
-	}
-
-	comments := make([]string, len(comment))
-	userIDs := make([]int, len(comment))
-	for i, v := range comment {
-		comments[i] = v.Comment
-		userIDs[i] = v.UserId
-	}
-
-	// 誰がコメントしたかを取得
-	if err := db.Select("id,name").Where("id IN (?)", userIDs).Find(&user).Error; err != nil {
-		panic(err.Error())
-	}
-
 	commentData := []*CommentData{}
+	resultCommentData := []*ResultCommentData{}
 
-	for _, cv := range comment {
-		for _, uv := range user {
-			if cv.UserId == int(uv.ID) {
-				commentData = append(commentData, &CommentData{uv.Name, cv.Comment})
-			}
-		}
+	if err := db.Table("comment").Select("name, comment, comment.updated_at").Joins("INNER JOIN user ON comment.user_id = user.id").Where("comment.deleted_at IS NULL AND user.deleted_at IS NULL AND article_id = ?", articleId).Find(&commentData).Error; err != nil {
+		panic(err.Error())
+	}
+	for _, v := range commentData {
+		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+		resultCommentData = append(resultCommentData, &ResultCommentData{v.Name, v.Comment, t})
 	}
 	defer db.Close()
-	return commentData
+	return resultCommentData
 }
 
 // コメント件数を取得

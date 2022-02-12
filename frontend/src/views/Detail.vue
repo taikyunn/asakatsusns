@@ -31,10 +31,18 @@
               {{tag}}&nbsp;
             </span>
           </div>
-          <div class="mb-3">
-            <p v-for="commentData in ArticleData.Comments" :key="commentData">
-              {{commentData.Name}}さん:{{commentData.Comment}}
-            </p>
+          <div class="mb-3 comment">
+            <div class="card w-75" v-for="commentData in ArticleData.Comments" :key="commentData">
+              <div class="card-body">
+                {{commentData.Name}}
+                <span class="time">
+                  {{commentData.UpdatedAt}}
+                </span>
+                <div class="card-text">
+                {{commentData.Comment}}
+                </div>
+              </div>
+            </div>
           </div>
           <div class="mb-3">
             <h2>コメントを追加する</h2>
@@ -230,5 +238,13 @@ export default {
   color: #e54747;
   margin-left: 20px;
   margin-right: 5px;
+}
+
+.comment {
+  padding-top: 5rem;
+}
+
+.time {
+  float: right;
 }
 </style>

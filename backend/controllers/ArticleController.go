@@ -40,7 +40,7 @@ type DetailData struct {
 	Name      string
 	Body      string
 	Tags      []string
-	Comments  []*db.CommentData
+	Comments  []*db.ResultCommentData
 	Count     int
 }
 
