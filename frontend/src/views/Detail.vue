@@ -46,7 +46,7 @@
                 </div>
               </div>
             </div>
-            <div class="card w-75">
+            <div class="card w-75" v-if="currentUserName != null">
               <div class="card-body">
                 <div class="card-text">
                   <label for="comment-area" class="form-label">
