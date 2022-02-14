@@ -9,6 +9,11 @@
         <div class="col-md-6">
           <div class="card w-75" v-for="article in articles" :key="article">
             <div class="card-header">
+              <span v-for="profile in profileData" :key="profile">
+                <span v-if="article.UserId == profile.userId">
+                  <img :src="profile.url" class="circle" />
+                </span>
+              </span>
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
                 {{article.Name}}
               </router-link>
@@ -106,6 +111,7 @@ export default {
       likesCounts: [],
       results: [],
       commentCounts: [],
+      profileData: [],
     }
   },
   components: {
@@ -132,6 +138,19 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           var resultArticles = response.data.article
+          var userIdData = [];
+          for (let i = 0; i < resultArticles.length; i++) {
+            let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              var userId = resultArticles[i].UserId
+              if (!userIdData.includes(userId)) {
+                this.profileData.push({userId: userId, url:URL.createObjectURL(blob)})
+              }
+              userIdData[i] = userId
+            })
+          }
           this.articles = resultArticles
           var resultTags = response.data.tag
           this.tags = resultTags
@@ -294,8 +313,19 @@ export default {
   padding-top: 5rem;
 }
 
+.img {
+  float: left;
+}
+
 .time {
   float: right;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
 }
 
 </style>

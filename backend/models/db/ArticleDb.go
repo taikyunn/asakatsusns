@@ -6,19 +6,21 @@ import (
 )
 
 type NextArticle struct {
-	Id        int
-	UserId    int
-	Body      string
-	UpdatedAt time.Time
-	Name      string
+	Id               int
+	UserId           int
+	Body             string
+	UpdatedAt        time.Time
+	Name             string
+	ProfileImagePath string
 }
 
 type NextArticleResult struct {
-	Id        int
-	UserId    int
-	Body      string
-	UpdatedAt string
-	Name      string
+	Id               int
+	UserId           int
+	Body             string
+	UpdatedAt        string
+	Name             string
+	ProfileImagePath string
 }
 
 type ArticleData struct {
@@ -118,7 +120,7 @@ func GetALLArticle() []*NextArticleResult {
 	db := gormConnect()
 	nextArticle := []*NextArticle{}
 	nextArticleResult := []*NextArticleResult{}
-	column := "article.id, user_id, body, article.updated_at, name"
+	column := "article.id, user_id, body, article.updated_at, name, profile_image_path"
 	table := "INNER JOIN user ON article.user_id = user.id"
 
 	if err := db.Table("article").Select(column).Joins(table).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
@@ -126,7 +128,7 @@ func GetALLArticle() []*NextArticleResult {
 	}
 	for _, v := range nextArticle {
 		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
-		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name})
+		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath})
 	}
 	defer db.Close()
 
@@ -222,7 +224,7 @@ func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 	db := gormConnect()
 	nextArticle := []*NextArticle{}
 	nextArticleResult := []*NextArticleResult{}
-	column := "article.id, user_id, body, article.updated_at, name"
+	column := "article.id, user_id, body, article.updated_at, name, profile_image_path"
 	table := "INNER JOIN user ON article.user_id = user.id"
 
 	if err := db.Table("article").Select(column).Joins(table).Where("article.deleted_at IS NULL AND article.updated_at < ?", updatedAt).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
@@ -230,7 +232,7 @@ func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 	}
 	for _, v := range nextArticle {
 		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
-		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name})
+		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath})
 	}
 	defer db.Close()
 	return nextArticleResult

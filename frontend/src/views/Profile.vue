@@ -142,7 +142,7 @@ export default {
       axios.post('getUserProfile', params, {responseType: "blob"})
       .then(response => {
         const blob = new Blob([response.data])
-        this.profileDataUrl = URL.createObjectURL(blob);
+        this.profileDataUrl = URL.createObjectURL(blob)
       })
     },
     getFollowData() {

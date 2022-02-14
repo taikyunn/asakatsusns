@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="text-center">
       <h1>投稿内容</h1>
       <div v-if="apiErrors.length">
@@ -69,9 +69,9 @@ export default {
           for (var i = 0; i < resultAutocompleteItems.length; i++) {
             target[i] = {text: resultAutocompleteItems[i]}
           }
-          const handler1 = {};
-          const proxy1 = new Proxy(target, handler1);
-          this.autocompleteItems = proxy1
+          const handler = {};
+          const proxy = new Proxy(target, handler);
+          this.autocompleteItems = proxy
         }
       })
     },
