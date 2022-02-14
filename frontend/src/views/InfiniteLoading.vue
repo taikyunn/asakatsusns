@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="card w-75" v-for="article in articles" :key="article">
-      <div class="card-header">
+      <div class="card-body">
         <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
           {{article.Name}}
         </router-link>
@@ -31,8 +31,6 @@
             </span>
           </span>
         </span>
-      </div>
-      <div class="card-body">
         <p class="card-text">
           {{article.Body}}
         </p>
@@ -44,7 +42,7 @@
           </div>
         </div>
       </div>
-      <div class="card-footer text-end">
+      <div class="card-footer text-end footer">
         <div v-for="likeCount in likeCounts" :key="likeCount">
           <div v-if="likeCount.ArticleId == article.Id">
             <span v-for="commentCount in commentCounts" :key="commentCount">
@@ -264,6 +262,7 @@
   text-decoration: none;
   text-align: left;
   color:black;
+  margin-left: 1rem;
  }
 
 .card {
@@ -285,8 +284,13 @@
   text-align: left;
   color:black;
 }
+
 .time {
   float: right;
+}
+
+.footer {
+  background-color:white;
 }
 
 </style>

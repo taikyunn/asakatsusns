@@ -5,18 +5,16 @@
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card w-75">
-            <div class="card-header text-start">
+            <div class="card-body">
               {{ArticleData.Name}}
               <span class="time">
                 {{ArticleData.UpdatedAt}}
               </span>
-            </div>
-            <div class="card-body">
               <p class="card-text">
                 {{ArticleData.Body}}
               </p>
             </div>
-            <div class="card-footer text-end">
+            <div class="card-footer text-end footer">
               <fa icon="comment-alt" />
               {{ArticleData.Count}}
               <span v-for="result in results" :key="result">
@@ -262,5 +260,8 @@ export default {
   padding-top: 1rem;
 }
 
+.footer {
+  background-color:white;
+}
 
 </style>

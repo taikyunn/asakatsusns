@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar_fixed">
-    <div class="card w-75">
+    <div class="card w-75 main">
       <div class="card-header text-center">
         <fa icon="tag" />
         メインタグ
@@ -79,9 +79,12 @@ export default {
   color: #DAAF08;
 }
 
+.main {
+  margin-top: 40px;
+}
+
 .ranking {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 40px;
 }
 
 .tag {

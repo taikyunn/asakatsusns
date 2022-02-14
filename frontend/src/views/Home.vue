@@ -8,7 +8,7 @@
         </div>
         <div class="col-md-6">
           <div class="card w-75" v-for="article in articles" :key="article">
-            <div class="card-header">
+            <div class="card-body">
               <span v-for="profile in profileData" :key="profile">
                 <span v-if="article.UserId == profile.userId">
                   <img :src="profile.url" class="circle" />
@@ -43,8 +43,6 @@
                   </span>
                 </span>
               </span>
-            </div>
-            <div class="card-body">
               <p class="card-text">
                 <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
                   {{article.Body}}
@@ -60,7 +58,7 @@
                 </div>
               </div>
             </div>
-            <div class="card-footer text-end">
+            <div class="card-footer text-end footer">
               <div v-for="likesCount in likesCounts" :key="likesCount">
                 <div v-if="likesCount.ArticleId == article.Id">
                   <span v-for="commentCount in commentCounts" :key="commentCount">
@@ -293,6 +291,7 @@ export default {
   text-decoration: none;
   text-align: left;
   color:black;
+  margin-left: 1rem;
 }
 
 .ellipsis {
@@ -326,6 +325,10 @@ export default {
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+.footer {
+  background-color:white;
 }
 
 </style>
