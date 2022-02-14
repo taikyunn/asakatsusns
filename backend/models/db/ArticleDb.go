@@ -25,17 +25,19 @@ type NextArticleResult struct {
 }
 
 type ArticleData struct {
-	UserId    int
-	Name      string
-	Body      string
-	UpdatedAt time.Time
+	UserId           int
+	Name             string
+	Body             string
+	ProfileImagePath string
+	UpdatedAt        time.Time
 }
 
 type ArticleResult struct {
-	UserId    int
-	Name      string
-	Body      string
-	UpdatedAt string
+	UserId           int
+	Name             string
+	Body             string
+	ProfileImagePath string
+	UpdatedAt        string
 }
 
 // userIdの取得
@@ -169,7 +171,7 @@ func GetArticleBody(articleID int) []*ArticleResult {
 	db := gormConnect()
 	articleData := []*ArticleData{}
 	articleResult := []*ArticleResult{}
-	table := "user_id, name, body, article.updated_at"
+	table := "user_id, name, body, article.updated_at, profile_image_path"
 	join := "INNER JOIN user ON article.user_id = user.id"
 	where := "article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?"
 
@@ -178,7 +180,7 @@ func GetArticleBody(articleID int) []*ArticleResult {
 	}
 	for _, v := range articleData {
 		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
-		articleResult = append(articleResult, &ArticleResult{int(v.UserId), v.Name, v.Body, t})
+		articleResult = append(articleResult, &ArticleResult{int(v.UserId), v.Name, v.Body, v.ProfileImagePath, t})
 	}
 	defer db.Close()
 	return articleResult

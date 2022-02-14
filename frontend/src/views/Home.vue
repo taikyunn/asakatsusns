@@ -152,6 +152,7 @@ export default {
             })
           }
           this.articles = resultArticles
+          console.log(this.articles)
         }
       })
     },

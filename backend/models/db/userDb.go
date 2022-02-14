@@ -44,3 +44,13 @@ func GetUserName(userID uint) []entity.User {
 	}
 	return user
 }
+
+func GetImagePath(userId int) []entity.User {
+	db := gormConnect()
+	var user []entity.User
+
+	if err := db.Select("profile_image_path").Where("id = ?", userId).Find(&user).Error; err != nil {
+		panic(err.Error())
+	}
+	return user
+}

@@ -179,5 +179,8 @@ func serve() {
 	// ランキング取得
 	r.GET("/getWakeUpRanking", controller.GetWakeUpRanking)
 
+	// ImagePathを取得
+	r.POST("/getLoginUserProfileImagePath", controller.GetLoginUserProfileImagePath)
+
 	r.Run(":3000")
 }

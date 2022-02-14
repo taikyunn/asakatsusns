@@ -38,7 +38,9 @@
           </span>
         </span>
         <p class="card-text">
-          {{article.Body}}
+          <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
+            {{article.Body}}
+          </router-link>
         </p>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.ArticleId">

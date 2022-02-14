@@ -6,7 +6,15 @@
         <div class="col-md-8">
           <div class="card w-75">
             <div class="card-body">
-              {{ArticleData.Name}}
+              <span v-if="profileImage">
+                <img :src="profileImage" class="circle" />
+              </span>
+              <span v-else>
+                <img :src="defaultImage" class="circle" />
+              </span>
+              <span class="link">
+                {{ArticleData.Name}}
+              </span>
               <span class="time">
                 {{ArticleData.UpdatedAt}}
               </span>
@@ -35,7 +43,9 @@
           <div class="mb-3 comment">
             <div class="card w-75" v-for="commentData in ArticleData.Comments" :key="commentData">
               <div class="card-body">
-                {{commentData.Name}}
+                <span class="link">
+                  {{commentData.Name}}
+                </span>
                 <span class="time">
                   {{commentData.UpdatedAt}}
                 </span>
@@ -47,6 +57,12 @@
             <div class="card w-75" v-if="currentUserName != null">
               <div class="card-body">
                 <div class="card-text">
+                  <span v-if="loginUserImage">
+                    <img :src="loginUserImage" class="circle" />
+                  </span>
+                  <span v-else>
+                    <img :src="defaultImage" class="circle" />
+                  </span>
                   <label for="comment-area" class="form-label">
                     {{currentUserName}}
                   </label>
@@ -82,6 +98,9 @@ export default {
       count: '',
       comment: '',
       currentUserName: localStorage.getItem('userName'),
+      defaultImage: require('@/images/default.png'),
+      profileImage: '',
+      loginUserImage: '',
     }
   },
   components: { Header },
@@ -90,11 +109,12 @@ export default {
   },
   methods: {
     async process() {
+      await this.getArticleDetail()
       await Promise.all([
         this.countFavorites(),
         this.checkFavorite(),
+        this.getLoginUserProfileImagePath(),
       ])
-      await this.getArticleDetail()
     },
     getArticleDetail() {
       const params = new URLSearchParams()
@@ -105,7 +125,37 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           var resultArticle = response.data
+          for (let i = 0; i < resultArticle.length; i++) {
+            if (resultArticle[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + resultArticle[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.profileImage = URL.createObjectURL(blob)
+            })
+          }
           this.ArticleData = resultArticle[0]
+        }
+      })
+    },
+    getLoginUserProfileImagePath() {
+      const params = new URLSearchParams()
+      params.append('userId', localStorage.getItem('userId'))
+      axios.post("getLoginUserProfileImagePath", params)
+      .then(response => {
+        var resultPath = response.data
+        for (let i = 0; i < resultPath.length; i++) {
+          if (resultPath[i].ProfileImagePath == '') {
+            continue;
+          }
+          let url = process.env.VUE_APP_DATA_URL + resultPath[i].ProfileImagePath
+          axios.get(url,{responseType: "blob"})
+          .then(response => {
+            let blob = new Blob([response.data])
+            this.loginUserImage = URL.createObjectURL(blob)
+          })
         }
       })
     },
@@ -262,6 +312,21 @@ export default {
 
 .footer {
   background-color:white;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.link, .form-label {
+  margin-left: 1rem;
+}
+
+.form-control {
+  margin-top: 1rem;
 }
 
 </style>

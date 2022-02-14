@@ -33,14 +33,16 @@ type EditData struct {
 }
 
 type DetailData struct {
-	ArticleId int
-	UserId    int
-	Name      string
-	Body      string
-	UpdatedAt string
-	Tags      []string
-	Comments  []*db.ResultCommentData
-	Count     int
+	ArticleId        int
+	UserId           int
+	Name             string
+	Body             string
+	ProfileImagePath string
+	Image            string
+	UpdatedAt        string
+	Tags             []string
+	Comments         []*db.ResultCommentData
+	Count            int
 }
 
 func CreateArticle(c *gin.Context) {
@@ -193,7 +195,7 @@ func GetArticleDetail(c *gin.Context) {
 	count := db.GetOneCommentCount(articleID)
 
 	detailData := []*DetailData{}
-	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), articleData[0].Name, articleData[0].Body, articleData[0].UpdatedAt, tagData, commentData, count})
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), articleData[0].Name, articleData[0].Body, articleData[0].ProfileImagePath, "", articleData[0].UpdatedAt, tagData, commentData, count})
 
 	c.JSON(200, detailData)
 }

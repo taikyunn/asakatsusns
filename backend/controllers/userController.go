@@ -85,3 +85,12 @@ func getHashedPassword(password *string) {
 	}
 	*password = string(hash)
 }
+
+// ImagePathを取得
+func GetLoginUserProfileImagePath(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	path := db.GetImagePath(userID)
+	c.JSON(200, path)
+}

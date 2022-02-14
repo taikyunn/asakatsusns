@@ -7,7 +7,7 @@ import (
 type User struct {
 	gorm.Model
 	Name             string  `form:"name" binding:"required" gorm:"type:varchar(200); not null" json:"name"`
-	ProfileImagePath string  `gorm:"type:varchar(200) DEFAULT NULL" json:"ProfileImage"`
+	ProfileImagePath string  `gorm:"type:varchar(200) DEFAULT NULL" json:"ProfileImagePath"`
 	SelfIntroduction *string `gorm:"type:varchar(200) DEFAULT NULL" json:"SelfIntroduction"`
 	WakeUpTime       *string `gorm:"type:varchar(200) DEFAULT NULL" json:"WakeUpTime"`
 	SleepTime        *string `gorm:"type:varchar(200) DEFAULT NULL" json:"SleepTime"`
