@@ -19,8 +19,8 @@
               {{ArticleData.Count}}
               <span v-for="result in results" :key="result">
                 <span @click="registerLikes()" v-if="result.Count">
-                <fa icon="heart" class="like-btn"/>
-                {{count}}
+                  <fa icon="heart" class="like-btn"/>
+                  {{count}}
                 </span>
                 <span @click="deleteLikes()" v-else>
                   <fa icon="heart" class="unlike-btn"/>
