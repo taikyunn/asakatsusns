@@ -2,6 +2,12 @@
   <div>
     <div class="card w-75" v-for="article in articles" :key="article">
       <div class="card-body">
+        <span v-if="article.Image">
+          <img :src="article.Image" class="circle" />
+        </span>
+        <span v-else>
+          <img :src="defaultImage" class="circle" />
+        </span>
         <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
           {{article.Name}}
         </router-link>
@@ -89,6 +95,7 @@
   let results = ref([]);
   let tags = ref([]);
   let count = 1;
+  let defaultImage = require('@/images/default.png');
   let currentUserId = ref(localStorage.getItem('userId'))
   const router = useRouter()
 
@@ -99,6 +106,15 @@
     try {
       const response = await axios.post('getNextArticles', params);
       const nextArticles = await response.data.nextArticles;
+      for (let i = 0; i < nextArticles.length; i++) {
+        if (nextArticles[i].ProfileImagePath == '') {
+          continue;
+        }
+        let url = process.env.VUE_APP_DATA_URL + nextArticles[i].ProfileImagePath;
+        let res = await axios.get(url, {responseType: "blob"});
+        let blob = new Blob([res.data]);
+        nextArticles[i].Image = URL.createObjectURL(blob);
+      }
       const countData = await response.data.countData;
       const commentCount = await response.data.commentCount;
       const favoriteData = await response.data.favoriteData;
@@ -291,6 +307,13 @@
 
 .footer {
   background-color:white;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
 }
 
 </style>
