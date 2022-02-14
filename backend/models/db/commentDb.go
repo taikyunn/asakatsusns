@@ -6,15 +6,18 @@ import (
 )
 
 type CommentData struct {
-	Name      string
-	Comment   string
-	UpdatedAt time.Time
+	Name             string
+	Comment          string
+	ProfileImagePath string
+	UpdatedAt        time.Time
 }
 
 type ResultCommentData struct {
-	Name      string
-	Comment   string
-	UpdatedAt string
+	Name             string
+	Comment          string
+	ProfileImagePath string
+	Image            string
+	UpdatedAt        string
 }
 
 type CommentCount struct {
@@ -35,13 +38,16 @@ func GetCommentData(articleId int) []*ResultCommentData {
 	db := gormConnect()
 	commentData := []*CommentData{}
 	resultCommentData := []*ResultCommentData{}
+	cols := "name, comment, profile_image_path, comment.updated_at"
+	table := "INNER JOIN user ON comment.user_id = user.id"
+	where := "comment.deleted_at IS NULL AND user.deleted_at IS NULL AND article_id = ?"
 
-	if err := db.Table("comment").Select("name, comment, comment.updated_at").Joins("INNER JOIN user ON comment.user_id = user.id").Where("comment.deleted_at IS NULL AND user.deleted_at IS NULL AND article_id = ?", articleId).Find(&commentData).Error; err != nil {
+	if err := db.Table("comment").Select(cols).Joins(table).Where(where, articleId).Find(&commentData).Error; err != nil {
 		panic(err.Error())
 	}
 	for _, v := range commentData {
 		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
-		resultCommentData = append(resultCommentData, &ResultCommentData{v.Name, v.Comment, t})
+		resultCommentData = append(resultCommentData, &ResultCommentData{v.Name, v.Comment, v.ProfileImagePath, "", t})
 	}
 	defer db.Close()
 	return resultCommentData

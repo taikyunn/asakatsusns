@@ -43,6 +43,12 @@
           <div class="mb-3 comment">
             <div class="card w-75" v-for="commentData in ArticleData.Comments" :key="commentData">
               <div class="card-body">
+                <span v-if="commentData.Image">
+                  <img :src="commentData.Image" class="circle" />
+                </span>
+                <span v-else>
+                  <img :src="defaultImage" class="circle" />
+                </span>
                 <span class="link">
                   {{commentData.Name}}
                 </span>
@@ -137,6 +143,23 @@ export default {
             })
           }
           this.ArticleData = resultArticle[0]
+          for (let i = 0; i < resultArticle[0].Comments.length; i++) {
+            if (resultArticle[0].Comments[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + resultArticle[0].Comments[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.ArticleData.Comments.splice(i, 1, {
+                Name: resultArticle[0].Comments[i].Name,
+                Comment: resultArticle[0].Comments[i].Comment,
+                ProfileImagePath: resultArticle[0].Comments[i].ProfileImagePath,
+                Image: URL.createObjectURL(blob), 
+                UpdatedAt: resultArticle[0].Comments[i].UpdatedAt
+                })
+            })
+          }
         }
       })
     },
