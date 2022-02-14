@@ -1,10 +1,10 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="container">
       <div class="row">
           <div class="col-md-5 text-center">
-            <Profile v-bind:id=propData></Profile>
+            <Profile v-bind:id=propData />
           </div>
           <div class="col-md-6">
             <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">

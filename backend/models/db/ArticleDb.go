@@ -21,6 +21,7 @@ type NextArticleResult struct {
 	UpdatedAt        string
 	Name             string
 	ProfileImagePath string
+	Image            string
 }
 
 type ArticleData struct {
@@ -128,7 +129,7 @@ func GetALLArticle() []*NextArticleResult {
 	}
 	for _, v := range nextArticle {
 		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
-		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath})
+		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath, ""})
 	}
 	defer db.Close()
 
@@ -232,7 +233,7 @@ func GetNextArticles(updatedAt time.Time) []*NextArticleResult {
 	}
 	for _, v := range nextArticle {
 		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
-		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath})
+		nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath, ""})
 	}
 	defer db.Close()
 	return nextArticleResult

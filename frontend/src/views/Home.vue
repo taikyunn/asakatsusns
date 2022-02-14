@@ -9,10 +9,11 @@
         <div class="col-md-6">
           <div class="card w-75" v-for="article in articles" :key="article">
             <div class="card-body">
-              <span v-for="profile in profileData" :key="profile">
-                <span v-if="article.UserId == profile.userId">
-                  <img :src="profile.url" class="circle" />
-                </span>
+              <span v-if="article.Image">
+                <img :src="article.Image" class="circle" />
+              </span>
+              <span v-else>
+                <img :src="defaultImage" class="circle" />
               </span>
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
                 {{article.Name}}
@@ -109,7 +110,7 @@ export default {
       likesCounts: [],
       results: [],
       commentCounts: [],
-      profileData: [],
+      defaultImage: require('@/images/default.png'),
     }
   },
   components: {
@@ -136,22 +137,21 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           var resultArticles = response.data.article
-          var userIdData = [];
+          this.articles = resultArticles
+          var resultTags = response.data.tag
+          this.tags = resultTags
           for (let i = 0; i < resultArticles.length; i++) {
+            if (resultArticles[i].ProfileImagePath == '') {
+              continue;
+            }
             let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
             axios.get(url,{responseType: "blob"})
             .then(response => {
               let blob = new Blob([response.data])
-              var userId = resultArticles[i].UserId
-              if (!userIdData.includes(userId)) {
-                this.profileData.push({userId: userId, url:URL.createObjectURL(blob)})
-              }
-              userIdData[i] = userId
+              resultArticles[i].Image = URL.createObjectURL(blob)
             })
           }
           this.articles = resultArticles
-          var resultTags = response.data.tag
-          this.tags = resultTags
         }
       })
     },
