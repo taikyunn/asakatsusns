@@ -1,27 +1,32 @@
 <template>
   <div>
     <Header />
-    <div class="text-center">
-      <h1>投稿内容</h1>
-      <div v-if="apiErrors.length">
-        <p v-for="error in apiErrors" :key="error">{{ error }}</p>
-      </div>
-      <div class="mb-3">
-        <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
-      </div>
-      <div class="mb-3 mx-auto">
-        <input type="hidden" id="tags" :value="tagsJson">
-        <vue-tags-input
-        v-model="tag"
-        :tags="tags"
-        placeholder="タグを5個まで入力できます"
-        :autocomplete-items="filteredItems"
-        @tags-changed="newTags => tags = newTags"
-        class="mx-auto"
-        />
-      </div>
-      <div class="mb-3">
-        <button @click='createArticle'>投稿する</button>
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h1>投稿内容</h1>
+          <div v-if="apiErrors.length">
+            <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label"></label>
+            <textarea name="body" class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="body" ></textarea>
+          </div>
+          <div class="mb-3 mx-auto">
+            <input type="hidden" id="tags" :value="tagsJson">
+            <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            placeholder="タグを5個まで入力できます"
+            :autocomplete-items="filteredItems"
+            @tags-changed="newTags => tags = newTags"
+            class="mx-auto"
+            />
+          </div>
+          <div class="mb-3">
+            <button @click='createArticle' class="btn btn-outline-warning">投稿する</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

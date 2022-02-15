@@ -6,7 +6,8 @@
       <img :src="url" width="100" />
     </p>
     <p v-if="isMyOwnPage">
-      <input type="file" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
+      <label for="formFile" class="form-label"></label>
+      <input class="form-control" type="file" id="formFile" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
       <button v-on:click="fileUpload()">アップロード</button>
     </p>
     <p>

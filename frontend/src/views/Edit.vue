@@ -1,27 +1,30 @@
 <template>
   <div>
     <Header />
-     <div class="text-center">
-      <h1>編集ページ</h1>
-      <h2>投稿内容</h2>
-      <div class="mb-3">
-        <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label"></label>
+            <textarea name="body" class="form-control" id="exampleFormControlTextarea1" rows="3" col="10" v-model="body" ></textarea>
+          </div>
+          <div class="mb-3 mx-auto">
+            <input type="hidden" id="tags" :value="tagsJson">
+            <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            placeholder="タグを5個まで入力できます"
+            :autocomplete-items="filteredItems"
+            @tags-changed="newTags => tags = newTags"
+            class="mx-auto"
+            />
+          </div>
+          <div class="mb-3">
+            <button @click="updateBody" class="btn btn-outline-warning">編集する</button>
+          </div>
+        </div>
       </div>
-        <div class="mb-3 mx-auto">
-        <input type="hidden" id="tags" :value="tagsJson">
-        <vue-tags-input
-        v-model="tag"
-        :tags="tags"
-        placeholder="タグを5個まで入力できます"
-        :autocomplete-items="filteredItems"
-        @tags-changed="newTags => tags = newTags"
-        />
-      </div>
-      <div class="mb-3">
-        <button @click="updateBody">編集する</button>
-        <button @click="back">戻る</button>
-      </div>
-     </div>
+    </div>
   </div>
 </template>
 
@@ -119,14 +122,15 @@ export default {
         }
       })
     },
-    back() {
-      this.$router.push('/')
-    }
   }
 }
 </script>
 
 <style scoped>
+.container {
+  padding-top: 5rem;
+}
+
 .vue-tags-input {
   max-width: 50%;
 }
