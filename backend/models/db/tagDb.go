@@ -215,7 +215,7 @@ func GetMainTag() []*TagResult {
 	table := "INNER JOIN article_tag ON tag.id = article_tag.tag_id"
 	where := "article_tag.deleted_at IS NULL"
 
-	if err := db.Table("tag").Select("tag.id, name").Joins(table).Order("tag.updated_at DESC").Where(where).Limit(5).Scan(&tagResult).Error; err != nil {
+	if err := db.Table("tag").Select("tag.id, name").Joins(table).Order("tag.updated_at DESC").Group("tag.id").Where(where).Limit(5).Scan(&tagResult).Error; err != nil {
 		panic(err.Error())
 	}
 
