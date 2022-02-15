@@ -2,6 +2,7 @@ package db
 
 import (
 	entity "app/models/entity"
+	"log"
 	"time"
 )
 
@@ -21,10 +22,17 @@ type FavoriteCountData struct {
 }
 
 type FavoritePostData struct {
-	UserId    int
-	ArticleId int
-	Name      string
-	Body      string
+	Id     int
+	UserId int
+	Name   string
+	Body   string
+}
+
+type ResultFavoritePostData struct {
+	Id     int
+	UserId int
+	Name   string
+	Body   string
 }
 
 // いいね登録
@@ -195,23 +203,22 @@ func GetLikedPostId(userId int) []int {
 }
 
 // いいね記事の中身を取得
-func GetLikedPost(articleIds []int) []*FavoritePostData {
+func GetLikedPost(articleIds []int) []*ResultFavoritePostData {
 	db := gormConnect()
-	var article []entity.Article
-	var user []entity.User
 	favoritePostData := []*FavoritePostData{}
+	resultfavoritePostData := []*ResultFavoritePostData{}
 
 	for _, v := range articleIds {
-		if err := db.Select("user_id, body").Where("id = ?", v).Find(&article).Error; err != nil {
+		log.Println("id:", v)
+		if err := db.Table("article").Select("article.id, user_id, name, body").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&favoritePostData).Error; err != nil {
 			panic(err.Error())
 		}
-		if err := db.Select("name").Where("id = ?", article[0].UserId).Find(&user).Error; err != nil {
-			panic(err.Error())
+		for _, v := range favoritePostData {
+			resultfavoritePostData = append(resultfavoritePostData, &ResultFavoritePostData{v.Id, v.UserId, v.Name, v.Body})
 		}
-		favoritePostData = append(favoritePostData, &FavoritePostData{int(article[0].UserId), v, user[0].Name, article[0].Body})
 	}
 	defer db.Close()
-	return favoritePostData
+	return resultfavoritePostData
 }
 
 // いいね記事の中身を取得

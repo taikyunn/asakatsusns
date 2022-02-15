@@ -66,10 +66,10 @@
                   いいねした投稿がありません。
                 </p>
                 <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
-                  <div class="card-header">
-                    {{likedPost.Name}}
-                  </div>
                   <div class="card-body">
+                    <span class="link">
+                      {{likedPost.Name}}
+                    </span>
                     <p class="card-text">
                       {{likedPost.Body}}
                     </p>
