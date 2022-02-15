@@ -49,7 +49,7 @@ func GetTagInfo(articleID []int) []*TagInfo {
 		tagNames := make([]string, len(tag))
 		tagIds := make([]uint, len(tag))
 		for i, v := range tag {
-			tagNames[i] = v.Name
+			tagNames[i] = "#" + v.Name
 			tagIds[i] = v.ID
 		}
 		tagInfo = append(tagInfo, &TagInfo{int(value), tagIds, tagNames})

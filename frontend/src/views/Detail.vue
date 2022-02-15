@@ -21,6 +21,11 @@
               <p class="card-text">
                 {{ArticleData.Body}}
               </p>
+              <div v-for="tag in ArticleData.Tags" :key="tag">
+                <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                  {{tag}}
+                </router-link>
+              </div>
             </div>
             <div class="card-footer text-end footer">
               <fa icon="comment-alt" />
@@ -36,9 +41,6 @@
                 </span>
               </span>
             </div>
-            <span v-for="tag in ArticleData.Tags" :key="tag">
-              {{tag}}&nbsp;
-            </span>
           </div>
           <div class="mb-3 comment">
             <div class="card w-75" v-for="commentData in ArticleData.Comments" :key="commentData">
@@ -352,4 +354,12 @@ export default {
   margin-top: 1rem;
 }
 
+.tag {
+  color: green;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 2px;
+  float: left;
+  margin-right: 1rem;
+}
 </style>

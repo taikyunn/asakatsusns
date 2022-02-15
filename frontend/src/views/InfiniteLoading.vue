@@ -44,8 +44,8 @@
         </p>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.ArticleId">
-            <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
-              #{{tag.Value}}
+            <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+              {{tag.Value}}
             </router-link>
           </div>
         </div>
@@ -295,6 +295,9 @@
   color: green;
   white-space: nowrap;
   text-decoration: none;
+  padding: 2px;
+  float: left;
+  margin-right: 1rem;
 }
 
 .link {
