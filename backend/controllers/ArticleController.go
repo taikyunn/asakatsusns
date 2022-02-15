@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -260,63 +262,63 @@ func GetNextArticles(c *gin.Context) {
 // 早起きチェック
 func checkWakeUptime(userId uint) int {
 
-	// jst, err := time.LoadLocation("Asia/Tokyo")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// nowJST := time.Now().In(jst)
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		panic(err)
+	}
+	nowJST := time.Now().In(jst)
 
-	// const layout = "2006-01-02 15:04"
-	// yymmddmmssStr := nowJST.Format(layout)
-	// yymmddmmss := strings.Split(yymmddmmssStr, " ")
+	const layout = "2006-01-02 15:04"
+	yymmddmmssStr := nowJST.Format(layout)
+	yymmddmmss := strings.Split(yymmddmmssStr, " ")
 
-	// yymmddData := yymmddmmss[0]
-	// mmssData := yymmddmmss[1]
+	yymmddData := yymmddmmss[0]
+	mmssData := yymmddmmss[1]
 
-	// yymmddStr := strings.Split(yymmddData, "-")
-	// mmssStr := strings.Split(mmssData, ":")
+	yymmddStr := strings.Split(yymmddData, "-")
+	mmssStr := strings.Split(mmssData, ":")
 
-	// yearStr := yymmddStr[0]
-	// monthStr := yymmddStr[1]
-	// dayStr := yymmddStr[2]
+	yearStr := yymmddStr[0]
+	monthStr := yymmddStr[1]
+	dayStr := yymmddStr[2]
 
-	// year, _ := strconv.Atoi(yearStr)
-	// month, _ := strconv.Atoi(monthStr)
-	// day, _ := strconv.Atoi(dayStr)
+	year, _ := strconv.Atoi(yearStr)
+	month, _ := strconv.Atoi(monthStr)
+	day, _ := strconv.Atoi(dayStr)
 
-	// hourStr := mmssStr[0]
-	// minuteStr := mmssStr[1]
+	hourStr := mmssStr[0]
+	minuteStr := mmssStr[1]
 
-	// hour, _ := strconv.Atoi(hourStr)
-	// minute, _ := strconv.Atoi(minuteStr)
+	hour, _ := strconv.Atoi(hourStr)
+	minute, _ := strconv.Atoi(minuteStr)
 
-	// wakeUpData := db.GetWakeUpData(int(userId))
-	// if len(*wakeUpData[0].WakeUpTime) == 4 {
-	// 	return 0
-	// }
+	wakeUpData := db.GetWakeUpData(int(userId))
+	if wakeUpData[0].WakeUpTime == "" {
+		return 0
+	}
 
-	// wakeUpTime := *wakeUpData[0].WakeUpTime
-	// wakeUphhmm := strings.Split(wakeUpTime, ":")
-	// rangeOfSuccess := wakeUpData[0].RangeOfSuccess
+	wakeUpTime := wakeUpData[0].WakeUpTime
+	wakeUphhmm := strings.Split(wakeUpTime, ":")
+	rangeOfSuccess := wakeUpData[0].RangeOfSuccess
 
-	// wakeUpHourStr := wakeUphhmm[0]
-	// wakeUpMinuteStr := wakeUphhmm[1]
+	wakeUpHourStr := wakeUphhmm[0]
+	wakeUpMinuteStr := wakeUphhmm[1]
 
-	// wakeUpHour, _ := strconv.Atoi(wakeUpHourStr)
-	// wakeUpMinute, _ := strconv.Atoi(wakeUpMinuteStr)
+	wakeUpHour, _ := strconv.Atoi(wakeUpHourStr)
+	wakeUpMinute, _ := strconv.Atoi(wakeUpMinuteStr)
 
-	// startHour := wakeUpHour - rangeOfSuccess
+	startHour := wakeUpHour - rangeOfSuccess
 
-	// startTime := time.Date(year, time.Month(month), day, startHour, wakeUpMinute, 00, 0, time.Local)
-	// endTime := time.Date(year, time.Month(month), day, wakeUpHour, wakeUpMinute, 00, 0, time.Local)
-	// targetTime := time.Date(year, time.Month(month), day, hour, minute, 00, 0, time.Local)
+	startTime := time.Date(year, time.Month(month), day, startHour, wakeUpMinute, 00, 0, time.Local)
+	endTime := time.Date(year, time.Month(month), day, wakeUpHour, wakeUpMinute, 00, 0, time.Local)
+	targetTime := time.Date(year, time.Month(month), day, hour, minute, 00, 0, time.Local)
 
-	// if startTime.Before(targetTime) && targetTime.Before(endTime) {
-	// 	count := db.RegisterAchievementDay(targetTime, userId)
+	if startTime.Before(targetTime) && targetTime.Before(endTime) {
+		count := db.RegisterAchievementDay(targetTime, userId)
 
-	// 	if count != 0 {
-	// 		return count
-	// 	}
-	// }
+		if count != 0 {
+			return count
+		}
+	}
 	return 0
 }

@@ -4,6 +4,11 @@ import (
 	entity "app/models/entity"
 )
 
+type WakeUpData struct {
+	WakeUpTime     string
+	RangeOfSuccess int
+}
+
 // ユーザーIDからユーザー情報を取得
 func GetOneUser(userID int) []entity.User {
 	db := gormConnect()
@@ -64,16 +69,16 @@ func GetWakeUpTimeById(userID int) []entity.User {
 }
 
 // 起きる時間を取得
-func GetWakeUpData(userID int) []entity.User {
+func GetWakeUpData(userID int) []*WakeUpData {
 	db := gormConnect()
-	var user []entity.User
+	wakeUpData := []*WakeUpData{}
 
-	if err := db.Select("wake_up_time, range_of_success").Where("id = ?", userID).Find(&user).Error; err != nil {
+	if err := db.Table("user").Select("wake_up_time, range_of_success").Where("id = ?", userID).Scan(&wakeUpData).Error; err != nil {
 		panic(err.Error())
 	}
 
 	defer db.Close()
-	return user
+	return wakeUpData
 }
 
 // 画像ファイルのパスを保存
