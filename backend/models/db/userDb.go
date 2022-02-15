@@ -39,7 +39,7 @@ func GetUserName(userID uint) []entity.User {
 	db := gormConnect()
 	var user []entity.User
 
-	if err := db.Select("name").Where("id = ?", userID).Find(&user).Error; err != nil {
+	if err := db.Select("name, profile_image_path").Where("id = ?", userID).Find(&user).Error; err != nil {
 		panic(err.Error())
 	}
 	return user

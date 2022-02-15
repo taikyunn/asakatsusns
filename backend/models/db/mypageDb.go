@@ -1,6 +1,8 @@
 package db
 
-import entity "app/models/entity"
+import (
+	entity "app/models/entity"
+)
 
 // ユーザーIDからユーザー情報を取得
 func GetOneUser(userID int) []entity.User {

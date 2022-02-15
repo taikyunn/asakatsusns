@@ -22,14 +22,20 @@
             <div id="myTabContent" class="tab-content">
               <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
                 <div class="card" v-for="article in mypageArticle" :key="article">
-                  <div class="card-header">
-                    {{userName.name}}
-                  </div>
                     <div class="card-body">
+                      <span v-if="userImage">
+                        <img :src="userImage" class="circle" />
+                      </span>
+                      <span v-else>
+                        <img :src="defaultImage" class="circle" />
+                      </span>
+                      <span class="link">
+                        {{userName.name}}
+                      </span>
                       <p class="card-text">
                         {{article.body}}
                       </p>
-                      <div class="card-footer text-end">
+                      <div class="card-footer text-end footer">
                         <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
                           <span v-if="mypageCommentCount.ArticleId == article.ID">
                             <fa icon="comment-alt" class="comment-icon" />
@@ -68,7 +74,7 @@
                       {{likedPost.Body}}
                     </p>
                   </div>
-                  <div class="card-footer text-end">
+                  <div class="card-footer text-end footer">
                     <span v-for="commentCount in commentCounts" :key="commentCount">
                       <span v-if="likedPost.ArticleId == commentCount.ArticleId">
                         <fa icon="comment-alt" />
@@ -120,6 +126,8 @@ export default {
       results: [],
       likedPosts:[],
       userName: '',
+      userImage: '',
+      defaultImage: require('@/images/default.png'),
       likedCommentCounts: '',
       propData: this.id,
       commentCounts: '',
@@ -167,6 +175,14 @@ export default {
           this.userName = resultUserName[0]
           var resultCommentCounts = response.data.commentCount
           this.mypageCommentCounts = resultCommentCounts
+          if (resultUserName[0].ProfileImagePath != '') {
+            let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.userImage = URL.createObjectURL(blob)
+            })
+          }
         }
       })
     },
@@ -338,4 +354,18 @@ export default {
   padding-top: 5rem;
 }
 
+.footer {
+  background-color:white;
+}
+
+.link {
+  margin-left: 1rem;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
 </style>
