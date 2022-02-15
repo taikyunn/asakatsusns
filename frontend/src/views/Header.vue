@@ -30,28 +30,28 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown" justify-content-end >
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning" :to="{name: 'Mypage', params: {id:(Number(currentUserId))}}" v-if="authenticatedUser">
                         マイページ
                       </router-link>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning" to="/signup" v-if="notAuthenticatedUser">
                         新規登録
                       </router-link>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning" to="/login" v-if="notAuthenticatedUser">
                         ログイン
                       </router-link>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning"  to="/logout" @click="signOut" v-if="authenticatedUser">
                         ログアウト
                       </router-link>
@@ -122,13 +122,17 @@ export default {
   color: black;
   font-weight: bold;
 }
-img {
-  border-radius: 50%;
-  width:3%;
-  height:3%;
-}
+
 .pen {
   color: black;
+}
+
+.justify-content-end {
+  padding-right: 5rem;
+}
+
+.dropdown-menu{
+  max-width: 200px;
 }
 
 </style>
