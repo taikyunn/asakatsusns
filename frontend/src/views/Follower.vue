@@ -2,52 +2,58 @@
   <div>
     <Header />
     <div class="text-center">
-      <ul id="myTab" class="nav nav-tabs mb-3 justify-content-center" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button type="button" id="home-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="false">
-            フォロー中
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button type="button" id="profile-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="true">
-            フォロワー
-          </button>
-        </li>
-      </ul>
-      <div id="myTabContent" class="tab-content">
-        <div id="home" class="tab-pane" role="tabpanel" aria-labelledby="home-tab">
-          <p v-if="followLists == 0">
-            フォロしているアカウントはありません。
-          </p>
-          <div class="card" v-for="followList in followLists" :key="followList" v-else>
-            <div class="card-header">
-              <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">
-                {{followList.Name}}
-              </router-link>
-              <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
-                フォローする
-              </button>
-              <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
-                フォロー中
-              </button>
-            </div>
-          </div>
-        </div>
-        <div id="profile" class="tab-pane active" role="tabpanel" aria-labelledby="profile-tab">
-          <p v-if="followerLists == 0">
-            フォロワーはいません。
-          </p>
-          <div class="card" v-for="followerList in followerLists" :key="followerList">
-            <div class="card-header">
-              <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followerList.UserId))}}">
-                {{followerList.Name}}
-              </router-link>
-              <button v-if="!isFollowedBy" @click="registerFollow">
-                フォローする
-              </button>
-              <button v-else @click="deleteFollow()">
-                フォロー中
-              </button>
+      <div class="container mt-4">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <ul id="myTab" class="nav nav-tabs mb-3 justify-content-center" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button type="button" id="home-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="false">
+                  フォロー中
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button type="button" id="profile-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="true">
+                  フォロワー
+                </button>
+              </li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+              <div id="home" class="tab-pane" role="tabpanel" aria-labelledby="home-tab">
+                <p v-if="followLists == 0">
+                  フォロしているアカウントはありません。
+                </p>
+                <div class="card" v-for="followList in followLists" :key="followList" v-else>
+                  <div class="card-body">
+                    <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">
+                      {{followList.Name}}
+                    </router-link>
+                    <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
+                      フォローする
+                    </button>
+                    <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
+                      フォロー中
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="profile" class="tab-pane active" role="tabpanel" aria-labelledby="profile-tab">
+                <p v-if="followerLists == 0">
+                  フォロワーはいません。
+                </p>
+                <div class="card" v-for="followerList in followerLists" :key="followerList">
+                  <div class="card-body">
+                    <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followerList.UserId))}}">
+                      {{followerList.Name}}
+                    </router-link>
+                    <button v-if="!isFollowedBy" @click="registerFollow">
+                      フォローする
+                    </button>
+                    <button v-else @click="deleteFollow()">
+                      フォロー中
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
