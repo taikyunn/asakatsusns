@@ -284,7 +284,7 @@ export default {
  }
 
 .card {
-  margin-bottom: 40px;
+  margin-top: 40px;
 }
 
 .link {

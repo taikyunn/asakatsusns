@@ -1,85 +1,93 @@
 <template>
   <div class="sidebar_fixed">
-    <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
-    <p v-if="url">
-      <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
-      <img :src="url" width="100" />
-    </p>
-    <p v-if="isMyOwnPage">
-      <label for="formFile" class="form-label"></label>
-      <input class="form-control" type="file" id="formFile" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
-      <button class="btn btn-outline-warning" v-on:click="fileUpload()">アップロード</button>
-    </p>
-    <p>
-      <router-link class="link" :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
-        フォロー
-      </router-link>
-      <router-link class="link" :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}}
-        フォロワー
-      </router-link>
-      <span v-if="!isMyOwnPage">
-        <button class="btn btn-outline-warning" v-if="!isFollowedBy" @click="registerFollow">
-          フォローする
-        </button>
-        <button class="btn btn-outline-warning" v-else @click="deleteFollow">
-          フォロー中
-        </button>
-      </span>
-    </p>
-    <p v-if="isEdit">
-      <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName" >
-        {{userInfo.name}}*クリックで編集*
-      </span>
-      <span v-else >
-        <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
-        <button class="btn btn-outline-warning" @click="updateName">
-          登録
-        </button>
-      </span>
-    </p>
-    <p v-else>
-      アカウント名:{{userInfo.name}}
-    </p>
-    <p v-if="isEdit">
-      寝る時間:
-      <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">
-        {{userInfo.SleepTime}}*クリックで編集*
-      </span>
-      <span v-else >
-        <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
-        <button class="btn btn-outline-warning" @click="updateSleepTime">
-          登録
-        </button>
-      </span>
-    </p>
-    <p v-else>
-      <span v-if="userInfo.SleepTime != null">
-        寝る時間:{{userInfo.SleepTime}}
-      </span>
-      <span v-else>
-        寝る時間:設定されていません。
-      </span>
-    </p>
-    <p v-if="isEdit">
-      起きる時間設定:
-      <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">
-        {{userInfo.WakeUpTime}}*クリックで編集*
-      </span>
-      <span v-else >
-        <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
-        <button class="btn btn-outline-warning" @click="updateWakeUpTime">
-          登録
-        </button>
-      </span>
-    </p>
-    <p v-else>
-      <span v-if="userInfo.WakeUpTime != null">
-        起きる時間:{{userInfo.WakeUpTime}}
-      </span>
-      <span v-else>
-        起きる時間:設定されていません
-      </span>
-    </p>
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
+          <p v-if="url">
+            <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
+            <img :src="url" width="100" />
+          </p>
+          <p v-if="!url">
+            <label for="formFile" class="form-label" ></label>
+            <input class="form-control" type="file" id="formFile" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
+          </p>
+          <p v-else>
+            <button class="btn btn-outline-warning" v-on:click="fileUpload()">アップロード</button>
+          </p>
+          <p>
+            <router-link class="link" :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
+              フォロー
+            </router-link>
+            <router-link class="link" :to="{name:'Follower', params: {id:(Number(this.id))}}">{{followData.FollowCount}}
+              フォロワー
+            </router-link>
+            <span v-if="!isMyOwnPage">
+              <button class="btn btn-outline-warning" v-if="!isFollowedBy" @click="registerFollow">
+                フォローする
+              </button>
+              <button class="btn btn-outline-warning" v-else @click="deleteFollow">
+                フォロー中
+              </button>
+            </span>
+          </p>
+          <p v-if="isEdit">
+            <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName" >
+              {{userInfo.name}}*クリックで編集*
+            </span>
+            <span v-else >
+              <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
+              <button class="btn btn-outline-warning" @click="updateName">
+                登録
+              </button>
+            </span>
+          </p>
+          <p v-else>
+            アカウント名:{{userInfo.name}}
+          </p>
+          <p v-if="isEdit">
+            寝る時間:
+            <span v-if="!editSleepTime" class="border p-2  bg-light" v-on:click="doEditSleepTime">
+              {{userInfo.SleepTime}}*クリックで編集*
+            </span>
+            <span v-else >
+              <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
+              <button class="btn btn-outline-warning" @click="updateSleepTime">
+                登録
+              </button>
+            </span>
+          </p>
+          <p v-else>
+            <span v-if="userInfo.SleepTime != null">
+              寝る時間:{{userInfo.SleepTime}}
+            </span>
+            <span v-else>
+              寝る時間:設定されていません。
+            </span>
+          </p>
+          <p v-if="isEdit">
+            起きる時間設定:
+            <span v-if="!editWakeUpTime" class="border p-2  bg-light" v-on:click="doEditWakeUpTime">
+              {{userInfo.WakeUpTime}}*クリックで編集*
+            </span>
+            <span v-else >
+              <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
+              <button class="btn btn-outline-warning" @click="updateWakeUpTime">
+                登録
+              </button>
+            </span>
+          </p>
+          <p v-else>
+            <span v-if="userInfo.WakeUpTime != null">
+              起きる時間:{{userInfo.WakeUpTime}}
+            </span>
+            <span v-else>
+              起きる時間:設定されていません
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
