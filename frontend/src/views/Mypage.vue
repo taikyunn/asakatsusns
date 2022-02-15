@@ -9,12 +9,12 @@
           <div class="col-md-6">
             <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
               <li class="nav-item" role="presentation">
-                <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+                <button type="button" id="home-tab" class="nav-link active btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
                   投稿
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                <button type="button" id="profile-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
                   いいね
                 </button>
               </li>

@@ -8,7 +8,7 @@
     <p v-if="isMyOwnPage">
       <label for="formFile" class="form-label"></label>
       <input class="form-control" type="file" id="formFile" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
-      <button v-on:click="fileUpload()">アップロード</button>
+      <button class="btn btn-outline-warning" v-on:click="fileUpload()">アップロード</button>
     </p>
     <p>
       <router-link class="link" :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
@@ -18,10 +18,10 @@
         フォロワー
       </router-link>
       <span v-if="!isMyOwnPage">
-        <button v-if="!isFollowedBy" @click="registerFollow">
+        <button class="btn btn-outline-warning" v-if="!isFollowedBy" @click="registerFollow">
           フォローする
         </button>
-        <button v-else @click="deleteFollow">
+        <button class="btn btn-outline-warning" v-else @click="deleteFollow">
           フォロー中
         </button>
       </span>
@@ -32,7 +32,7 @@
       </span>
       <span v-else >
         <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
-        <button @click="updateName">
+        <button class="btn btn-outline-warning" @click="updateName">
           登録
         </button>
       </span>
@@ -47,7 +47,7 @@
       </span>
       <span v-else >
         <input type="time" v-model="userInfo.SleepTime" v-on:blur="editSleepTime = false" v-focus>
-        <button @click="updateSleepTime">
+        <button class="btn btn-outline-warning" @click="updateSleepTime">
           登録
         </button>
       </span>
@@ -67,7 +67,7 @@
       </span>
       <span v-else >
         <input type="time" v-model="userInfo.WakeUpTime" v-on:blur="editWakeUpTime = false" v-focus>
-        <button @click="updateWakeUpTime">
+        <button class="btn btn-outline-warning" @click="updateWakeUpTime">
           登録
         </button>
       </span>

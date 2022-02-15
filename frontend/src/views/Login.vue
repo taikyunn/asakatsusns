@@ -22,7 +22,7 @@
           <input type="password" placeholder="password" name='password' v-model="password">
         </div>
         <div class="mb-3">
-          <button @click="loginFirebase">ログイン</button>
+          <button @click="loginFirebase" class="btn btn-outline-warning">ログイン</button>
       </div>
       <div class="mb-3">
           <p>You don't have an account?

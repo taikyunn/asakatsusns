@@ -7,7 +7,7 @@
           <SideBar />
         </div>
         <div class="col-md-6">
-          <div class="card w-75 tag-card">
+          <div class="card w-75 tag-card bg-warning">
             <div class="card-body">
               <p class="card-text tag">
                 #{{tag.name}}

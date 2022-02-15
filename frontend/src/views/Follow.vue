@@ -7,12 +7,12 @@
           <div class="col-md-8">
             <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
               <li class="nav-item" role="presentation">
-                <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+                <button type="button" id="home-tab " class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
                   フォロー中
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                <button type="button" id="profile-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
                   フォロワー
                 </button>
               </li>
@@ -51,10 +51,10 @@
                     <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followerList.UserId))}}">
                       {{followerList.Name}}
                     </router-link>
-                    <button class="follow btn-outline-warning" v-if="!isFollowedBy" @click="registerFollow">
+                    <button class="follow btn btn-outline-warning" v-if="!isFollowedBy" @click="registerFollow">
                       フォローする
                     </button>
-                    <button class="follow btn-outline-warning" v-else @click="deleteFollow()">
+                    <button class="follow btn btn-outline-warning" v-else @click="deleteFollow()">
                       フォロー中
                     </button>
                   </div>

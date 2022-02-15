@@ -7,12 +7,12 @@
           <div class="col-md-8">
             <ul id="myTab" class="nav nav-tabs mb-3 justify-content-center" role="tablist">
               <li class="nav-item" role="presentation">
-                <button type="button" id="home-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="false">
+                <button type="button" id="home-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="false">
                   フォロー中
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button type="button" id="profile-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="true">
+                <button type="button" id="profile-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="true">
                   フォロワー
                 </button>
               </li>

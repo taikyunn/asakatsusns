@@ -24,7 +24,7 @@
         <input type="password" name='password' v-model="password">
       </div>
       <div class="mb-3">
-        <button @click="signUp">登録する</button>
+        <button class="btn btn-outline-warning" @click="signUp">登録する</button>
       </div>
       <div class="mb-3">
         <p>Do you have an account?
