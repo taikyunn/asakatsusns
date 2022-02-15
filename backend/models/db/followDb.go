@@ -5,8 +5,9 @@ import (
 )
 
 type FollowList struct {
-	UserId int
-	Name   string
+	UserId           int
+	Name             string
+	ProfileImagePath string
 }
 
 // フォローしているか判別
@@ -98,10 +99,10 @@ func GetFollowNameList(userIds []int) []*FollowList {
 	followList := []*FollowList{}
 
 	for _, v := range userIds {
-		if err := db.Select("name").Where("id = ?", v).Find(&user).Error; err != nil {
+		if err := db.Select("name, profile_image_path").Where("id = ?", v).Find(&user).Error; err != nil {
 			panic(err.Error())
 		}
-		followList = append(followList, &FollowList{v, user[0].Name})
+		followList = append(followList, &FollowList{v, user[0].Name, user[0].ProfileImagePath})
 	}
 	defer db.Close()
 	return followList

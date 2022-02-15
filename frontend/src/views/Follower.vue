@@ -27,12 +27,14 @@
                     <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followList.UserId))}}">
                       {{followList.Name}}
                     </router-link>
-                    <button class="text-end" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
-                      フォローする
-                    </button>
-                    <button class="text-end" v-else @click="deleteFollow(followList.UserId)">
-                      フォロー中
-                    </button>
+                    <span class="follow">
+                      <button class="text-end btn btn-outline-warning" v-if="isFollowedBy" @click="registerFollow(followList.UserId)">
+                        フォローする
+                      </button>
+                      <button class="text-end btn btn-outline-warning" v-else @click="deleteFollow(followList.UserId)">
+                        フォロー中
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -42,13 +44,19 @@
                 </p>
                 <div class="card" v-for="followerList in followerLists" :key="followerList">
                   <div class="card-body">
+                    <span v-if="followerList.Image" class="profile-image">
+                      <img :src="followerList.Image" class="circle" />
+                    </span>
+                    <span v-else class="profile-image">
+                      <img :src="defaultImage" class="circle" />
+                    </span>
                     <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(followerList.UserId))}}">
                       {{followerList.Name}}
                     </router-link>
-                    <button v-if="!isFollowedBy" @click="registerFollow">
+                    <button class="follow btn btn-outline-warning" v-if="!isFollowedBy" @click="registerFollow">
                       フォローする
                     </button>
-                    <button v-else @click="deleteFollow()">
+                    <button class="follow btn btn-outline-warning" v-else @click="deleteFollow()">
                       フォロー中
                     </button>
                   </div>
@@ -73,6 +81,7 @@ export default {
       followerLists: [],
       followLists: [],
       isFollowedBy: false,
+      defaultImage: require('@/images/default.png'),
     }
   },
   components: { Header },
@@ -95,6 +104,21 @@ export default {
         } else {
           var followerResult = response.data
           this.followerLists = followerResult
+          for (let i = 0; i < followerResult.length; i++) {
+            if (followerResult[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + followerResult[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.followerLists.splice(i, 1, {
+                Name: followerResult[i].Name,
+                ProfileImagePath: followerResult[i].ProfileImagePath,
+                Image: URL.createObjectURL(blob),
+              })
+            })
+          }
         }
       })
     },
@@ -172,9 +196,30 @@ export default {
   padding-top: 5rem;
 }
 
+.card {
+  margin-bottom: 1rem;
+}
+
 .link {
   text-decoration: none;
   text-align: left;
   color:black;
+  float: left;
+  padding-left: 1rem;
+}
+
+.follow {
+  float: right;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.profile-image {
+  float: left;
 }
 </style>
