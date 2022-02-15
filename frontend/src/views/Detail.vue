@@ -157,7 +157,7 @@ export default {
                 ProfileImagePath: resultArticle[0].Comments[i].ProfileImagePath,
                 Image: URL.createObjectURL(blob), 
                 UpdatedAt: resultArticle[0].Comments[i].UpdatedAt
-                })
+              })
             })
           }
         }

@@ -22,17 +22,19 @@ type FavoriteCountData struct {
 }
 
 type FavoritePostData struct {
-	Id     int
-	UserId int
-	Name   string
-	Body   string
+	Id               int
+	UserId           int
+	Name             string
+	Body             string
+	ProfileImagePath string
 }
 
 type ResultFavoritePostData struct {
-	Id     int
-	UserId int
-	Name   string
-	Body   string
+	Id               int
+	UserId           int
+	Name             string
+	Body             string
+	ProfileImagePath string
 }
 
 // いいね登録
@@ -210,11 +212,11 @@ func GetLikedPost(articleIds []int) []*ResultFavoritePostData {
 
 	for _, v := range articleIds {
 		log.Println("id:", v)
-		if err := db.Table("article").Select("article.id, user_id, name, body").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&favoritePostData).Error; err != nil {
+		if err := db.Table("article").Select("article.id, user_id, name, body, profile_image_path").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&favoritePostData).Error; err != nil {
 			panic(err.Error())
 		}
 		for _, v := range favoritePostData {
-			resultfavoritePostData = append(resultfavoritePostData, &ResultFavoritePostData{v.Id, v.UserId, v.Name, v.Body})
+			resultfavoritePostData = append(resultfavoritePostData, &ResultFavoritePostData{v.Id, v.UserId, v.Name, v.Body, v.ProfileImagePath})
 		}
 	}
 	defer db.Close()

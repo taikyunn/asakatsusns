@@ -67,6 +67,12 @@
                 </p>
                 <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
                   <div class="card-body">
+                    <span v-if="likedPost.Image">
+                      <img :src="likedPost.Image" class="circle" />
+                    </span>
+                    <span v-else>
+                      <img :src="defaultImage" class="circle" />
+                    </span>
                     <span class="link">
                       {{likedPost.Name}}
                     </span>
@@ -223,6 +229,25 @@ export default {
         } else {
           this.likedPosts = response.data.favoritePostData
           this.commentCounts = response.data.commentCount
+          var likedPosts = response.data.favoritePostData
+          for (let i = 0; i < likedPosts.length; i++) {
+            if (likedPosts[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + likedPosts[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.likedPosts.splice(i, 1, {
+                Body: likedPosts[i].Body,
+                Id: likedPosts[i].Id,
+                Name: likedPosts[i].Name,
+                ProfileImagePath: likedPosts[i].ProfileImagePath,
+                Image: URL.createObjectURL(blob),
+                UserId: likedPosts[i].UserId
+              })
+            })
+          }
         }
       })
     },
