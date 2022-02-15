@@ -7,7 +7,7 @@
           <SideBar />
         </div>
         <div class="col-md-6">
-          <div class="card w-75">
+          <div class="card w-75 tag-card">
             <div class="card-body">
               <p class="card-text tag">
                 #{{tag.name}}
@@ -18,7 +18,13 @@
             </div>
           </div>
           <div class="card w-75" v-for="article in articles" :key="article">
-            <div class="card-header">
+            <div class="card-body">
+              <span v-if="article.Image">
+                <img :src="article.Image" class="circle" />
+              </span>
+              <span v-else>
+                <img :src="defaultImage" class="circle" />
+              </span>
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
                 {{article.Name}}
               </router-link>
@@ -48,8 +54,6 @@
                   </span>
                 </span>
               </span>
-            </div>
-            <div class="card-body">
               <p class="card-text">
                 <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
                   {{article.Body}}
@@ -111,6 +115,7 @@ export default {
   data() {
     return {
       currentUserId: localStorage.getItem('userId'),
+      defaultImage: require('@/images/default.png'),
       articles: [],
       tags: [],
       likesCounts: [],
@@ -160,6 +165,25 @@ export default {
           this.tag = resultTag[0]
           var resultCount = response.data.count
           this.count = resultCount
+          for (let i = 0; i < resultArticles.length; i++) {
+            if (resultArticles[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.articles.splice(i, 1, {
+                Body: resultArticles[i].Body,
+                Id: resultArticles[i].Id,
+                Name: resultArticles[i].Name,
+                Image: URL.createObjectURL(blob),
+                ProfileImagePath: resultArticles[i].ProfileImagePath,
+                UpdatedAt: resultArticles[i].UpdatedAt,
+                UserId: resultArticles[i].UserId
+              })
+            })
+          }
         }
       })
     },
@@ -290,6 +314,7 @@ export default {
   text-decoration: none;
   text-align: left;
   color:black;
+  margin-left: 1rem;
 }
 
 .ellipsis {
@@ -311,5 +336,17 @@ export default {
 
 .time {
   float: right;
+}
+
+.tag-card {
+  margin-top: 40px;
+}
+
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
 }
 </style>

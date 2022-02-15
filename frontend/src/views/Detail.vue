@@ -155,7 +155,7 @@ export default {
                 Name: resultArticle[0].Comments[i].Name,
                 Comment: resultArticle[0].Comments[i].Comment,
                 ProfileImagePath: resultArticle[0].Comments[i].ProfileImagePath,
-                Image: URL.createObjectURL(blob), 
+                Image: URL.createObjectURL(blob),
                 UpdatedAt: resultArticle[0].Comments[i].UpdatedAt
               })
             })

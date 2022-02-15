@@ -187,15 +187,26 @@ func GetArticleBody(articleID int) []*ArticleResult {
 }
 
 // 直近10件の取得
-func GetArticleByTag(articleID []int) []entity.Article {
+func GetArticleByTag(articleID []int) []*NextArticleResult {
 	db := gormConnect()
-	var articles []entity.Article
+	nextArticle := []*NextArticle{}
+	nextArticleResult := []*NextArticleResult{}
+	column := "article.id, user_id, body, article.updated_at, name, profile_image_path"
+	table := "INNER JOIN user ON article.user_id = user.id"
 
-	if err := db.Select("id, user_id, body, updated_at").Where("id IN (?)", articleID).Find(&articles).Error; err != nil {
-		panic(err.Error())
+	for _, v := range articleID {
+		if err := db.Table("article").Select(column).Joins(table).Limit(10).Order("updated_at DESC").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&nextArticle).Error; err != nil {
+			panic(err.Error())
+		}
+		for _, v := range nextArticle {
+			t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+			nextArticleResult = append(nextArticleResult, &NextArticleResult{int(v.Id), v.UserId, v.Body, t, v.Name, v.ProfileImagePath, ""})
+		}
 	}
+
 	defer db.Close()
-	return articles
+
+	return nextArticleResult
 }
 
 // 指定したupdated_atを取得
