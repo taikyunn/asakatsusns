@@ -5,8 +5,9 @@ import (
 )
 
 type FollowList struct {
-	UserId int
-	Name   string
+	UserId           int
+	Name             string
+	ProfileImagePath string
 }
 
 // フォローしているか判別
@@ -18,11 +19,13 @@ func CheckFollow(followerId int, followedId int) bool {
 	if err := db.Model(&follow).Where("follower_id = ? AND followed_id = ?", followerId, followedId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	if count == 0 {
 		return false
 	} else {
 		return true
 	}
+
 }
 
 // フォロー登録
@@ -42,7 +45,9 @@ func DeleteFollow(followerId int, followedId int) {
 	db := gormConnect()
 	var follow []entity.Follow
 
-	db.Where("follower_id = ? AND followed_id = ?", followerId, followedId).Delete(&follow)
+	if err := db.Where("follower_id = ? AND followed_id = ?", followerId, followedId).Delete(&follow).Error; err != nil {
+		panic(err.Error())
+	}
 	defer db.Close()
 }
 
@@ -55,6 +60,7 @@ func GetFollower(userId int) int {
 	if err := db.Model(&follow).Where("follower_id = ?", userId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return count
 }
 
@@ -67,6 +73,7 @@ func GetFollow(userId int) int {
 	if err := db.Model(&follow).Where("followed_id = ?", userId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return count
 }
 
@@ -92,11 +99,12 @@ func GetFollowNameList(userIds []int) []*FollowList {
 	followList := []*FollowList{}
 
 	for _, v := range userIds {
-		if err := db.Select("name").Where("id = ?", v).Find(&user).Error; err != nil {
+		if err := db.Select("name, profile_image_path").Where("id = ?", v).Find(&user).Error; err != nil {
 			panic(err.Error())
 		}
-		followList = append(followList, &FollowList{v, user[0].Name})
+		followList = append(followList, &FollowList{v, user[0].Name, user[0].ProfileImagePath})
 	}
+	defer db.Close()
 	return followList
 }
 
@@ -113,6 +121,6 @@ func GetFollowedList(followedId int) []int {
 	for i, v := range follow {
 		followerIds[i] = v.FollowerId
 	}
-
+	defer db.Close()
 	return followerIds
 }

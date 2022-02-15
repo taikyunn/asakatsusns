@@ -89,8 +89,11 @@ func serve() {
 	// メインタグ除法取得
 	r.GET("/getMainTag", controller.GetMainTag)
 
-	// 投稿全件取得
+	// 直近10件分のデータを取得
 	r.GET("/getAllArticles", controller.GetAllArticles)
+
+	// 無限スクロールのデータ取得
+	r.POST("/getNextArticles", controller.GetNextArticles)
 
 	// 投稿削除
 	r.POST("/deleteArticle", controller.DeleteArticle)
@@ -115,6 +118,12 @@ func serve() {
 
 	// いいね数取得(トップページ)
 	r.GET("/getCountFavorites", controller.GetCountFavorites)
+
+	// いいね数取得(無限スクロール)
+	r.POST("/getNextCountFavorites", controller.GetNextCountFavorites)
+
+	// いいねしているかの確認(無限スクロール)
+	r.POST("/checkNextFavorite", controller.CheckNextFavorite)
 
 	// いいね数取得(詳細ページ)
 	r.POST("/getOneCountFavorites", controller.GetOneCountFavorites)
@@ -169,6 +178,9 @@ func serve() {
 
 	// ランキング取得
 	r.GET("/getWakeUpRanking", controller.GetWakeUpRanking)
+
+	// ImagePathを取得
+	r.POST("/getLoginUserProfileImagePath", controller.GetLoginUserProfileImagePath)
 
 	r.Run(":3000")
 }

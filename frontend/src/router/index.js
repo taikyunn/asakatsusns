@@ -63,7 +63,11 @@ const routes = [
     name: 'HomeTag',
     props: true,
     component: () => import('../views/HomeTag.vue')
-},
+  },
+  {
+    path: '/logout',
+    redirect: '/'
+  },
 ]
 
 const router = createRouter({

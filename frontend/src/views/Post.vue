@@ -1,28 +1,33 @@
 <template>
   <div>
-    <Header></Header>
-    <div class="text-center">
-      <h1>投稿内容</h1>
-      <div v-if="apiErrors.length">
-        <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+    <Header />
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h1>投稿内容</h1>
+          <div v-if="apiErrors.length">
+            <p v-for="error in apiErrors" :key="error">{{ error }}</p>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label"></label>
+            <textarea name="body" class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="body" ></textarea>
+          </div>
+          <div class="mb-3 mx-auto">
+            <input type="hidden" id="tags" :value="tagsJson">
+            <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            placeholder="タグを5個まで入力できます"
+            :autocomplete-items="filteredItems"
+            @tags-changed="newTags => tags = newTags"
+            class="mx-auto"
+            />
+          </div>
+          <div class="mb-3">
+            <button @click='createArticle' class="btn btn-outline-warning">投稿する</button>
+          </div>
+        </div>
       </div>
-        <div class="mb-3">
-          <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
-        </div>
-        <div class="mb-3 mx-auto">
-          <input type="hidden" id="tags" :value="tagsJson">
-          <vue-tags-input
-          v-model="tag"
-          :tags="tags"
-          placeholder="タグを5個まで入力できます"
-          :autocomplete-items="filteredItems"
-          @tags-changed="newTags => tags = newTags"
-          class="mx-auto"
-          />
-        </div>
-        <div class="mb-3">
-          <button @click='createArticle'>投稿する</button>
-        </div>
     </div>
   </div>
 </template>
@@ -57,21 +62,24 @@ export default {
     },
   },
   mounted() {
-    axios.get("/getAutocompleteItems")
-    .then (response => {
-      var resultAutocompleteItems = response.data
-      if (resultAutocompleteItems != null) {
-        var target = []
-        for (var i = 0; i < resultAutocompleteItems.length; i++) {
-          target[i] = {text: resultAutocompleteItems[i]}
-        }
-        const handler1 = {};
-        const proxy1 = new Proxy(target, handler1);
-        this.autocompleteItems = proxy1
-      }
-    })
+    this.getAutocompleteItems()
   },
   methods: {
+    getAutocompleteItems() {
+      axios.get("/getAutocompleteItems")
+      .then (response => {
+        var resultAutocompleteItems = response.data
+        if (resultAutocompleteItems != null) {
+          var target = []
+          for (var i = 0; i < resultAutocompleteItems.length; i++) {
+            target[i] = {text: resultAutocompleteItems[i]}
+          }
+          const handler = {};
+          const proxy = new Proxy(target, handler);
+          this.autocompleteItems = proxy
+        }
+      })
+    },
     createArticle() {
     try {
         if (this.body == '') {
@@ -104,7 +112,6 @@ export default {
               alert("早起き達成" + response.data + "日目!!")
               this.$router.push('/')
             } else {
-              alert("投稿しました。")
               this.$router.push('/')
             }
           }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="text-center">
       <h1 class="title">ログインフォーム</h1>
       <div v-if="errors.length">
@@ -22,7 +22,7 @@
           <input type="password" placeholder="password" name='password' v-model="password">
         </div>
         <div class="mb-3">
-          <button @click="loginFirebase">ログイン</button>
+          <button @click="loginFirebase" class="btn btn-outline-warning">ログイン</button>
       </div>
       <div class="mb-3">
           <p>You don't have an account?
@@ -44,11 +44,11 @@ export default {
   data() {
     return {
       name: "",
-      email:'',
+      email: '',
       password: "",
       errors: [],
       apiErrors: [],
-      }
+    }
   },
   components: { Header },
   methods: {
@@ -100,5 +100,9 @@ export default {
 .title {
   margin-top: 50px;
   margin-bottom: 50px;
+}
+
+.text-center {
+  padding-top: 5rem;
 }
 </style>

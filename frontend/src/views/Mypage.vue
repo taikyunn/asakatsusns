@@ -1,20 +1,20 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="container">
       <div class="row">
           <div class="col-md-5 text-center">
-            <Profile v-bind:id=propData></Profile>
+            <Profile v-bind:id=propData />
           </div>
           <div class="col-md-6">
             <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
               <li class="nav-item" role="presentation">
-                <button type="button" id="home-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+                <button type="button" id="home-tab" class="nav-link active btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
                   投稿
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button type="button" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                <button type="button" id="profile-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
                   いいね
                 </button>
               </li>
@@ -22,14 +22,20 @@
             <div id="myTabContent" class="tab-content">
               <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
                 <div class="card" v-for="article in mypageArticle" :key="article">
-                  <div class="card-header">
-                    {{userName.name}}
-                  </div>
                     <div class="card-body">
+                      <span v-if="userImage">
+                        <img :src="userImage" class="circle" />
+                      </span>
+                      <span v-else>
+                        <img :src="defaultImage" class="circle" />
+                      </span>
+                      <span class="link">
+                        {{userName.name}}
+                      </span>
                       <p class="card-text">
                         {{article.body}}
                       </p>
-                      <div class="card-footer text-end">
+                      <div class="card-footer text-end footer">
                         <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
                           <span v-if="mypageCommentCount.ArticleId == article.ID">
                             <fa icon="comment-alt" class="comment-icon" />
@@ -60,15 +66,21 @@
                   いいねした投稿がありません。
                 </p>
                 <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
-                  <div class="card-header">
-                    {{likedPost.Name}}
-                  </div>
                   <div class="card-body">
+                    <span v-if="likedPost.Image">
+                      <img :src="likedPost.Image" class="circle" />
+                    </span>
+                    <span v-else>
+                      <img :src="defaultImage" class="circle" />
+                    </span>
+                    <span class="link">
+                      {{likedPost.Name}}
+                    </span>
                     <p class="card-text">
                       {{likedPost.Body}}
                     </p>
                   </div>
-                  <div class="card-footer text-end">
+                  <div class="card-footer text-end footer">
                     <span v-for="commentCount in commentCounts" :key="commentCount">
                       <span v-if="likedPost.ArticleId == commentCount.ArticleId">
                         <fa icon="comment-alt" />
@@ -109,17 +121,19 @@ export default {
   props:["id"],
   data(){
     return{
-      userInfo:[],
-      sleepTime:'',
-      wakeUpTime:'',
-      url:'',
-      fileInfo:'',
+      userInfo: [],
+      sleepTime: '',
+      wakeUpTime: '',
+      url: '',
+      fileInfo: '',
       profileDataUrl: '',
       mypageArticle: [],
       countData: '',
       results: [],
       likedPosts:[],
       userName: '',
+      userImage: '',
+      defaultImage: require('@/images/default.png'),
       likedCommentCounts: '',
       propData: this.id,
       commentCounts: '',
@@ -130,23 +144,29 @@ export default {
   },
   components: { Header , Profile},
   mounted() {
-    this.getMypageArticle()
-    this.checkFavoriteMypage()
-    this.getCountFavoriteMypage()
-    this.getLikedPost()
-    this.checkFavoriteLikedPost()
-    this.getCountFavoriteLikedPost()
-  },
-  created() {
-    const params = new URLSearchParams()
-    params.append('userId', this.id)
-    axios.post('getUserData', params)
-    .then(response => {
-      var resultUser = response.data
-      this.userInfo = resultUser[0]
-    })
+    this.process()
   },
   methods: {
+    async process() {
+      await Promise.all([
+        this.getUserData(),
+        this.getMypageArticle(),
+      ])
+      await this.checkFavoriteMypage()
+      await this.getCountFavoriteMypage()
+      await this.getLikedPost()
+      await this.checkFavoriteLikedPost()
+      await this.getCountFavoriteLikedPost()
+    },
+    getUserData(){
+    const params = new URLSearchParams()
+      params.append('userId', this.id)
+      axios.post('getUserData', params)
+      .then(response => {
+        var resultUser = response.data
+        this.userInfo = resultUser[0]
+      })
+    },
     getMypageArticle() {
       const params = new URLSearchParams()
       params.append('userId',this.id)
@@ -161,6 +181,14 @@ export default {
           this.userName = resultUserName[0]
           var resultCommentCounts = response.data.commentCount
           this.mypageCommentCounts = resultCommentCounts
+          if (resultUserName[0].ProfileImagePath != '') {
+            let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.userImage = URL.createObjectURL(blob)
+            })
+          }
         }
       })
     },
@@ -188,6 +216,65 @@ export default {
         } else {
           var resultCheckFavorite = response.data
           this.results = resultCheckFavorite
+        }
+      })
+    },
+    getLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId', this.id)
+      axios.post('getLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          this.likedPosts = response.data.favoritePostData
+          this.commentCounts = response.data.commentCount
+          var likedPosts = response.data.favoritePostData
+          for (let i = 0; i < likedPosts.length; i++) {
+            if (likedPosts[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + likedPosts[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.likedPosts.splice(i, 1, {
+                Body: likedPosts[i].Body,
+                Id: likedPosts[i].Id,
+                Name: likedPosts[i].Name,
+                ProfileImagePath: likedPosts[i].ProfileImagePath,
+                Image: URL.createObjectURL(blob),
+                UserId: likedPosts[i].UserId
+              })
+            })
+          }
+        }
+      })
+    },
+    checkFavoriteLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId',this.id)
+      params.append('visiterUserId', localStorage.getItem('userId'))
+      axios.post('checkFavoriteLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultCheckFavoriteLikedPost = response.data
+          this.favoriteLikedPostCounts = resultCheckFavoriteLikedPost
+        }
+      })
+    },
+    getCountFavoriteLikedPost() {
+      const params = new URLSearchParams()
+      params.append('mypageUserId', this.id)
+      axios.post('getCountFavoriteLikedPost', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error("レスポンスエラー")
+        } else {
+          var resultLikedPostCountData = response.data
+          this.likedPostCountData = resultLikedPostCountData
         }
       })
     },
@@ -255,46 +342,6 @@ export default {
         this.$router.push('/login')
       }
     },
-    getLikedPost() {
-      const params = new URLSearchParams()
-      params.append('mypageUserId', this.id)
-      axios.post('getLikedPost', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          this.likedPosts = response.data.favoritePostData
-          this.commentCounts = response.data.commentCount
-        }
-      })
-    },
-    checkFavoriteLikedPost() {
-      const params = new URLSearchParams()
-      params.append('mypageUserId',this.id)
-      params.append('visiterUserId', localStorage.getItem('userId'))
-      axios.post('checkFavoriteLikedPost', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          var resultCheckFavoriteLikedPost = response.data
-          this.favoriteLikedPostCounts = resultCheckFavoriteLikedPost
-        }
-      })
-    },
-    getCountFavoriteLikedPost() {
-      const params = new URLSearchParams()
-      params.append('mypageUserId', this.id)
-      axios.post('getCountFavoriteLikedPost', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          var resultLikedPostCountData = response.data
-          this.likedPostCountData = resultLikedPostCountData
-        }
-      })
-    },
   }
 }
 </script>
@@ -332,4 +379,18 @@ export default {
   padding-top: 5rem;
 }
 
+.footer {
+  background-color:white;
+}
+
+.link {
+  margin-left: 1rem;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
 </style>

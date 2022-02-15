@@ -18,7 +18,7 @@ type Result struct {
 	Name      string
 	Body      string
 	UserId    int
-	CreatedAt string
+	UpdatedAt string
 }
 
 type DbTagResult struct {
@@ -35,12 +35,16 @@ type EditData struct {
 }
 
 type DetailData struct {
-	ArticleId int
-	UserId    int
-	Name      string
-	Body      string
-	Tags      []string
-	Comments  []*db.CommentData
+	ArticleId        int
+	UserId           int
+	Name             string
+	Body             string
+	ProfileImagePath string
+	Image            string
+	UpdatedAt        string
+	Tags             []string
+	Comments         []*db.ResultCommentData
+	Count            int
 }
 
 func CreateArticle(c *gin.Context) {
@@ -95,30 +99,14 @@ func CreateArticle(c *gin.Context) {
 	}
 }
 
-// 投稿全件取得
+// 直近10件分のデータを取得
 func GetAllArticles(c *gin.Context) {
-	// 投稿IDを10件取得
+	// 直近10件分の投稿データを取得
 	articles := db.GetALLArticle()
 
-	userID := make([]uint, len(articles))
-	articleID := make([]uint, len(articles))
+	articleID := make([]int, len(articles))
 	for i, v := range articles {
-		userID[i] = v.UserId
-		articleID[i] = v.ID
-	}
-	// idより投稿者を取得
-	user := db.GetNameById(userID)
-
-	result := []*Result{}
-
-	// 返すデータの作成
-	for _, av := range articles {
-		for _, uv := range user {
-			if av.UserId == uv.ID {
-				t := av.CreatedAt.Format("2006/01/02 15:04:05")
-				result = append(result, &Result{int(av.ID), uv.Name, av.Body, int(av.UserId), t})
-			}
-		}
+		articleID[i] = v.Id
 	}
 
 	// タグ情報の取得
@@ -142,7 +130,7 @@ func GetAllArticles(c *gin.Context) {
 			}
 		}
 	}
-	c.JSON(200, gin.H{"article": result, "tag": dbTagResult})
+	c.JSON(200, gin.H{"article": articles, "tag": dbTagResult})
 }
 
 // 投稿削除
@@ -199,17 +187,17 @@ func GetArticleDetail(c *gin.Context) {
 	// 記事の中身を取得
 	articleData := db.GetArticleBody(articleID)
 
-	// 投稿者名を取得
-	userData := db.GetUserName(articleData[0].UserId)
-
 	// タグデータの取得
 	tagData := db.GetOneTagData(articleID)
 
 	// コメントデータ取得
 	commentData := db.GetCommentData(articleID)
 
+	// コメント件数を取得
+	count := db.GetOneCommentCount(articleID)
+
 	detailData := []*DetailData{}
-	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), userData[0].Name, articleData[0].Body, tagData, commentData})
+	detailData = append(detailData, &DetailData{articleID, int(articleData[0].UserId), articleData[0].Name, articleData[0].Body, articleData[0].ProfileImagePath, "", articleData[0].UpdatedAt, tagData, commentData, count})
 
 	c.JSON(200, detailData)
 }
@@ -217,16 +205,63 @@ func GetArticleDetail(c *gin.Context) {
 // メインタグ情報の取得
 func GetMainTag(c *gin.Context) {
 	mainTag := db.GetMainTag()
-	mainTagMap := make(map[uint]string, len(mainTag))
-	for _, v := range mainTag {
-		mainTagMap[v.ID] = v.Name
-	}
 
-	c.JSON(200, mainTagMap)
+	c.JSON(200, mainTag)
+}
+
+// 無限スクロールのデータ取得
+func GetNextArticles(c *gin.Context) {
+	countStr := c.PostForm("count")
+	count, _ := strconv.Atoi(countStr)
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+
+	var nextArticles []*db.NextArticleResult
+	var countData []*db.CountData
+	var commentCount []*db.CommentCount
+	var favoriteData []*db.Favoritedata
+	var dbTagResult []*DbTagResult
+	var articleID []int
+
+	// 一番古い投稿のupdatedAtを取得
+	updatedAt, result := db.GetUpdatedAt(count)
+
+	// 次の10件分のデータを取得
+	if result {
+		nextArticles = db.GetNextArticles(updatedAt)
+		articleID = db.GetNextArticleID(updatedAt)
+		countData = db.GetLikeCount(articleID)
+		commentCount = db.GetCommentCount(articleID)
+		favoriteData = db.CheckFavorite(articleID, userID)
+		// タグ情報の取得
+		tagInfo := db.GetTagInfo(articleID)
+		tagMap := make(map[uint]string, len(tagInfo))
+		for _, v := range tagInfo {
+			for i := 0; i < len(v.Name); i++ {
+				tagMap[v.TagId[i]] = v.Name[i]
+			}
+		}
+		dbTagResult = []*DbTagResult{}
+
+		for _, v := range tagInfo {
+			for i := 0; i < len(v.TagId); i++ {
+				for key := range tagMap {
+					if (v.TagId[i]) == key {
+						dbTagResult = append(dbTagResult, &DbTagResult{v.ArticleId, key, tagMap[key]})
+					}
+				}
+			}
+		}
+	} else {
+		c.JSON(201, gin.H{"message": "データがありません"})
+		c.Abort()
+	}
+	c.JSON(200, gin.H{"nextArticles": nextArticles, "countData": countData, "commentCount": commentCount, "favoriteData": favoriteData, "tagData": dbTagResult})
 }
 
 // 早起きチェック
 func checkWakeUptime(userId uint) int {
+
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		panic(err)
@@ -258,7 +293,11 @@ func checkWakeUptime(userId uint) int {
 	minute, _ := strconv.Atoi(minuteStr)
 
 	wakeUpData := db.GetWakeUpData(int(userId))
-	wakeUpTime := *wakeUpData[0].WakeUpTime
+	if wakeUpData[0].WakeUpTime == "" {
+		return 0
+	}
+
+	wakeUpTime := wakeUpData[0].WakeUpTime
 	wakeUphhmm := strings.Split(wakeUpTime, ":")
 	rangeOfSuccess := wakeUpData[0].RangeOfSuccess
 

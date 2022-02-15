@@ -7441,6 +7441,11 @@ uuid@^8.3.2:
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
+v3-infinite-loading@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/v3-infinite-loading/-/v3-infinite-loading-1.0.1.tgz"
+  integrity sha512-LTt7t6UpD3iG0jZpKWZg8SxrDWX2UtvL+zZ/1v3sIDJ71wvE7/gFL3oqHnJn8Qt+M2rdHu1DRwh4bernAy2H1A==
+
 v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.npmjs.org/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz"

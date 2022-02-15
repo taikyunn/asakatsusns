@@ -1,27 +1,30 @@
 <template>
   <div>
-    <Header></Header>
-     <div class="text-center">
-      <h1>編集ページ</h1>
-      <h2>投稿内容</h2>
-      <div class="mb-3">
-        <textarea name="body" cols="70" rows="10" v-model="body"></textarea>
+    <Header />
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label"></label>
+            <textarea name="body" class="form-control" id="exampleFormControlTextarea1" rows="3" col="10" v-model="body" ></textarea>
+          </div>
+          <div class="mb-3 mx-auto">
+            <input type="hidden" id="tags" :value="tagsJson">
+            <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            placeholder="タグを5個まで入力できます"
+            :autocomplete-items="filteredItems"
+            @tags-changed="newTags => tags = newTags"
+            class="mx-auto"
+            />
+          </div>
+          <div class="mb-3">
+            <button @click="updateBody" class="btn btn-outline-warning">編集する</button>
+          </div>
+        </div>
       </div>
-        <div class="mb-3 mx-auto">
-        <input type="hidden" id="tags" :value="tagsJson">
-        <vue-tags-input
-        v-model="tag"
-        :tags="tags"
-        placeholder="タグを5個まで入力できます"
-        :autocomplete-items="filteredItems"
-        @tags-changed="newTags => tags = newTags"
-        />
-      </div>
-      <div class="mb-3">
-        <button @click="updateBody">編集する</button>
-        <button @click="back">戻る</button>
-      </div>
-     </div>
+    </div>
   </div>
 </template>
 
@@ -59,38 +62,45 @@ export default {
       return JSON.stringify(this.tags)
     },
   },
-  created() {
-    const params = new URLSearchParams()
-    params.append('id', this.id)
-    axios.post('getOneArticle', params)
-    .then(response => {
-      if (response.status != 200) {
-        throw new Error('レスポンスエラー')
-      } else {
-        var resultArticle = response.data
-        this.body = resultArticle[0].Body
-        if (resultArticle[0].Tags != null) {
-          this.tags = resultArticle[0].Tags
-        }
-      }
-    })
-  },
   mounted() {
-    axios.get("/getAutocompleteItems")
-    .then (response => {
-      var resultAutocompleteItems = response.data
-      if (resultAutocompleteItems != null) {
-        var target = []
-        for (var i = 0; i < resultAutocompleteItems.length; i++) {
-          target[i] = {text: resultAutocompleteItems[i]}
-        }
-        const handler1 = {};
-        const proxy1 = new Proxy(target, handler1);
-        this.autocompleteItems = proxy1
-      }
-    })
+    this.process()
   },
   methods: {
+    async process() {
+      await this.getAutocompleteItems()
+      await this.getOneArticle()
+    },
+    getOneArticle() {
+      const params = new URLSearchParams()
+      params.append('id', this.id)
+      axios.post('getOneArticle', params)
+      .then(response => {
+        if (response.status != 200) {
+          throw new Error('レスポンスエラー')
+        } else {
+          var resultArticle = response.data
+          this.body = resultArticle[0].Body
+          if (resultArticle[0].Tags != null) {
+            this.tags = resultArticle[0].Tags
+          }
+        }
+      })
+    },
+    getAutocompleteItems() {
+      axios.get("/getAutocompleteItems")
+      .then (response => {
+        var resultAutocompleteItems = response.data
+        if (resultAutocompleteItems != null) {
+          var target = []
+          for (var i = 0; i < resultAutocompleteItems.length; i++) {
+            target[i] = {text: resultAutocompleteItems[i]}
+          }
+          const handler1 = {};
+          const proxy1 = new Proxy(target, handler1);
+          this.autocompleteItems = proxy1
+        }
+      })
+    },
     updateBody(){
       const params = new FormData()
       const tags = document.getElementById("tags").value;
@@ -112,14 +122,15 @@ export default {
         }
       })
     },
-    back() {
-      this.$router.push('/')
-    }
   }
 }
 </script>
 
 <style scoped>
+.container {
+  padding-top: 5rem;
+}
+
 .vue-tags-input {
   max-width: 50%;
 }

@@ -30,31 +30,31 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown" justify-content-end >
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning" :to="{name: 'Mypage', params: {id:(Number(currentUserId))}}" v-if="authenticatedUser">
                         マイページ
                       </router-link>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning" to="/signup" v-if="notAuthenticatedUser">
                         新規登録
                       </router-link>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item text-center" href="#">
                       <router-link class="btn btn-warning" to="/login" v-if="notAuthenticatedUser">
                         ログイン
                       </router-link>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
-                      <button class="btn btn-warning" @click="signOut" v-if="authenticatedUser">
+                    <a class="dropdown-item text-center" href="#">
+                      <router-link class="btn btn-warning"  to="/logout" @click="signOut" v-if="authenticatedUser">
                         ログアウト
-                      </button>
+                      </router-link>
                     </a>
                   </li>
                 </ul>
@@ -76,28 +76,31 @@ import "firebase/auth"
 export default {
   data() {
     return {
-      authenticatedUser:'',
-      notAuthenticatedUser:'',
-      currentUserId:'',
-      currentUserName:localStorage.getItem('userName'),
+      authenticatedUser: '',
+      notAuthenticatedUser: '',
+      currentUserId: '',
+      currentUserName: localStorage.getItem('userName'),
     }
   },
   mounted(){
-    const params = new URLSearchParams()
-    params.append('id', localStorage.getItem('userId'))
-    axios.post('getHeader', params)
-    .then(response => {
-      if (response.data != '') {
-      this.authenticatedUser = true
-      this.notAuthenticatedUser = false
-      } else {
-        this.authenticatedUser = false
-        this.notAuthenticatedUser = true
-      }
-      this.currentUserId = response.data
-    })
+    this.getHeader()
   },
   methods: {
+    getHeader() {
+      const params = new URLSearchParams()
+      params.append('id', localStorage.getItem('userId'))
+      axios.post('getHeader', params)
+      .then(response => {
+        if (response.data != '') {
+        this.authenticatedUser = true
+        this.notAuthenticatedUser = false
+        } else {
+          this.authenticatedUser = false
+          this.notAuthenticatedUser = true
+        }
+        this.currentUserId = response.data
+      })
+    },
     signOut() {
       confirm('ログアウトしてもよろしいですか。')
       firebase.auth().signOut()
@@ -119,13 +122,17 @@ export default {
   color: black;
   font-weight: bold;
 }
-img {
-  border-radius: 50%;
-  width:3%;
-  height:3%;
-}
+
 .pen {
   color: black;
+}
+
+.justify-content-end {
+  padding-right: 5rem;
+}
+
+.dropdown-menu{
+  max-width: 200px;
 }
 
 </style>

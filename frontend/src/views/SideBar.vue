@@ -1,13 +1,13 @@
 <template>
   <div class="sidebar_fixed">
-    <div class="card w-75">
+    <div class="card w-75 main">
       <div class="card-header text-center">
         <fa icon="tag" />
         メインタグ
       </div>
-      <div class="card-body text-center" v-for="(mainTag, index) in mainTags" :key="mainTag">
-        <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(index))}}">
-          #{{mainTag}}
+      <div class="card-body text-center" v-for="mainTag in mainTags" :key="mainTag">
+        <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(mainTag.Id))}}">
+          #{{mainTag.Name}}
         </router-link>
       </div>
     </div>
@@ -35,11 +35,14 @@ export default {
       rankings: [],
     }
   },
-  created() {
-    this.getMainTag()
-    this.getWakeUpRanking()
+  mounted() {
+    this.process()
   },
   methods: {
+    async process() {
+      await this.getMainTag()
+      await this.getWakeUpRanking()
+    },
     getMainTag() {
       axios.get('getMainTag')
       .then(response => {
@@ -76,9 +79,12 @@ export default {
   color: #DAAF08;
 }
 
+.main {
+  margin-top: 40px;
+}
+
 .ranking {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 40px;
 }
 
 .tag {

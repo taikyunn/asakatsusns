@@ -1,30 +1,89 @@
 <template>
   <div>
-    <Header></Header>
-    <div>
-      <p>{{ArticleData.Name}}さん</p>
-      <p>内容:{{ArticleData.Body}}</p>
-        <span v-for="result in results" :key="result">
-          <button @click="registerLikes()" v-if="result.Count">いいね</button>
-          <button @click="deleteLikes()" v-else>いいね解除</button>
-        </span>
-      <p>いいね数:{{count}}</p>
-      <span v-for="tag in ArticleData.Tags" :key="tag">
-        {{tag}}&nbsp;
-      </span>
-    </div>
-    <div>
-      <h2>コメントを追加する</h2>
-      <textarea name="body" cols="70" rows="3" v-model="comment"></textarea>
-      <div>
-        <button @click='insertComment()'>コメントする</button>
+    <Header />
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card w-75">
+            <div class="card-body">
+              <span v-if="profileImage">
+                <img :src="profileImage" class="circle" />
+              </span>
+              <span v-else>
+                <img :src="defaultImage" class="circle" />
+              </span>
+              <span class="link">
+                {{ArticleData.Name}}
+              </span>
+              <span class="time">
+                {{ArticleData.UpdatedAt}}
+              </span>
+              <p class="card-text">
+                {{ArticleData.Body}}
+              </p>
+              <div v-for="tag in ArticleData.Tags" :key="tag">
+                <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                  {{tag}}
+                </router-link>
+              </div>
+            </div>
+            <div class="card-footer text-end footer">
+              <fa icon="comment-alt" />
+              {{ArticleData.Count}}
+              <span v-for="result in results" :key="result">
+                <span @click="registerLikes()" v-if="result.Count">
+                  <fa icon="heart" class="like-btn"/>
+                  {{count}}
+                </span>
+                <span @click="deleteLikes()" v-else>
+                  <fa icon="heart" class="unlike-btn"/>
+                  {{count}}
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="mb-3 comment">
+            <div class="card w-75" v-for="commentData in ArticleData.Comments" :key="commentData">
+              <div class="card-body">
+                <span v-if="commentData.Image">
+                  <img :src="commentData.Image" class="circle" />
+                </span>
+                <span v-else>
+                  <img :src="defaultImage" class="circle" />
+                </span>
+                <span class="link">
+                  {{commentData.Name}}
+                </span>
+                <span class="time">
+                  {{commentData.UpdatedAt}}
+                </span>
+                <div class="card-text card-text-comment">
+                {{commentData.Comment}}
+                </div>
+              </div>
+            </div>
+            <div class="card w-75" v-if="currentUserName != null">
+              <div class="card-body">
+                <div class="card-text">
+                  <span v-if="loginUserImage">
+                    <img :src="loginUserImage" class="circle" />
+                  </span>
+                  <span v-else>
+                    <img :src="defaultImage" class="circle" />
+                  </span>
+                  <label for="comment-area" class="form-label">
+                    {{currentUserName}}
+                  </label>
+                  <textarea name="body" class="form-control" id="comment-area" rows="3" v-model="comment"></textarea>
+                </div>
+                <div class="submit">
+                  <button @click='insertComment()' class="btn btn-outline-warning">コメントする</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div>
-      <h2>コメント一覧</h2>
-      <p v-for="commentData in ArticleData.Comments" :key="commentData">
-        {{commentData.Name}}さん:{{commentData.Comment}}
-      </p>
     </div>
   </div>
 </template>
@@ -43,18 +102,28 @@ export default {
   data () {
     return {
       ArticleData: [],
-      results:[],
-      count:'',
-      comment:'',
+      results: [],
+      count: '',
+      comment: '',
+      currentUserName: localStorage.getItem('userName'),
+      defaultImage: require('@/images/default.png'),
+      profileImage: '',
+      loginUserImage: '',
     }
   },
   components: { Header },
   mounted() {
-    this.getArticleDetail()
-    this.countFavorites()
-    this.checkFavorite()
+    this.process()
   },
   methods: {
+    async process() {
+      await this.getArticleDetail()
+      await Promise.all([
+        this.countFavorites(),
+        this.checkFavorite(),
+        this.getLoginUserProfileImagePath(),
+      ])
+    },
     getArticleDetail() {
       const params = new URLSearchParams()
       params.append('articleId', this.id)
@@ -63,8 +132,55 @@ export default {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          var ArticleData = response.data
-          this.ArticleData = ArticleData[0]
+          var resultArticle = response.data
+          for (let i = 0; i < resultArticle.length; i++) {
+            if (resultArticle[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + resultArticle[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.profileImage = URL.createObjectURL(blob)
+            })
+          }
+          this.ArticleData = resultArticle[0]
+          for (let i = 0; i < resultArticle[0].Comments.length; i++) {
+            if (resultArticle[0].Comments[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + resultArticle[0].Comments[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.ArticleData.Comments.splice(i, 1, {
+                Name: resultArticle[0].Comments[i].Name,
+                Comment: resultArticle[0].Comments[i].Comment,
+                ProfileImagePath: resultArticle[0].Comments[i].ProfileImagePath,
+                Image: URL.createObjectURL(blob),
+                UpdatedAt: resultArticle[0].Comments[i].UpdatedAt
+              })
+            })
+          }
+        }
+      })
+    },
+    getLoginUserProfileImagePath() {
+      const params = new URLSearchParams()
+      params.append('userId', localStorage.getItem('userId'))
+      axios.post("getLoginUserProfileImagePath", params)
+      .then(response => {
+        var resultPath = response.data
+        for (let i = 0; i < resultPath.length; i++) {
+          if (resultPath[i].ProfileImagePath == '') {
+            continue;
+          }
+          let url = process.env.VUE_APP_DATA_URL + resultPath[i].ProfileImagePath
+          axios.get(url,{responseType: "blob"})
+          .then(response => {
+            let blob = new Blob([response.data])
+            this.loginUserImage = URL.createObjectURL(blob)
+          })
         }
       })
     },
@@ -183,3 +299,67 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.container {
+  padding-top: 5rem;
+}
+
+.like-btn {
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #808080;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+.unlike-btn {
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #e54747;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+.comment {
+  padding-top: 5rem;
+}
+
+.time, .submit {
+  float: right;
+}
+
+.card-text-comment, .submit {
+  padding-top: 1rem;
+}
+
+.footer {
+  background-color:white;
+}
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.link, .form-label {
+  margin-left: 1rem;
+}
+
+.form-control {
+  margin-top: 1rem;
+}
+
+.tag {
+  color: green;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 2px;
+  float: left;
+  margin-right: 1rem;
+}
+</style>

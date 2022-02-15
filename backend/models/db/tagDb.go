@@ -10,8 +10,13 @@ type TagInfo struct {
 	Name      []string
 }
 
+type TagResult struct {
+	Id   int
+	Name string
+}
+
 // タグ情報取得
-func GetTagInfo(articleID []uint) []*TagInfo {
+func GetTagInfo(articleID []int) []*TagInfo {
 	db := gormConnect()
 	var count int64
 	var articleTag []entity.ArticleTag
@@ -44,11 +49,12 @@ func GetTagInfo(articleID []uint) []*TagInfo {
 		tagNames := make([]string, len(tag))
 		tagIds := make([]uint, len(tag))
 		for i, v := range tag {
-			tagNames[i] = v.Name
+			tagNames[i] = "#" + v.Name
 			tagIds[i] = v.ID
 		}
 		tagInfo = append(tagInfo, &TagInfo{int(value), tagIds, tagNames})
 	}
+	defer db.Close()
 	return tagInfo
 }
 
@@ -94,6 +100,7 @@ func FindTagData(articleId int) []string {
 	for i, v := range tag {
 		tagNames[i] = v.Name
 	}
+	defer db.Close()
 	return tagNames
 }
 
@@ -149,6 +156,7 @@ func UpdateTagData(articleId int, tags []entity.TagData) {
 		}
 		db.Create(&articleTag)
 	}
+	defer db.Close()
 }
 
 // 自動補完機能データ取得
@@ -159,6 +167,7 @@ func GetAutocompleteItems() []entity.Tag {
 	if err := db.Select("name").Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return tag
 }
 
@@ -195,33 +204,38 @@ func GetOneTagData(ArticleId int) []string {
 	for i, v := range tag {
 		tagNames[i] = v.Name
 	}
+	defer db.Close()
 	return tagNames
 }
 
 // メインタグ情報の取得
-func GetMainTag() []entity.Tag {
+func GetMainTag() []*TagResult {
 	db := gormConnect()
-	var tag []entity.Tag
+	tagResult := []*TagResult{}
+	table := "INNER JOIN article_tag ON tag.id = article_tag.tag_id"
+	where := "article_tag.deleted_at IS NULL"
 
-	if err := db.Select("id,name").Limit(5).Order("id DESC").Find(&tag).Error; err != nil {
+	if err := db.Table("tag").Select("tag.id, name").Joins(table).Order("tag.updated_at DESC").Group("tag.id").Where(where).Limit(5).Scan(&tagResult).Error; err != nil {
 		panic(err.Error())
 	}
-	return tag
+
+	defer db.Close()
+	return tagResult
 }
 
 // tagIdをもとにarticleIdを取得
-func GetArticleIdByTagId(tagId int) []uint {
+func GetArticleIdByTagId(tagId int) []int {
 	db := gormConnect()
 	var atricleTag []entity.ArticleTag
 
 	if err := db.Select("article_id").Where("tag_id = ?", tagId).Limit(10).Order("id DESC").Find(&atricleTag).Error; err != nil {
 		panic(err.Error())
 	}
-	articleIds := make([]uint, len(atricleTag))
+	articleIds := make([]int, len(atricleTag))
 	for i, v := range atricleTag {
-		articleIds[i] = uint(v.ArticleId)
+		articleIds[i] = int(v.ArticleId)
 	}
-
+	defer db.Close()
 	return articleIds
 }
 
@@ -233,6 +247,7 @@ func GetTagNameById(tagId int) []entity.Tag {
 	if err := db.Select("name").Where("id = ?", tagId).Limit(10).Find(&tag).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return tag
 }
 
@@ -245,5 +260,6 @@ func GetTagCount(tagId int) int {
 	if err := db.Model(&articleTag).Where("tag_id = ?", tagId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return count
 }

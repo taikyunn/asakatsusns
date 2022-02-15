@@ -7,7 +7,7 @@
           <SideBar />
         </div>
         <div class="col-md-6">
-          <div class="card w-75">
+          <div class="card w-75 tag-card bg-warning">
             <div class="card-body">
               <p class="card-text tag">
                 #{{tag.name}}
@@ -18,36 +18,42 @@
             </div>
           </div>
           <div class="card w-75" v-for="article in articles" :key="article">
-            <div class="card-header">
+            <div class="card-body">
+              <span v-if="article.Image">
+                <img :src="article.Image" class="circle" />
+              </span>
+              <span v-else>
+                <img :src="defaultImage" class="circle" />
+              </span>
               <router-link class="link" :to="{name: 'Mypage', params: {id:(Number(article.UserId))}}">
                 {{article.Name}}
               </router-link>
-              {{article.CreatedAt}}
-              <span v-if="article.UserId == currentUserId">
-                <span class="dropdown">
-                  <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <fa icon="ellipsis-v" class="ellipsis" />
-                  </a>
-                  <ul class="dropdown-menu" justify-content-end >
-                    <li>
+              <span class="time">
+                {{article.UpdatedAt}}
+                <span v-if="article.UserId == currentUserId">
+                  <span class="dropdown">
+                    <a class="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      <fa icon="ellipsis-v" class="ellipsis" />
+                    </a>
+                    <ul class="dropdown-menu" justify-content-end >
+                      <li>
+                          <a class="dropdown-item" href="#">
+                            <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
+                              編集
+                            </router-link>
+                          </a>
+                      </li>
+                      <li>
                         <a class="dropdown-item" href="#">
-                          <router-link class="btn btn-warning" :to="{name: 'Edit', params: {id:(Number(article.Id))}}">
-                            編集
-                          </router-link>
+                          <button class="btn btn-warning" @click="deleteArticle(article)">
+                            削除
+                          </button>
                         </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <button class="btn btn-warning" @click="deleteArticle(article)">
-                          削除
-                        </button>
-                      </a>
-                    </li>
-                  </ul>
+                      </li>
+                    </ul>
+                  </span>
                 </span>
               </span>
-            </div>
-            <div class="card-body">
               <p class="card-text">
                 <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
                   {{article.Body}}
@@ -56,8 +62,8 @@
               <div v-for="tag in tags" :key="tag">
                 <div v-if="article.Id == tag.ArticleId">
                   <span v-if="article.UserId == currentUserId" >
-                    <router-link class="tag" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
-                      #{{tag.Value}}
+                    <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                      {{tag.Value}}
                     </router-link>
                   </span>
                 </div>
@@ -109,6 +115,7 @@ export default {
   data() {
     return {
       currentUserId: localStorage.getItem('userId'),
+      defaultImage: require('@/images/default.png'),
       articles: [],
       tags: [],
       likesCounts: [],
@@ -117,12 +124,31 @@ export default {
     }
   },
   mounted() {
-    this.getTagArticles()
-    this.countFavorites()
-    this.checkFavorite()
-    this.countComments()
+    this.process()
   },
   methods: {
+    async process() {
+      await Promise.all([
+        this.countFavorites(),
+        this.countComments(),
+      ])
+      await this.getTagArticles()
+      await this.checkFavorite()
+    },
+    countFavorites() {
+      axios.get('getCountFavorites')
+      .then(response => {
+        var resultLikesCount = response.data
+        this.likesCounts = resultLikesCount
+      })
+    },
+    countComments() {
+      axios.get('getCountComments')
+      .then(response => {
+        var resultCommentCount = response.data
+        this.commentCounts = resultCommentCount
+      })
+    },
     getTagArticles() {
       const params = new URLSearchParams()
       params.append('tagId', this.id)
@@ -139,8 +165,35 @@ export default {
           this.tag = resultTag[0]
           var resultCount = response.data.count
           this.count = resultCount
-          console.log(this.count)
+          for (let i = 0; i < resultArticles.length; i++) {
+            if (resultArticles[i].ProfileImagePath == '') {
+              continue;
+            }
+            let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
+            axios.get(url,{responseType: "blob"})
+            .then(response => {
+              let blob = new Blob([response.data])
+              this.articles.splice(i, 1, {
+                Body: resultArticles[i].Body,
+                Id: resultArticles[i].Id,
+                Name: resultArticles[i].Name,
+                Image: URL.createObjectURL(blob),
+                ProfileImagePath: resultArticles[i].ProfileImagePath,
+                UpdatedAt: resultArticles[i].UpdatedAt,
+                UserId: resultArticles[i].UserId
+              })
+            })
+          }
         }
+      })
+    },
+    checkFavorite() {
+      const params = new URLSearchParams()
+      params.append("userId", localStorage.getItem('userId'))
+      axios.post("checkFavorite", params)
+      .then(response => {
+        var resultCheckFavorite = response.data
+        this.results = resultCheckFavorite
       })
     },
     deleteArticle(article) {
@@ -221,29 +274,6 @@ export default {
         this.$router.push('/login')
       }
     },
-    countFavorites() {
-      axios.get('getCountFavorites')
-      .then(response => {
-        var resultLikesCount = response.data
-        this.likesCounts = resultLikesCount
-      })
-    },
-    checkFavorite() {
-      const params = new URLSearchParams()
-      params.append("userId", localStorage.getItem('userId'))
-      axios.post("checkFavorite", params)
-      .then(response => {
-        var resultCheckFavorite = response.data
-        this.results = resultCheckFavorite
-      })
-    },
-    countComments() {
-      axios.get('getCountComments')
-      .then(response => {
-        var resultCommentCount = response.data
-        this.commentCounts = resultCommentCount
-      })
-    },
   },
 }
 
@@ -251,22 +281,22 @@ export default {
 
 <style scoped>
 .like-btn {
- width: 18px;
- height: 18px;
- font-size: 25px;
- color: #808080;
- margin-left: 20px;
- margin-right: 5px;
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #808080;
+  margin-left: 20px;
+  margin-right: 5px;
 }
 
 .unlike-btn {
- width: 18px;
- height: 18px;
- font-size: 25px;
- color: #e54747;
- margin-left: 20px;
- margin-right: 5px;
- }
+  width: 18px;
+  height: 18px;
+  font-size: 25px;
+  color: #e54747;
+  margin-left: 20px;
+  margin-right: 5px;
+}
 
  .heart {
    margin-right: 20px;
@@ -284,12 +314,12 @@ export default {
   text-decoration: none;
   text-align: left;
   color:black;
+  margin-left: 1rem;
 }
 
 .ellipsis {
-  float: right;
+  color:gray
 }
-
 .dropdown-toggle {
   color: black;
 }
@@ -298,10 +328,28 @@ export default {
   color: green;
   white-space: nowrap;
   text-decoration: none;
+  padding: 2px;
+  float: left;
+  margin-right: 1rem;
 }
 
 .container {
   padding-top: 5rem;
 }
 
+.time {
+  float: right;
+}
+
+.tag-card {
+  margin-top: 40px;
+}
+
+
+.circle {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
 </style>

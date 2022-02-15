@@ -35,6 +35,7 @@ func RegisterAchievementDay(date time.Time, userId uint) int {
 	if err := db.Model(&achievementDay).Where("user_id = ?", userId).Count(&count).Error; err != nil {
 		panic(err.Error())
 	}
+	defer db.Close()
 	return count
 }
 
@@ -60,5 +61,6 @@ func GetWakeUpRanking() []*Ranking {
 		}
 		ranking = append(ranking, &Ranking{v, count})
 	}
+	defer db.Close()
 	return ranking
 }

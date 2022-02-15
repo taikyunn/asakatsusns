@@ -50,6 +50,16 @@ func GetCountFavorites(c *gin.Context) {
 	c.JSON(200, countData)
 }
 
+// 無限スクロール用・いいね数取得
+func GetNextCountFavorites(c *gin.Context) {
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+
+	// いいね数を取得
+	countData := db.GetPreviousLikeCount(articleID)
+	c.JSON(200, countData)
+}
+
 func GetOneCountFavorites(c *gin.Context) {
 	articleIdStr := c.PostForm("articleId")
 	articleID, _ := strconv.Atoi(articleIdStr)
@@ -70,6 +80,17 @@ func CheckFavorite(c *gin.Context) {
 	}
 
 	favoriteData := db.CheckFavorite(articleID, userID)
+	c.JSON(200, favoriteData)
+}
+
+// 無限スクロール・いいね状態の取得
+func CheckNextFavorite(c *gin.Context) {
+	userIdStr := c.PostForm("userId")
+	userID, _ := strconv.Atoi(userIdStr)
+	articleIdStr := c.PostForm("articleId")
+	articleID, _ := strconv.Atoi(articleIdStr)
+
+	favoriteData := db.CheckNextFavorite(articleID, userID)
 	c.JSON(200, favoriteData)
 }
 

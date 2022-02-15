@@ -36,8 +36,6 @@ func UploadS3Bucket(file *multipart.FileHeader, filename string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	log.Println("done")
 }
 
 func DownloadS3Bucket(filepath string) (*os.File, string) {
