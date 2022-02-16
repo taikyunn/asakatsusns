@@ -9,6 +9,12 @@ type WakeUpData struct {
 	RangeOfSuccess int
 }
 
+type ResultMypageArticles struct {
+	Id        int
+	Body      string
+	UpdatedAt string
+}
+
 // ユーザーIDからユーザー情報を取得
 func GetOneUser(userID int) []entity.User {
 	db := gormConnect()
@@ -116,12 +122,17 @@ func UpdateUserName(id int, name string) {
 }
 
 // 投稿取得(マイページ)
-func GetMypageArticle(userID int) ([]entity.Article, []int) {
+func GetMypageArticle(userID int) ([]*ResultMypageArticles, []int) {
 	db := gormConnect()
 	var article []entity.Article
+	resultMypageArticles := []*ResultMypageArticles{}
 
-	if err := db.Limit(10).Order("id DESC").Select("id, body").Where("user_id = ?", userID).Find(&article).Error; err != nil {
+	if err := db.Limit(10).Order("id DESC").Select("id, body, updated_at").Where("user_id = ?", userID).Find(&article).Error; err != nil {
 		panic(err.Error())
+	}
+	for _, v := range article {
+		t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+		resultMypageArticles = append(resultMypageArticles, &ResultMypageArticles{int(v.ID), v.Body, t})
 	}
 	defer db.Close()
 
@@ -129,5 +140,5 @@ func GetMypageArticle(userID int) ([]entity.Article, []int) {
 	for i, v := range article {
 		articleIds[i] = int(v.ID)
 	}
-	return article, articleIds
+	return resultMypageArticles, articleIds
 }

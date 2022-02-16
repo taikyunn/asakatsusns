@@ -14,6 +14,12 @@ import (
 	"github.com/rs/xid"
 )
 
+type DbMypageTagResult struct {
+	ArticleId int
+	Key       uint
+	Value     string
+}
+
 // マイページ情報取得
 func GetUserData(c *gin.Context) {
 	userIdStr := c.PostForm("userId")
@@ -162,7 +168,29 @@ func GetMypageArticle(c *gin.Context) {
 	userName := db.GetUserName(uint(userID))
 	commentCount := db.GetCommentCount(articleIds)
 
-	c.JSON(200, gin.H{"mypageArticle": mypageArticle, "userName": userName, "commentCount": commentCount})
+	// タグ情報の取得
+	tagInfo := db.GetTagInfo(articleIds)
+
+	tagMap := make(map[uint]string, len(tagInfo))
+	for _, v := range tagInfo {
+		for i := 0; i < len(v.Name); i++ {
+			tagMap[v.TagId[i]] = v.Name[i]
+		}
+	}
+
+	dbMypageTagResult := []*DbMypageTagResult{}
+
+	for _, v := range tagInfo {
+		for i := 0; i < len(v.TagId); i++ {
+			for key := range tagMap {
+				if (v.TagId[i]) == key {
+					dbMypageTagResult = append(dbMypageTagResult, &DbMypageTagResult{v.ArticleId, key, tagMap[key]})
+				}
+			}
+		}
+	}
+
+	c.JSON(200, gin.H{"mypageArticle": mypageArticle, "userName": userName, "commentCount": commentCount, "tagData": dbMypageTagResult})
 }
 
 // いいねしているか判定(マイページ)

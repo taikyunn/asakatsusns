@@ -3,111 +3,131 @@
     <Header />
     <div class="container">
       <div class="row">
-          <div class="col-md-5 text-center">
-            <Profile v-bind:id=propData />
-          </div>
-          <div class="col-md-6">
-            <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button type="button" id="home-tab" class="nav-link active btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
-                  投稿
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button type="button" id="profile-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
-                  いいね
-                </button>
-              </li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-              <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
-                <div class="card" v-for="article in mypageArticle" :key="article">
-                    <div class="card-body">
-                      <span v-if="userImage">
-                        <img :src="userImage" class="circle" />
-                      </span>
-                      <span v-else>
-                        <img :src="defaultImage" class="circle" />
-                      </span>
-                      <span class="link">
-                        {{userName.name}}
-                      </span>
-                      <p class="card-text">
-                        {{article.body}}
-                      </p>
-                      <div class="card-footer text-end footer">
-                        <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
-                          <span v-if="mypageCommentCount.ArticleId == article.ID">
-                            <fa icon="comment-alt" class="comment-icon" />
-                            {{mypageCommentCount.Count}}
-                          </span>
-                        </span>
-                        <span v-for="result in results" :key="result">
-                          <span v-if="result.ArticleId == article.ID">
-                            <span @click="registerLikes(article.ID)" v-if="result.Count">
-                              <fa icon="heart" class="like-btn"/>
-                            </span>
-                            <span @click="deleteLikes(article.ID)" v-else>
-                              <fa icon="heart" class="unlike-btn"/>
-                            </span>
-                          </span>
-                        </span>
-                        <span v-for="count in countData" :key="count">
-                          <span v-if="count.ArticleId == article.ID">
-                            {{count.Count}}
-                          </span>
-                        </span>
+        <div class="col-md-5 text-center">
+          <Profile v-bind:id=propData />
+        </div>
+        <div class="col-md-6">
+          <ul id="myTab" class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button type="button" id="home-tab" class="nav-link active btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+                投稿
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" id="profile-tab" class="nav-link btn btn-outline-warning" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                いいね
+              </button>
+            </li>
+          </ul>
+          <div id="myTabContent" class="tab-content">
+            <div id="home" class="tab-pane active" role="tabpanel" aria-labelledby="home-tab">
+              <div class="card" v-for="article in mypageArticle" :key="article">
+                <div class="card-body">
+                  <span v-if="userImage">
+                    <img :src="userImage" class="circle" />
+                  </span>
+                  <span v-else>
+                    <img :src="defaultImage" class="circle" />
+                  </span>
+                  <span class="link">
+                    {{userName.name}}
+                  </span>
+                  <span class="time">
+                    {{article.UpdatedAt}}
+                  </span>
+                  <div class="card-text">
+                    {{article.Body}}
+                    <div v-for="tag in tags" :key="tag">
+                      <div v-if="article.Id == tag.ArticleId">
+                          <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                            {{tag.Value}}
+                          </router-link>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div class="card-footer text-end footer">
+                  <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
+                    <span v-if="mypageCommentCount.ArticleId == article.Id">
+                      <fa icon="comment-alt" class="comment-icon" />
+                      {{mypageCommentCount.Count}}
+                    </span>
+                  </span>
+                  <span v-for="result in results" :key="result">
+                    <span v-if="result.ArticleId == article.Id">
+                      <span @click="registerLikes(article.Id)" v-if="result.Count">
+                        <fa icon="heart" class="like-btn"/>
+                      </span>
+                      <span @click="deleteLikes(article.Id)" v-else>
+                        <fa icon="heart" class="unlike-btn"/>
+                      </span>
+                    </span>
+                  </span>
+                  <span v-for="count in countData" :key="count">
+                    <span v-if="count.ArticleId == article.Id">
+                      {{count.Count}}
+                    </span>
+                  </span>
                 </div>
               </div>
-              <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab" v-for="article in mypageArticle" :key="article">
-                <p v-if="likedPosts.length == 0">
-                  いいねした投稿がありません。
-                </p>
-                <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
-                  <div class="card-body">
-                    <span v-if="likedPost.Image">
-                      <img :src="likedPost.Image" class="circle" />
-                    </span>
-                    <span v-else>
-                      <img :src="defaultImage" class="circle" />
-                    </span>
-                    <span class="link">
-                      {{likedPost.Name}}
-                    </span>
-                    <p class="card-text">
-                      {{likedPost.Body}}
-                    </p>
+            </div>
+            <div id="profile" class="tab-pane" role="tabpanel" aria-labelledby="profile-tab" v-for="article in mypageArticle" :key="article">
+              <p v-if="likedPosts.length == 0">
+                いいねした投稿がありません。
+              </p>
+              <div class="card" v-for="likedPost in likedPosts" :key="likedPost" v-else>
+                <div class="card-body">
+                  <span v-if="likedPost.Image">
+                    <img :src="likedPost.Image" class="circle" />
+                  </span>
+                  <span v-else>
+                    <img :src="defaultImage" class="circle" />
+                  </span>
+                  <span class="link">
+                    {{likedPost.Name}}
+                  </span>
+                  <span class="time">
+                    {{likedPost.UpdatedAt}}
+                  </span>
+                  <div class="card-text">
+                    {{likedPost.Body}}
+                    <div v-for="tag in likedPostsTags" :key="tag">
+                      <div v-if="likedPost.Id == tag.ArticleId">
+                        <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                          {{tag.Value}}
+                        </router-link>
+                      </div>
+                    </div>
                   </div>
-                  <div class="card-footer text-end footer">
-                    <span v-for="commentCount in commentCounts" :key="commentCount">
-                      <span v-if="likedPost.ArticleId == commentCount.ArticleId">
-                        <fa icon="comment-alt" />
-                        {{commentCount.Count}}
+                </div>
+                <div class="card-footer text-end footer">
+                  <span v-for="commentCount in commentCounts" :key="commentCount">
+                    <span v-if="likedPost.Id == commentCount.ArticleId">
+                      <fa icon="comment-alt" />
+                      {{commentCount.Count}}
+                    </span>
+                  </span>
+                  <span v-for="favoriteLikedPostCount in favoriteLikedPostCounts" :key="favoriteLikedPostCount">
+                    <span v-if="favoriteLikedPostCount.ArticleId == likedPost.Id">
+                      <span v-if="favoriteLikedPostCount.Count">
+                        <fa icon="heart" class="like-btn"/>
+                      </span>
+                      <span v-else>
+                        <fa icon="heart" class="unlike-btn"/>
                       </span>
                     </span>
-                    <span v-for="favoriteLikedPostCount in favoriteLikedPostCounts" :key="favoriteLikedPostCount">
-                      <span v-if="favoriteLikedPostCount.ArticleId == likedPost.ArticleId">
-                        <span v-if="favoriteLikedPostCount.Count">
-                          <fa icon="heart" class="like-btn"/>
-                        </span>
-                        <span v-else>
-                          <fa icon="heart" class="unlike-btn"/>
-                        </span>
-                      </span>
+                  </span>
+                  <span v-for="countData in likedPostCountData" :key="countData">
+                    <span v-if="countData.ArticleId == likedPost.Id">
+                      {{countData.Count}}
                     </span>
-                    <span v-for="countData in likedPostCountData" :key="countData">
-                      <span v-if="countData.ArticleId == likedPost.ArticleId">
-                        {{countData.Count}}
-                      </span>
-                    </span>
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
     </div>
   </div>
 </template>
@@ -140,6 +160,8 @@ export default {
       mypageCommentCounts: '',
       favoriteLikedPostCounts: '',
       likedPostCountData: '',
+      tags: [],
+      likedPostsTags:[],
     }
   },
   components: { Header , Profile},
@@ -167,30 +189,30 @@ export default {
         this.userInfo = resultUser[0]
       })
     },
-    getMypageArticle() {
+    async getMypageArticle() {
       const params = new URLSearchParams()
       params.append('userId',this.id)
-      axios.post('getMypageArticle', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          var resultMypageArticle = response.data.mypageArticle
-          this.mypageArticle = resultMypageArticle
-          var resultUserName = response.data.userName
-          this.userName = resultUserName[0]
-          var resultCommentCounts = response.data.commentCount
-          this.mypageCommentCounts = resultCommentCounts
-          if (resultUserName[0].ProfileImagePath != '') {
-            let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
-            axios.get(url,{responseType: "blob"})
-            .then(response => {
-              let blob = new Blob([response.data])
-              this.userImage = URL.createObjectURL(blob)
-            })
-          }
+      const response = await axios.post('getMypageArticle', params)
+      if (response.status != 200) {
+        throw new Error("レスポンスエラー")
+      } else {
+        var resultMypageArticle = response.data.mypageArticle
+        this.mypageArticle = resultMypageArticle
+        var resultUserName = response.data.userName
+        this.userName = resultUserName[0]
+        var resultCommentCounts = response.data.commentCount
+        this.mypageCommentCounts = resultCommentCounts
+        var resultTags = response.data.tagData
+        this.tags = resultTags
+        if (resultUserName[0].ProfileImagePath != '') {
+          let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
+          axios.get(url,{responseType: "blob"})
+          .then(response => {
+            let blob = new Blob([response.data])
+            this.userImage = URL.createObjectURL(blob)
+          })
         }
-      })
+      }
     },
     getCountFavoriteMypage() {
       const params = new URLSearchParams()
@@ -230,6 +252,8 @@ export default {
           this.likedPosts = response.data.favoritePostData
           this.commentCounts = response.data.commentCount
           var likedPosts = response.data.favoritePostData
+          var likedPostsTags = response.data.tagData
+          this.likedPostsTags = likedPostsTags
           for (let i = 0; i < likedPosts.length; i++) {
             if (likedPosts[i].ProfileImagePath == '') {
               continue;
@@ -244,7 +268,8 @@ export default {
                 Name: likedPosts[i].Name,
                 ProfileImagePath: likedPosts[i].ProfileImagePath,
                 Image: URL.createObjectURL(blob),
-                UserId: likedPosts[i].UserId
+                UserId: likedPosts[i].UserId,
+                UpdatedAt: likedPosts[i].UpdatedAt
               })
             })
           }
@@ -392,5 +417,18 @@ export default {
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+.tag {
+  color: green;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 2px;
+  float: left;
+  margin-right: 1rem;
+}
+
+.time {
+  float: right;
 }
 </style>
