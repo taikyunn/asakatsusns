@@ -130,30 +130,28 @@ export default {
         this.countComments(),
       ]);
     },
-    getAllArticles() {
-    axios.get('getAllArticles')
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error('レスポンスエラー')
-        } else {
-          var resultArticles = response.data.article
-          this.articles = resultArticles
-          var resultTags = response.data.tag
-          this.tags = resultTags
-          for (let i = 0; i < resultArticles.length; i++) {
-            if (resultArticles[i].ProfileImagePath == '') {
-              continue;
-            }
-            let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
-            axios.get(url,{responseType: "blob"})
-            .then(response => {
-              let blob = new Blob([response.data])
-              resultArticles[i].Image = URL.createObjectURL(blob)
-            })
-          }
-          this.articles = resultArticles
+    async getAllArticles() {
+    const response = await axios.get('getAllArticles')
+    if (response.status != 200) {
+      throw new Error('レスポンスエラー')
+    } else {
+      var resultArticles = response.data.article
+      this.articles = resultArticles
+      var resultTags = response.data.tag
+      this.tags = resultTags
+      for (let i = 0; i < resultArticles.length; i++) {
+        if (resultArticles[i].ProfileImagePath == '') {
+          continue;
         }
-      })
+        let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
+        axios.get(url,{responseType: "blob"})
+        .then(response => {
+          let blob = new Blob([response.data])
+          resultArticles[i].Image = URL.createObjectURL(blob)
+        })
+      }
+      this.articles = resultArticles
+    }
     },
     deleteArticle(article) {
       confirm('削除してもよろしいですか。')
