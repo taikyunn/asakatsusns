@@ -21,8 +21,6 @@ func (form *TagVaridator) TagValidate() (ok bool, result map[string]string) {
 					switch errors[i].Tag() {
 					case "excludesall":
 						result["Name"] = "*タグに/を含むことはできません。"
-					case "email":
-						// errorMessage = "error message for email format of Email"
 					}
 				}
 			}

@@ -62,6 +62,17 @@ func CreateArticle(c *gin.Context) {
 	var tagData []entity.TagData
 	json.Unmarshal(b, &tagData)
 
+	length := len(tagData)
+	correctData := make([]string, 5)
+	if length > 5 {
+		for i, v := range tagData {
+			if i == 5 {
+				break
+			}
+			correctData[i] = v.Text
+		}
+	}
+
 	form := forms.TagVaridator{
 		Tags: tags,
 	}
@@ -88,7 +99,11 @@ func CreateArticle(c *gin.Context) {
 	ArticleID := dbArticleId[0].ID
 
 	// tag,article_tagテーブルにデータを登録
-	db.InsertTags(ArticleID, tagData)
+	if length > 5 {
+		db.RegisterTags(ArticleID, correctData)
+	} else {
+		db.InsertTags(ArticleID, tagData)
+	}
 
 	// 早起きチェック
 	count := checkWakeUptime(UserId)
