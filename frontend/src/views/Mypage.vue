@@ -32,32 +32,39 @@
                       <span class="link">
                         {{userName.name}}
                       </span>
-                      <p class="card-text">
+                      <div class="card-text">
                         {{article.body}}
-                      </p>
-                      <div class="card-footer text-end footer">
-                        <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
-                          <span v-if="mypageCommentCount.ArticleId == article.ID">
-                            <fa icon="comment-alt" class="comment-icon" />
-                            {{mypageCommentCount.Count}}
-                          </span>
-                        </span>
-                        <span v-for="result in results" :key="result">
-                          <span v-if="result.ArticleId == article.ID">
-                            <span @click="registerLikes(article.ID)" v-if="result.Count">
-                              <fa icon="heart" class="like-btn"/>
-                            </span>
-                            <span @click="deleteLikes(article.ID)" v-else>
-                              <fa icon="heart" class="unlike-btn"/>
-                            </span>
-                          </span>
-                        </span>
-                        <span v-for="count in countData" :key="count">
-                          <span v-if="count.ArticleId == article.ID">
-                            {{count.Count}}
-                          </span>
-                        </span>
+                        <div v-for="tag in tags" :key="tag">
+                          <div v-if="article.ID == tag.ArticleId">
+                              <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                                {{tag.Value}}
+                              </router-link>
+                          </div>
+                        </div>
                       </div>
+                    </div>
+                    <div class="card-footer text-end footer">
+                      <span v-for="mypageCommentCount in mypageCommentCounts" :key="mypageCommentCount">
+                        <span v-if="mypageCommentCount.ArticleId == article.ID">
+                          <fa icon="comment-alt" class="comment-icon" />
+                          {{mypageCommentCount.Count}}
+                        </span>
+                      </span>
+                      <span v-for="result in results" :key="result">
+                        <span v-if="result.ArticleId == article.ID">
+                          <span @click="registerLikes(article.ID)" v-if="result.Count">
+                            <fa icon="heart" class="like-btn"/>
+                          </span>
+                          <span @click="deleteLikes(article.ID)" v-else>
+                            <fa icon="heart" class="unlike-btn"/>
+                          </span>
+                        </span>
+                      </span>
+                      <span v-for="count in countData" :key="count">
+                        <span v-if="count.ArticleId == article.ID">
+                          {{count.Count}}
+                        </span>
+                      </span>
                     </div>
                 </div>
               </div>
@@ -140,6 +147,7 @@ export default {
       mypageCommentCounts: '',
       favoriteLikedPostCounts: '',
       likedPostCountData: '',
+      tags: []
     }
   },
   components: { Header , Profile},
@@ -167,30 +175,30 @@ export default {
         this.userInfo = resultUser[0]
       })
     },
-    getMypageArticle() {
+    async getMypageArticle() {
       const params = new URLSearchParams()
       params.append('userId',this.id)
-      axios.post('getMypageArticle', params)
-      .then(response => {
-        if (response.status != 200) {
-          throw new Error("レスポンスエラー")
-        } else {
-          var resultMypageArticle = response.data.mypageArticle
-          this.mypageArticle = resultMypageArticle
-          var resultUserName = response.data.userName
-          this.userName = resultUserName[0]
-          var resultCommentCounts = response.data.commentCount
-          this.mypageCommentCounts = resultCommentCounts
-          if (resultUserName[0].ProfileImagePath != '') {
-            let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
-            axios.get(url,{responseType: "blob"})
-            .then(response => {
-              let blob = new Blob([response.data])
-              this.userImage = URL.createObjectURL(blob)
-            })
-          }
+      const response = await axios.post('getMypageArticle', params)
+      if (response.status != 200) {
+        throw new Error("レスポンスエラー")
+      } else {
+        var resultMypageArticle = response.data.mypageArticle
+        this.mypageArticle = resultMypageArticle
+        var resultUserName = response.data.userName
+        this.userName = resultUserName[0]
+        var resultCommentCounts = response.data.commentCount
+        this.mypageCommentCounts = resultCommentCounts
+        var resultTags = response.data.tagData
+        this.tags = resultTags
+        if (resultUserName[0].ProfileImagePath != '') {
+          let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
+          axios.get(url,{responseType: "blob"})
+          .then(response => {
+            let blob = new Blob([response.data])
+            this.userImage = URL.createObjectURL(blob)
+          })
         }
-      })
+      }
     },
     getCountFavoriteMypage() {
       const params = new URLSearchParams()
@@ -392,5 +400,14 @@ export default {
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+.tag {
+  color: green;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 2px;
+  float: left;
+  margin-right: 1rem;
 }
 </style>
