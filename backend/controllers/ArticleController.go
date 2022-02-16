@@ -247,6 +247,7 @@ func GetNextArticles(c *gin.Context) {
 		countData = db.GetLikeCount(articleID)
 		commentCount = db.GetCommentCount(articleID)
 		favoriteData = db.CheckFavorite(articleID, userID)
+
 		// タグ情報の取得
 		tagInfo := db.GetTagInfo(articleID)
 		tagMap := make(map[uint]string, len(tagInfo))

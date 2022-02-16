@@ -83,9 +83,16 @@
                     <span class="link">
                       {{likedPost.Name}}
                     </span>
-                    <p class="card-text">
+                    <div class="card-text">
                       {{likedPost.Body}}
-                    </p>
+                      <div v-for="tag in likedPostsTags" :key="tag">
+                        <div v-if="likedPost.Id == tag.ArticleId">
+                            <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                              {{tag.Value}}
+                            </router-link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="card-footer text-end footer">
                     <span v-for="commentCount in commentCounts" :key="commentCount">
@@ -147,7 +154,8 @@ export default {
       mypageCommentCounts: '',
       favoriteLikedPostCounts: '',
       likedPostCountData: '',
-      tags: []
+      tags: [],
+      likedPostsTags:[],
     }
   },
   components: { Header , Profile},
@@ -235,9 +243,12 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
+          console.log(response.data)
           this.likedPosts = response.data.favoritePostData
           this.commentCounts = response.data.commentCount
           var likedPosts = response.data.favoritePostData
+          var likedPostsTags = response.data.tagData
+          this.likedPostsTags = likedPostsTags
           for (let i = 0; i < likedPosts.length; i++) {
             if (likedPosts[i].ProfileImagePath == '') {
               continue;
