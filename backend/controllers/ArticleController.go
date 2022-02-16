@@ -62,12 +62,11 @@ func CreateArticle(c *gin.Context) {
 	var tagData []entity.TagData
 	json.Unmarshal(b, &tagData)
 
-	// バリデーション
-	form := forms.ArticleValidate{
-		Body: c.PostForm("body"),
+	form := forms.TagVaridator{
+		Tags: tags,
 	}
 
-	if ok, errorMessages := form.ArticleValidate(); !ok {
+	if ok, errorMessages := form.TagValidate(); !ok {
 		c.JSON(201, errorMessages)
 		return
 	}
