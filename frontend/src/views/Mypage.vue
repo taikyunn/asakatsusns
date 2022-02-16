@@ -86,6 +86,9 @@
                   <span class="link">
                     {{likedPost.Name}}
                   </span>
+                  <span class="time">
+                    {{likedPost.UpdatedAt}}
+                  </span>
                   <div class="card-text">
                     {{likedPost.Body}}
                     <div v-for="tag in likedPostsTags" :key="tag">
@@ -99,13 +102,13 @@
                 </div>
                 <div class="card-footer text-end footer">
                   <span v-for="commentCount in commentCounts" :key="commentCount">
-                    <span v-if="likedPost.ArticleId == commentCount.ArticleId">
+                    <span v-if="likedPost.Id == commentCount.ArticleId">
                       <fa icon="comment-alt" />
                       {{commentCount.Count}}
                     </span>
                   </span>
                   <span v-for="favoriteLikedPostCount in favoriteLikedPostCounts" :key="favoriteLikedPostCount">
-                    <span v-if="favoriteLikedPostCount.ArticleId == likedPost.ArticleId">
+                    <span v-if="favoriteLikedPostCount.ArticleId == likedPost.Id">
                       <span v-if="favoriteLikedPostCount.Count">
                         <fa icon="heart" class="like-btn"/>
                       </span>
@@ -115,7 +118,7 @@
                     </span>
                   </span>
                   <span v-for="countData in likedPostCountData" :key="countData">
-                    <span v-if="countData.ArticleId == likedPost.ArticleId">
+                    <span v-if="countData.ArticleId == likedPost.Id">
                       {{countData.Count}}
                     </span>
                   </span>
@@ -199,7 +202,6 @@ export default {
         this.userName = resultUserName[0]
         var resultCommentCounts = response.data.commentCount
         this.mypageCommentCounts = resultCommentCounts
-        console.log(this.mypageCommentCounts)
         var resultTags = response.data.tagData
         this.tags = resultTags
         if (resultUserName[0].ProfileImagePath != '') {
@@ -247,7 +249,6 @@ export default {
         if (response.status != 200) {
           throw new Error("レスポンスエラー")
         } else {
-          console.log(response.data)
           this.likedPosts = response.data.favoritePostData
           this.commentCounts = response.data.commentCount
           var likedPosts = response.data.favoritePostData
@@ -267,7 +268,8 @@ export default {
                 Name: likedPosts[i].Name,
                 ProfileImagePath: likedPosts[i].ProfileImagePath,
                 Image: URL.createObjectURL(blob),
-                UserId: likedPosts[i].UserId
+                UserId: likedPosts[i].UserId,
+                UpdatedAt: likedPosts[i].UpdatedAt
               })
             })
           }

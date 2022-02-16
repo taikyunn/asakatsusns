@@ -27,6 +27,7 @@ type FavoritePostData struct {
 	Name             string
 	Body             string
 	ProfileImagePath string
+	UpdatedAt        time.Time
 }
 
 type ResultFavoritePostData struct {
@@ -35,6 +36,7 @@ type ResultFavoritePostData struct {
 	Name             string
 	Body             string
 	ProfileImagePath string
+	UpdatedAt        string
 }
 
 // いいね登録
@@ -209,14 +211,16 @@ func GetLikedPost(articleIds []int) []*ResultFavoritePostData {
 	db := gormConnect()
 	favoritePostData := []*FavoritePostData{}
 	resultfavoritePostData := []*ResultFavoritePostData{}
+	log.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 	for _, v := range articleIds {
 		log.Println("id:", v)
-		if err := db.Table("article").Select("article.id, user_id, name, body, profile_image_path").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&favoritePostData).Error; err != nil {
+		if err := db.Table("article").Select("article.id, user_id, name, body, profile_image_path, user.updated_at").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&favoritePostData).Error; err != nil {
 			panic(err.Error())
 		}
 		for _, v := range favoritePostData {
-			resultfavoritePostData = append(resultfavoritePostData, &ResultFavoritePostData{v.Id, v.UserId, v.Name, v.Body, v.ProfileImagePath})
+			t := v.UpdatedAt.Format("2006/01/02 15:04:05")
+			resultfavoritePostData = append(resultfavoritePostData, &ResultFavoritePostData{v.Id, v.UserId, v.Name, v.Body, v.ProfileImagePath, t})
 		}
 	}
 	defer db.Close()
