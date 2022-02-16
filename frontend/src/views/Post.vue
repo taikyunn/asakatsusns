@@ -99,11 +99,11 @@ export default {
         axios.post('/post/new', params, config)
         .then(response => {
           if (response.status == 201) {
-            if (response.data.Body != '') {
+            if (response.data.Name != '') {
+              this.apiErrors.push(response.data.Name)
+            } else {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
-            } else {
-              this.apiErrors.push(response.data.Body)
             }
           } else if (response.status != 200) {
             throw new Error('レスポンスエラー')

@@ -69,14 +69,14 @@ func InsertTags(articleId uint, tags []entity.TagData) {
 	var count int64
 	var tagId uint
 
-	for _, value := range tags {
+	for _, v := range tags {
 		// tagテーブルにレコードか存在するか確認
-		if err := db.Model(&tag).Where("name = ?", value.Text).Count(&count).Error; err != nil {
+		if err := db.Model(&tag).Where("name = ?", v.Text).Count(&count).Error; err != nil {
 			panic(err.Error())
 		}
 
 		var tag = entity.Tag{
-			Name: value.Text,
+			Name: v.Text,
 		}
 
 		// tagテーブルにデータを登録
@@ -91,7 +91,50 @@ func InsertTags(articleId uint, tags []entity.TagData) {
 
 		} else {
 			// tag_idの取得
-			if err := db.Select("id").Where("name = ?", value.Text).Find(&tag).Error; err != nil {
+			if err := db.Select("id").Where("name = ?", v.Text).Find(&tag).Error; err != nil {
+				panic(err.Error())
+			}
+			tagId = tag.ID
+		}
+
+		// article_tagテーブルにレコードを保存する
+		var articleTag = entity.ArticleTag{
+			ArticleId: int(articleId),
+			TagId:     int(tagId),
+		}
+		db.Create(&articleTag)
+	}
+}
+
+func RegisterTags(articleId uint, tags []string) {
+	db := gormConnect()
+	var tag []entity.Tag
+	var count int64
+	var tagId uint
+
+	for _, v := range tags {
+		// tagテーブルにレコードか存在するか確認
+		if err := db.Model(&tag).Where("name = ?", v).Count(&count).Error; err != nil {
+			panic(err.Error())
+		}
+
+		var tag = entity.Tag{
+			Name: v,
+		}
+
+		// tagテーブルにデータを登録
+		if count == 0 {
+			db.Create(&tag)
+
+			// tag_idの取得
+			if err := db.Select("id").Last(&tag).Error; err != nil {
+				panic(err.Error())
+			}
+			tagId = tag.ID
+
+		} else {
+			// tag_idの取得
+			if err := db.Select("id").Where("name = ?", v).Find(&tag).Error; err != nil {
 				panic(err.Error())
 			}
 			tagId = tag.ID
