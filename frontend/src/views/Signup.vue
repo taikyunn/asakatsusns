@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header />
     <div class="text-center">
       <h1 class="title">新規登録</h1>
       <div v-if="errors.length">
@@ -61,18 +61,21 @@ export default {
         response.user.getIdToken()
         .then(idToken => {
           localStorage.setItem("jwt", idToken.toString())
+          this.goSignUp()
+          })
         })
-      })
-      .catch(error => {
-        switch (error.code) {
-          case 'auth/email-already-in-use' :
-            this.errors.push("*このメールアドレスはすでに登録されています。")
-            break;
-          case 'auth/weak-password':
-            this.errors.push("*パスワードは6文字以上で入力してください。")
-            break;
-        }
-      })
+        .catch(error => {
+          switch (error.code) {
+            case 'auth/email-already-in-use' :
+              this.errors.push("*このメールアドレスはすでに登録されています。")
+              break;
+            case 'auth/weak-password':
+              this.errors.push("*パスワードは6文字以上で入力してください。")
+              break;
+          }
+        })
+    },
+    goSignUp() {
       const params = new URLSearchParams()
       params.append('name', this.name)
       params.append('email', this.email)
@@ -84,8 +87,10 @@ export default {
           this.apiErrors.push(response.data.Email)
           this.apiErrors.push(response.data.Password)
         } else {
-          alert("ようこそ" + response.data + 'さん')
+          localStorage.setItem('userName', response.data.name)
+          localStorage.setItem('userId', response.data.ID)
           this.$router.push('/')
+          alert("ようこそ" + response.data.name + 'さん')
         }
       })
     }
@@ -97,5 +102,9 @@ export default {
 .title {
   margin-top: 50px;
   margin-bottom: 50px;
+}
+
+.text-center {
+  padding-top: 5rem;
 }
 </style>
