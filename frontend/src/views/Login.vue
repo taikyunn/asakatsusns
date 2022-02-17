@@ -92,7 +92,7 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           localStorage.setItem('userName', response.data.name)
-          localStorage.setItem('userId', response.data.userId)
+          localStorage.setItem('userId', response.data.userId[0].ID)
           this.$router.push('/')
           alert("ようこそ" + response.data.name + "さん")
         }
