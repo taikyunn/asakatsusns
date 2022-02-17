@@ -3,7 +3,6 @@ package middleware
 import (
 	"app/models/db"
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -55,12 +54,12 @@ func AuthMiddleware() gin.HandlerFunc {
 		opt := option.WithCredentialsFile("firebase-admin-sdk.json")
 		app, err := firebase.NewApp(context.Background(), nil, opt)
 		if err != nil {
-			fmt.Printf("error: %v\n", err)
+			log.Printf("error: %v\n", err)
 			os.Exit(1)
 		}
 		auth, err := app.Auth(context.Background())
 		if err != nil {
-			fmt.Printf("error: %v\n", err)
+			log.Printf("error: %v\n", err)
 			os.Exit(1)
 		}
 

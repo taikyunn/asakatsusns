@@ -101,7 +101,6 @@ export default {
         } else {
           var followResult = response.data
           this.followLists = followResult
-          console.log(this.followLists)
           for (let i = 0; i < followResult.length; i++) {
             if (followResult[i].ProfileImagePath == '') {
               continue;

@@ -28,6 +28,12 @@
           <p>You don't have an account?
             <router-link to="/signup">create account now!!</router-link>
           </p>
+          <div>
+            <p>動作確認用アカウント</p>
+            <p>お名前:テストユーザー</p>
+            <p>メールアドレス:testuser@test.com</p>
+            <p>パスワード:testtest</p>
+          </div>
       </div>
     </div>
   </div>
