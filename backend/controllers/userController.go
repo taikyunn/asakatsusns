@@ -72,9 +72,8 @@ func Login(c *gin.Context) {
 
 	// ユーザーIDを取得
 	dbUserId := db.GetUserIdByName(name)
-	UserId := dbUserId[0].ID
 
-	c.JSON(200, gin.H{"name": name, "userId": UserId})
+	c.JSON(200, gin.H{"name": name, "userId": dbUserId})
 }
 
 // パスワードのhash化を行う
