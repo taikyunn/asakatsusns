@@ -92,8 +92,6 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           var user = response.data.userId[0]
-          console.log(user)
-          console.log(user.ID)
           localStorage.setItem('userName', response.data.name)
           localStorage.setItem('userId', user.ID)
           this.$router.push('/')
