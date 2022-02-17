@@ -10,9 +10,9 @@
           </div>
           <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label"></label>
-            <textarea name="body" class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="body" ></textarea>
+            <textarea name="body" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="本文" v-model="body" ></textarea>
           </div>
-          <div class="mb-3 mx-auto">
+          <div class="mb-3">
             <input type="hidden" id="tags" :value="tagsJson">
             <vue-tags-input
             v-model="tag"

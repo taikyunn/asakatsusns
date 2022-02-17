@@ -91,8 +91,9 @@ export default {
         } else if (response.status != 200){
           throw new Error('レスポンスエラー')
         } else {
+          var user = response.data.userId[0]
           localStorage.setItem('userName', response.data.name)
-          localStorage.setItem('userId', response.data.userId[0].ID)
+          localStorage.setItem('userId', user.ID)
           this.$router.push('/')
           alert("ようこそ" + response.data.name + "さん")
         }
