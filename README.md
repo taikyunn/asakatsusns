@@ -67,8 +67,7 @@
 - レスポンシブデザイン
 
 # AWS構成図
-https://user-images.githubusercontent.com/66294061/154385303-6845f0ea-2034-45b4-9ec4-6ba5c88101e5.png
-
+<img width="691" alt="インフラ構成図" src="https://user-images.githubusercontent.com/66294061/154385303-6845f0ea-2034-45b4-9ec4-6ba5c88101e5.png">
 # イメージ
 
 
