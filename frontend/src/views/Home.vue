@@ -162,9 +162,8 @@ export default {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
           alert('削除しました。')
-          location.reload()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },

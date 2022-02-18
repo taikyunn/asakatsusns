@@ -200,8 +200,7 @@ export default {
           throw new Error()
         } else {
           alert('登録しました。')
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
-          location.reload()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
@@ -262,8 +261,7 @@ export default {
           throw new Error()
         } else {
           alert('登録しました。')
-          location.reload()
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
@@ -283,8 +281,7 @@ export default {
           throw new Error("レスポンスエラー")
         } else {
           alert('登録しました。')
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
-          location.reload()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
@@ -298,8 +295,7 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           alert('登録しました。')
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
-          location.reload()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
@@ -313,8 +309,7 @@ export default {
           throw new Error("レスポンスエラー")
         } else {
           alert('登録しました。')
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
-          location.reload()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
@@ -328,8 +323,7 @@ export default {
           throw new Error('レスポンスエラー')
         } else {
           alert('登録しました。')
-          // this.$router.go({path: this.$router.currentRoute.path, force: true})
-          location.reload()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
