@@ -37,11 +37,11 @@
             </span>
           </span>
         </span>
-        <p class="card-text">
+        <div class="card-text">
           <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
             {{article.Body}}
           </router-link>
-        </p>
+        </div>
         <div v-for="tag in tags" :key="tag">
           <div v-if="article.Id == tag.ArticleId">
             <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
@@ -319,6 +319,11 @@
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+.card-text {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 </style>

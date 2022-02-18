@@ -37,12 +37,12 @@
                   </span>
                   <div class="card-text">
                     {{article.Body}}
-                    <div v-for="tag in tags" :key="tag">
-                      <div v-if="article.Id == tag.ArticleId">
-                          <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
-                            {{tag.Value}}
-                          </router-link>
-                      </div>
+                  </div>
+                  <div v-for="tag in tags" :key="tag">
+                    <div v-if="article.Id == tag.ArticleId">
+                        <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                          {{tag.Value}}
+                        </router-link>
                     </div>
                   </div>
                 </div>
@@ -91,12 +91,12 @@
                   </span>
                   <div class="card-text">
                     {{likedPost.Body}}
-                    <div v-for="tag in likedPostsTags" :key="tag">
-                      <div v-if="likedPost.Id == tag.ArticleId">
-                        <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
-                          {{tag.Value}}
-                        </router-link>
-                      </div>
+                  </div>
+                  <div v-for="tag in likedPostsTags" :key="tag">
+                    <div v-if="likedPost.Id == tag.ArticleId">
+                      <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
+                        {{tag.Value}}
+                      </router-link>
                     </div>
                   </div>
                 </div>
@@ -430,5 +430,10 @@ export default {
 
 .time {
   float: right;
+}
+
+.card-text {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 </style>
