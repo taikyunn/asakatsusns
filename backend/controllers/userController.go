@@ -39,9 +39,10 @@ func SignUp(c *gin.Context) {
 	getHashedPassword(&password)
 
 	var user = entity.User{
-		Name:     Name,
-		Email:    Email,
-		Password: password,
+		Name:           Name,
+		Email:          Email,
+		Password:       password,
+		RangeOfSuccess: 3,
 	}
 
 	db.InsertUser(&user)
