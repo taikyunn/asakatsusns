@@ -3,19 +3,20 @@
     <div class="container mt-4">
       <div class="row justify-content-center">
         <div class="col-md-8 text-center">
-          <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
+          <label>
+            <img v-if="profileDataUrl" :src="profileDataUrl" width="100" />
+            <p v-if="url">
+              <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
+              <img :src="url" width="100" />
+            </p>
+            <p v-else>
+              <input class="form-control" type="file" id="formFile" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
+            </p>
+          </label>
           <p v-if="url">
-            <span style="position:absolute" @click="deletePreview" width="1px" height="1px">X</span>
-            <img :src="url" width="100" />
-          </p>
-          <p v-if="!url">
-            <label for="formFile" class="form-label" ></label>
-            <input class="form-control" type="file" id="formFile" ref="preview" @change="uploadFile" accept="image/jpeg, image/png">
-          </p>
-          <p v-else>
             <button class="btn btn-outline-warning" v-on:click="fileUpload()">アップロード</button>
           </p>
-          <p>
+          <p class="follow">
             <router-link class="link" :to="{name: 'Follow', params: {id:(Number(this.id))}}">{{followData.FollowerCount}}
               フォロー
             </router-link>
@@ -32,10 +33,10 @@
             </span>
           </p>
           <p v-if="isEdit">
-            <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName" >
+            <span v-if="!editName" class="border p-2  bg-light" v-on:click="doEditName">
               {{userInfo.name}}*クリックで編集*
             </span>
-            <span v-else >
+            <span v-else>
               <input type="text" v-model="userInfo.name" v-on:blur="editName = false" v-focus>
               <button class="btn btn-outline-warning" @click="updateName">
                 登録
@@ -180,8 +181,8 @@ export default {
     },
     deletePreview(){
       this.url = ''
-      URL.revokeObjectURL(this.url);
-      this.mounted()
+      // URL.revokeObjectURL(this.url);
+      this.getUserProfile()
     },
     uploadFile() {
       const file = this.$refs.preview.files[0];
@@ -341,5 +342,21 @@ export default {
   text-decoration: none;
   text-align: left;
   color:black;
+}
+
+label {
+  display: inline-block;
+}
+
+label img {
+  pointer-events: none;
+}
+
+input[type=file] {
+  display: none;
+}
+
+.follow {
+  padding-top: 1rem;
 }
 </style>
