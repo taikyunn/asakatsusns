@@ -168,8 +168,9 @@ func GetALLArticle() []*NextArticleResult {
 	nextArticleResult := []*NextArticleResult{}
 	column := "article.id, user_id, body, article.updated_at, name, profile_image_path"
 	table := "INNER JOIN user ON article.user_id = user.id"
+	where := "article.deleted_at IS NULL AND user.deleted_at IS NULL"
 
-	if err := db.Table("article").Select(column).Joins(table).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
+	if err := db.Table("article").Select(column).Joins(table).Where(where).Limit(10).Order("updated_at DESC").Scan(&nextArticle).Error; err != nil {
 		panic(err.Error())
 	}
 	for _, v := range nextArticle {
