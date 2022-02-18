@@ -291,8 +291,9 @@ export default {
         } else if (response.status != 200){
           throw new Error('レスポンスエラー')
         } else {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          // this.$router.go({path: this.$router.currentRoute.path, force: true})
           this.getArticleDetail()
+          location.reload()
         }
       })
     }
