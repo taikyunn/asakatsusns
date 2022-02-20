@@ -7,7 +7,6 @@ const routes = [
     component: function () {
       return import('../views/Home.vue')
     },
-    meta: { requiresAuth: true }
   },
   {
     path: '/signup',

@@ -18,9 +18,9 @@
               <span class="time">
                 {{ArticleData.UpdatedAt}}
               </span>
-              <p class="card-text">
+              <div class="card-text">
                 {{ArticleData.Body}}
-              </p>
+              </div>
               <div v-for="tag in ArticleData.Tags" :key="tag">
                 <router-link class="tag border border-success rounded" :to="{name: 'HomeTag', params: {id:(Number(tag.Key))}}">
                   {{tag}}
@@ -291,8 +291,8 @@ export default {
         } else if (response.status != 200){
           throw new Error('レスポンスエラー')
         } else {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
           this.getArticleDetail()
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     }
@@ -361,5 +361,10 @@ export default {
   padding: 2px;
   float: left;
   margin-right: 1rem;
+}
+
+.card-text {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 </style>

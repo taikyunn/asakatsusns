@@ -54,11 +54,11 @@
                   </span>
                 </span>
               </span>
-              <p class="card-text">
+              <div class="card-text">
                 <router-link class="link" :to="{name: 'Detail', params: {id:(Number(article.Id))}}">
                   {{article.Body}}
                 </router-link>
-              </p>
+              </div>
               <div v-for="tag in tags" :key="tag">
                 <div v-if="article.Id == tag.ArticleId">
                   <span v-if="article.UserId == currentUserId" >
@@ -205,8 +205,8 @@ export default {
         if (response.status != 200) {
           throw new Error('レスポンスエラー')
         } else {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
           alert('削除しました。')
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         }
       })
     },
@@ -351,5 +351,10 @@ export default {
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+.card-text {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 </style>

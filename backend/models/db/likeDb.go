@@ -2,7 +2,6 @@ package db
 
 import (
 	entity "app/models/entity"
-	"log"
 	"time"
 )
 
@@ -211,10 +210,8 @@ func GetLikedPost(articleIds []int) []*ResultFavoritePostData {
 	db := gormConnect()
 	favoritePostData := []*FavoritePostData{}
 	resultfavoritePostData := []*ResultFavoritePostData{}
-	log.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 	for _, v := range articleIds {
-		log.Println("id:", v)
 		if err := db.Table("article").Select("article.id, user_id, name, body, profile_image_path, user.updated_at").Joins("INNER JOIN user ON article.user_id = user.id").Where("article.deleted_at IS NULL AND user.deleted_at IS NULL AND article.id = ?", v).Scan(&favoritePostData).Error; err != nil {
 			panic(err.Error())
 		}

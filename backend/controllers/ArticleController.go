@@ -5,7 +5,6 @@ import (
 	db "app/models/db"
 	"app/models/entity"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -107,9 +106,7 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	// 早起きチェック
-	log.Println("UserId", UserId)
 	count := checkWakeUptime(UserId)
-	log.Println("count", count)
 
 	if count != 0 {
 		c.JSON(200, count)

@@ -16,10 +16,10 @@
         <fa icon="crown" class="crown"/>
         早起き達成ランキンング
       </div>
-      <div class="card-body" v-for="(ranking, index) in rankings" :key="ranking">
-        <span class="card-body text-start">{{index + 1}}位:</span>
-        <span class="card-body text-center">{{ranking.Name}}さん</span>
-        <span class="card-body text-end">{{ranking.Count}}回</span>
+      <div class="card-body text-center" v-for="(ranking, index) in rankings" :key="ranking">
+        <span class="rank">{{index + 1}}位:</span>
+        <span class="name">{{ranking.Name}}さん</span>
+        <span class="count">{{ranking.Count}}回</span>
       </div>
     </div>
   </div>
@@ -91,6 +91,14 @@ export default {
   color: green;
   white-space: nowrap;
   text-decoration: none;
+}
+
+.rank {
+  float: left;
+}
+
+.count {
+  float: right;
 }
 
 </style>
