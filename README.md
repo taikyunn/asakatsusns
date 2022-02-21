@@ -73,6 +73,7 @@
 
 
 # DB設計
+<img width="1062" alt="ER図" src="https://user-images.githubusercontent.com/66294061/154876168-d7bd2502-e947-42fa-83bc-7a1675814a7e.png">
 
 # 各テーブルについて
 
