@@ -69,13 +69,5 @@
 # AWS構成図
 <img width="691" alt="インフラ構成図" src="https://user-images.githubusercontent.com/66294061/154385303-6845f0ea-2034-45b4-9ec4-6ba5c88101e5.png">
 
-# イメージ
-
-
 # DB設計
 <img width="1062" alt="ER図" src="https://user-images.githubusercontent.com/66294061/154876168-d7bd2502-e947-42fa-83bc-7a1675814a7e.png">
-
-# 各テーブルについて
-
-
-
