@@ -29,7 +29,7 @@
   - Firebase Authentication
 
 - インフラ
-  - CircleCi
+  - CircleCi 2.1
   - Docker 20.10.12/ docker-compose 2.2.3
   - mysql 5.7.36
   - AWS (EC2, ALB, ACM, S3, RDS, S3, ECS, ECR, CloudFront, Route53, CloudWatch, VPC, IAM, RDS)
