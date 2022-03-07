@@ -26,7 +26,7 @@
   - Air (ホットリロード)
   - Gin
   - Gorm
-  - Firebase Authentication
+  - firebase authentication
 
 - インフラ
   - CircleCi 2.1
@@ -40,7 +40,7 @@
 # 機能一覧
 - ユーザー登録関連
   - アカウント新規登録、プロフィール編集機能
-  - ログイン、ログアウト機能(JWT・Firebase Authentication)
+  - ログイン、ログアウト機能(JWT・firebase authentication)
 
 - ユーザーの早起き達成日数のランキング機能
 
