@@ -44,6 +44,13 @@ func gormConnect() *gorm.DB {
 	db.SingularTable(true)
 
 	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.AchievementDay{})
+	db.AutoMigrate(&entity.Article{})
+	db.AutoMigrate(&entity.ArticleTag{})
+	db.AutoMigrate(&entity.Comment{})
+	db.AutoMigrate(&entity.Follow{})
+	db.AutoMigrate(&entity.Likes{})
+	db.AutoMigrate(&entity.Tag{})
 
 	log.Println("db connected ", &db)
 
