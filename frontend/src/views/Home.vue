@@ -124,11 +124,10 @@ export default {
   methods:{
     async process() {
       await this.getAllArticles()
-      await Promise.all([
-        this.countFavorites(),
-        this.checkFavorite(),
-        this.countComments(),
-      ]);
+      await this.countFavorites()
+      await this.countFavorites()
+      await this.checkFavorite()
+      await this.countComments()
     },
     async getAllArticles() {
     const response = await axios.get('getAllArticles')
