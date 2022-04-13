@@ -98,17 +98,17 @@ export default {
         }
         axios.post('/post/new', params, config)
         .then(response => {
-          if (response.status == 201) {
-            if (response.data.Name != '') {
-              this.apiErrors.push(response.data.Name)
-            } else {
+          if (response.status === 201) {
+            if (response.data.message !== '') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
+            } else if(response.data.Name !== '') {
+              this.apiErrors.push(response.data.Name)
             }
-          } else if (response.status != 200) {
+          } else if (response.status !== 200) {
             throw new Error('レスポンスエラー')
           } else {
-            if (response.data != '') {
+            if (response.data !== '') {
               alert("早起き達成" + response.data + "日目!!")
               this.$router.push('/')
             } else {
