@@ -98,6 +98,7 @@ export default {
         }
         axios.post('/post/new', params, config)
         .then(response => {
+          console.log(response)
           if (response.status == 201) {
             if (response.data.Name != '') {
               this.apiErrors.push(response.data.Name)
