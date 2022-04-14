@@ -154,23 +154,23 @@
         const response = await axios.post('/post/registerLikes', params, config);
         const count = await axios.post('getNextCountFavorites', params);
         const favorite = await axios.post("checkNextFavorite", params);
-        if (response.status == 201) {
-          if (response.data.Body != '') {
+        if (response.status === 201) {
+          if (response.data.Body !== '') {
             alert("ログインからやり直してください。")
             router.push('/login')
           }
-        } else if (response.status != 200) {
+        } else if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var resultLikesCount = count.data[0]
           for (var i = 0; i < likeCounts.value.length; i++) {
-            if (likeCounts.value[i].ArticleId == resultLikesCount.ArticleId) {
+            if (likeCounts.value[i].ArticleId === resultLikesCount.ArticleId) {
                 likeCounts.value[i] = resultLikesCount
             }
           }
           var resultFavorite = favorite.data[0]
           for (var index = 0; index < results.value.length; index++) {
-            if (results.value[index].ArticleId == resultFavorite.ArticleId) {
+            if (results.value[index].ArticleId === resultFavorite.ArticleId) {
                 results.value[index] = resultFavorite
             }
           }
@@ -187,7 +187,7 @@
 
   async function deleteLikes(articleId) {
     try {
-      if (localStorage.getItem('jwt') == '') {
+      if (localStorage.getItem('jwt') ==='') {
         throw new Error('終了します');
       }
       const params = new URLSearchParams()
@@ -201,24 +201,24 @@
       try {
         const response = await axios.post('/post/deleteLikes', params, config)
         if (response.status == 201) {
-          if (response.data.Body != '') {
+          if (response.data.Body !=='') {
             alert("ログインからやり直してください。")
             router.push('/login')
           }
-        } else if (response.status != 200) {
+        } else if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           const count = await axios.post('getNextCountFavorites', params);
           const favorite = await axios.post("checkNextFavorite", params);
           var resultLikesCount = count.data[0]
           for (var i = 0; i < likeCounts.value.length; i++) {
-            if (likeCounts.value[i].ArticleId == resultLikesCount.ArticleId) {
+            if (likeCounts.value[i].ArticleId === resultLikesCount.ArticleId) {
                 likeCounts.value[i] = resultLikesCount
             }
           }
           var resultFavorite = favorite.data[0]
           for (var index = 0; index < results.value.length; index++) {
-            if (results.value[index].ArticleId == resultFavorite.ArticleId) {
+            if (results.value[index].ArticleId === resultFavorite.ArticleId) {
                 results.value[index] = resultFavorite
             }
           }
@@ -239,7 +239,7 @@
     params.append('articleId', articleId)
     try {
       const response = await axios.post('deleteArticle', params)
-      if (response.status != 200) {
+      if (response.status !== 200) {
         throw new Error('レスポンスエラー')
       } else {
         router.go({path: router.currentRoute.path, force: true})

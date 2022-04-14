@@ -85,10 +85,10 @@ export default {
       params.append('email', this.email)
       axios.post('/login',params)
       .then(response => {
-        if (response.status == 201) {
+        if (response.status === 201) {
           this.apiErrors.push(response.data.dbError)
           this.apiErrors.push(response.data.Name)
-        } else if (response.status != 200){
+        } else if (response.status !== 200){
           throw new Error('レスポンスエラー')
         } else {
           var user = response.data.userId[0]

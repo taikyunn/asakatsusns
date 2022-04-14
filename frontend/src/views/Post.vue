@@ -69,7 +69,7 @@ export default {
       axios.get("/getAutocompleteItems")
       .then (response => {
         var resultAutocompleteItems = response.data
-        if (resultAutocompleteItems != null) {
+        if (resultAutocompleteItems !== null) {
           var target = []
           for (var i = 0; i < resultAutocompleteItems.length; i++) {
             target[i] = {text: resultAutocompleteItems[i]}
@@ -82,7 +82,7 @@ export default {
     },
     createArticle() {
     try {
-        if (this.body == '') {
+        if (this.body === '') {
           throw new Error('終了します');
        }
         const tags = document.getElementById("tags").value;

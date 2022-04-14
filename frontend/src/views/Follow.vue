@@ -96,7 +96,7 @@ export default {
       params.append('follower_id', this.id)
       axios.post('getFollow', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var followResult = response.data
@@ -135,7 +135,7 @@ export default {
       params.append('followed_id', this.id)
       axios.post('getFollower', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var followerResult = response.data
@@ -153,7 +153,7 @@ export default {
         params.append('followed_id', followedId)
         axios.post("registerFollow", params)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw new Error("レスポンスエラー")
           } else {
             this.isFollowedBy = false;
@@ -174,7 +174,7 @@ export default {
         params.append('followed_id', followedId)
         axios.post('deleteFollow', params)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw new Error("レスポンスエラー")
           } else {
             this.isFollowedBy = true;

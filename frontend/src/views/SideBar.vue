@@ -46,7 +46,7 @@ export default {
     getMainTag() {
       axios.get('getMainTag')
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var resultMainTag = response.data
@@ -57,7 +57,7 @@ export default {
     getWakeUpRanking() {
       axios.get('getWakeUpRanking')
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !==200) {
           throw new Error('レスポンスエラー')
         } else {
           var rankingResult =response.data

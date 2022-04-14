@@ -5,6 +5,7 @@ go 1.15
 require (
 	cloud.google.com/go/firestore v1.6.1 // indirect
 	firebase.google.com/go v3.13.0+incompatible
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/astaxie/session v0.0.0-20130408050157-95d7fe18579c
 	github.com/aws/aws-sdk-go v1.42.35
 	github.com/docker/docker v20.10.12+incompatible

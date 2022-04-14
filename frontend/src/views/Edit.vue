@@ -75,7 +75,7 @@ export default {
       params.append('id', this.id)
       axios.post('getOneArticle', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var resultArticle = response.data
@@ -90,7 +90,7 @@ export default {
       axios.get("/getAutocompleteItems")
       .then (response => {
         var resultAutocompleteItems = response.data
-        if (resultAutocompleteItems != null) {
+        if (resultAutocompleteItems !== null) {
           var target = []
           for (var i = 0; i < resultAutocompleteItems.length; i++) {
             target[i] = {text: resultAutocompleteItems[i]}
@@ -114,7 +114,7 @@ export default {
       }
       axios.post("updateArticle", params, config)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           alert("編集しました。")
