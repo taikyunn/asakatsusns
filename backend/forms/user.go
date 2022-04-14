@@ -65,10 +65,11 @@ func (form *LoginValidateUser) LoginValidate() (ok bool, result map[string]strin
 					switch errors[i].Tag() {
 					case "required":
 						result["Name"] = "*お名前は必須入力です。"
-					case "unique":
-						// 名前とPWが一致するかの確認が必要
-						// db.CheckNameUnique()
-						result["Name"] = "そのお名前は登録されていません。"
+					}
+				case "Password":
+					switch errors[i].Tag() {
+					case "required":
+						result["Password"] = "*パスワードは必須入力です。"
 					}
 				}
 			}
