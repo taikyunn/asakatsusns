@@ -175,7 +175,7 @@ export default {
       })
     },
     checkIsEdit() {
-      if (this.id == localStorage.getItem('userId')) {
+      if (this.id === localStorage.getItem('userId')) {
         this.isEdit = true
       }
     },
@@ -197,7 +197,7 @@ export default {
       params.append('userId', this.id)
       axios.post('/fileUpload', params, {headers: {'Content-Type': 'multipart/form-data'}})
       .then(response  => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error()
         } else {
           alert('登録しました。')
@@ -207,7 +207,7 @@ export default {
     },
     registerFollow() {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -215,7 +215,7 @@ export default {
         params.append('followed_id',this.id)
         axios.post("registerFollow", params)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw new Error("レスポンスエラー")
           } else {
             this.checkFollow()
@@ -229,7 +229,7 @@ export default {
     },
     deleteFollow() {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -237,7 +237,7 @@ export default {
         params.append('followed_id',this.id)
         axios.post('deleteFollow', params)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status !==200) {
             throw new Error("レスポンスエラー")
           } else {
             this.checkFollow()
@@ -258,7 +258,7 @@ export default {
       params.append('name', this.userInfo.name)
       axios.post('editUserName', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !==200) {
           throw new Error()
         } else {
           alert('登録しました。')
@@ -278,7 +278,7 @@ export default {
       params.append('userId', this.id)
       axios.post("updateWakeUpTime", params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           alert('登録しました。')
@@ -292,7 +292,7 @@ export default {
       params.append('wakeUpTime', this.wakeUpTime)
       axios.post("/registerWakeUpTime", params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           alert('登録しました。')
@@ -306,7 +306,7 @@ export default {
       params.append('userId', this.id)
       axios.post("updateSleepTime", params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           alert('登録しました。')
@@ -320,7 +320,7 @@ export default {
       params.append('sleepTime', this.sleepTime)
       axios.post("/registerSleepTime", params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           alert('登録しました。')

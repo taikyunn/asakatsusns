@@ -131,7 +131,7 @@ export default {
     },
     async getAllArticles() {
     const response = await axios.get('getAllArticles')
-    if (response.status != 200) {
+    if (response.status !== 200) {
       throw new Error('レスポンスエラー')
     } else {
       var resultArticles = response.data.article
@@ -139,7 +139,7 @@ export default {
       var resultTags = response.data.tag
       this.tags = resultTags
       for (let i = 0; i < resultArticles.length; i++) {
-        if (resultArticles[i].ProfileImagePath == '') {
+        if (resultArticles[i].ProfileImagePath === '') {
           continue;
         }
         let url = process.env.VUE_APP_DATA_URL + resultArticles[i].ProfileImagePath
@@ -158,7 +158,7 @@ export default {
       params.append('articleId', article.Id)
       axios.post('deleteArticle', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !==200) {
           throw new Error('レスポンスエラー')
         } else {
           alert('削除しました。')
@@ -168,7 +168,7 @@ export default {
     },
     registerLikes(article) {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -181,12 +181,12 @@ export default {
         }
         axios.post('/post/registerLikes', params, config)
         .then(response => {
-          if (response.status == 201) {
-            if (response.data.Body != '') {
+          if (response.status === 201) {
+            if (response.data.Body !== '') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
             }
-          } else if (response.status != 200) {
+          } else if (response.status !== 200) {
             throw new Error('レスポンスエラー')
           } else {
             this.countFavorites()
@@ -200,7 +200,7 @@ export default {
     },
     deleteLikes(article) {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -213,12 +213,12 @@ export default {
         }
         axios.post('/post/deleteLikes', params, config)
         .then(response => {
-          if (response.status == 201) {
-            if (response.data.Body != '') {
+          if (response.status === 201) {
+            if (response.data.Body !== '') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
             }
-          } else if (response.status != 200) {
+          } else if (response.status !== 200) {
             throw new Error('レスポンスエラー')
           } else {
             this.countFavorites()

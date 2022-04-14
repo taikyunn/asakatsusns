@@ -129,7 +129,7 @@ export default {
       params.append('articleId', this.id)
       axios.post('getArticleDetail', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var resultArticle = response.data
@@ -190,7 +190,7 @@ export default {
       params.append('userId', localStorage.getItem('userId'))
       axios.post("checkFavoriteByArticleId", params)
       .then(response => {
-      if (response.status != 200) {
+      if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var resultCheckFavorite = response.data
@@ -214,11 +214,11 @@ export default {
         axios.post('/post/registerLikes', params, config)
         .then(response => {
           if (response.status == 201) {
-            if (response.data.Body != '') {
+            if (response.data.Body !== '') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
             }
-          } else if (response.status != 200) {
+          } else if (response.status !== 200) {
             throw new Error('レスポンスエラー')
           } else {
             this.countFavorites()
@@ -246,11 +246,11 @@ export default {
         axios.post('/post/deleteLikes', params, config)
         .then(response => {
           if (response.status == 201) {
-            if (response.data.Body != '') {
+            if (response.data.Body !== '') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
             }
-          } else if (response.status != 200) {
+          } else if (response.status !== 200) {
             throw new Error('レスポンスエラー')
           } else {
             this.countFavorites()
@@ -284,11 +284,11 @@ export default {
       axios.post('/post/insertComment', params, config)
       .then(response => {
         if (response.status == 201) {
-          if (response.data.Body != '') {
+          if (response.data.Body !== '') {
             alert("ログインからやり直してください。")
             this.$router.push('/login')
           }
-        } else if (response.status != 200){
+        } else if (response.status !== 200){
           throw new Error('レスポンスエラー')
         } else {
           this.getArticleDetail()

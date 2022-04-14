@@ -193,7 +193,7 @@ export default {
       const params = new URLSearchParams()
       params.append('userId',this.id)
       const response = await axios.post('getMypageArticle', params)
-      if (response.status != 200) {
+      if (response.status !== 200) {
         throw new Error("レスポンスエラー")
       } else {
         var resultMypageArticle = response.data.mypageArticle
@@ -204,7 +204,7 @@ export default {
         this.mypageCommentCounts = resultCommentCounts
         var resultTags = response.data.tagData
         this.tags = resultTags
-        if (resultUserName[0].ProfileImagePath != '') {
+        if (resultUserName[0].ProfileImagePath !=='') {
           let url = process.env.VUE_APP_DATA_URL + resultUserName[0].ProfileImagePath
           axios.get(url,{responseType: "blob"})
           .then(response => {
@@ -219,7 +219,7 @@ export default {
       params.append('userId',this.id)
       axios.post('getCountFavoriteMypage', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           var resultCountData = response.data
@@ -233,7 +233,7 @@ export default {
       params.append('visiterUserId', localStorage.getItem('userId'))
       axios.post('checkFavoriteMypage', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !==200) {
           throw new Error("レスポンスエラー")
         } else {
           var resultCheckFavorite = response.data
@@ -246,7 +246,7 @@ export default {
       params.append('mypageUserId', this.id)
       axios.post('getLikedPost', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           this.likedPosts = response.data.favoritePostData
@@ -255,7 +255,7 @@ export default {
           var likedPostsTags = response.data.tagData
           this.likedPostsTags = likedPostsTags
           for (let i = 0; i < likedPosts.length; i++) {
-            if (likedPosts[i].ProfileImagePath == '') {
+            if (likedPosts[i].ProfileImagePath === '') {
               continue;
             }
             let url = process.env.VUE_APP_DATA_URL + likedPosts[i].ProfileImagePath
@@ -282,7 +282,7 @@ export default {
       params.append('visiterUserId', localStorage.getItem('userId'))
       axios.post('checkFavoriteLikedPost', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           var resultCheckFavoriteLikedPost = response.data
@@ -295,7 +295,7 @@ export default {
       params.append('mypageUserId', this.id)
       axios.post('getCountFavoriteLikedPost', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error("レスポンスエラー")
         } else {
           var resultLikedPostCountData = response.data
@@ -305,7 +305,7 @@ export default {
     },
     registerLikes(articleId) {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します')
         }
         const params = new URLSearchParams()
@@ -318,12 +318,12 @@ export default {
         }
         axios.post('/post/registerLikes', params, config)
         .then(response => {
-          if (response.status == 201) {
+          if (response.status === 201) {
             if (response.data.Body != '') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
             }
-          } else if (response.status != 200) {
+          } else if (response.status !== 200) {
             throw new Error('レスポンスエラー')
           } else {
             this.checkFavoriteMypage()
@@ -337,7 +337,7 @@ export default {
     },
     deleteLikes(articleId) {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -350,12 +350,12 @@ export default {
         }
         axios.post('/post/deleteLikes', params, config)
         .then(response => {
-          if (response.status == 201) {
-            if (response.data.Body != '') {
+          if (response.status === 201) {
+            if (response.data.Body !=='') {
               alert("ログインからやり直してください。")
               this.$router.push('/login')
             }
-          } else if (response.status != 200) {
+          } else if (response.status !==200) {
             throw new Error('レスポンスエラー')
           } else {
             this.checkFavoriteMypage()

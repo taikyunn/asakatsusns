@@ -91,7 +91,7 @@ export default {
       params.append('id', localStorage.getItem('userId'))
       axios.post('getHeader', params)
       .then(response => {
-        if (response.data != '') {
+        if (response.data !== '') {
         this.authenticatedUser = true
         this.notAuthenticatedUser = false
         } else {
