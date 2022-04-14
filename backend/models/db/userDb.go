@@ -4,6 +4,23 @@ import (
 	entity "app/models/entity"
 )
 
+// 名前の重複チェック
+func CheckNameUnique(name string) (ok bool, result map[string]string) {
+	db := gormConnect()
+	var user []entity.User
+	var count int
+	result = make(map[string]string)
+
+	if err := db.Where("name = ?", name).Find(&user).Count(&count).Error; err != nil {
+		panic(err.Error())
+	}
+	if count == 1 {
+		result["Name"] = "*この名前は既に登録されています。"
+		return false, result
+	}
+	return true, result
+}
+
 // ユーザーデータ登録
 func InsertUser(signUp *entity.User) {
 	db := gormConnect()

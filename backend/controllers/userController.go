@@ -36,6 +36,12 @@ func SignUp(c *gin.Context) {
 	Name := c.PostForm("name")
 	Email := c.PostForm("email")
 	password := c.PostForm("password")
+
+	// nameのuniqueチェック
+	if ok, errorMessages := db.CheckNameUnique(Name); !ok {
+		c.JSON(201, errorMessages)
+		return
+	}
 	getHashedPassword(&password)
 
 	var user = entity.User{
