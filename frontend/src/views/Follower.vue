@@ -99,13 +99,13 @@ export default {
       params.append('followed_id', this.id)
       axios.post('getFollower', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var followerResult = response.data
           this.followerLists = followerResult
           for (let i = 0; i < followerResult.length; i++) {
-            if (followerResult[i].ProfileImagePath == '') {
+            if (followerResult[i].ProfileImagePath === '') {
               continue;
             }
             let url = process.env.VUE_APP_DATA_URL + followerResult[i].ProfileImagePath
@@ -137,7 +137,7 @@ export default {
       params.append('follower_id', this.id)
       axios.post('getFollow', params)
       .then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
           throw new Error('レスポンスエラー')
         } else {
           var followResult = response.data
@@ -147,7 +147,7 @@ export default {
     },
     registerFollow() {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -155,7 +155,7 @@ export default {
         params.append('followed_id',this.id)
         axios.post("registerFollow", params)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw new Error("レスポンスエラー")
           } else {
             this.isFollowedBy = true
@@ -168,7 +168,7 @@ export default {
     },
     deleteFollow() {
       try {
-        if (localStorage.getItem('jwt') == '') {
+        if (localStorage.getItem('jwt') === '') {
           throw new Error('終了します');
         }
         const params = new URLSearchParams()
@@ -176,7 +176,7 @@ export default {
         params.append('followed_id',this.id)
         axios.post('deleteFollow', params)
         .then(response => {
-          if (response.status != 200) {
+          if (response.status !== 200) {
             throw new Error("レスポンスエラー")
           } else {
             this.isFollowedBy = false
