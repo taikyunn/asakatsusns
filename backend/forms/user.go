@@ -6,7 +6,7 @@ import (
 
 type ValidateUser struct {
 	Name     string `validate:"required"`
-	Email    string `validate:"required"`
+	Email    string `validate:"required,email"`
 	Password string `validate:"required"`
 }
 
@@ -36,7 +36,7 @@ func (form *ValidateUser) Validate() (ok bool, result map[string]string) {
 					case "required":
 						result["Email"] = "*メールアドレスは必須入力です。"
 					case "email":
-						result["Email"] = "正しいメールアドレス形式で入力してください"
+						result["Email"] = "*正しいメールアドレス形式で入力してください。"
 					}
 				case "Password":
 					switch errors[i].Tag() {

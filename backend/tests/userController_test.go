@@ -59,6 +59,21 @@ func TestSignUp(t *testing.T) {
 			},
 		},
 		{
+			// メールアドレスの形式ミス
+			users{
+				Email:    "testtest",
+				Password: "testtest",
+				Name:     "testuser",
+			},
+			preferResponse{
+				code: 201,
+				body: map[string]interface{}{
+					//"Password": "test password",
+					"Email": "*正しいメールアドレス形式で入力してください。",
+				},
+			},
+		},
+		{
 			// パスワードを空で登録しようとした場合
 			users{
 				Email:    "testtest@example.com",
@@ -97,7 +112,7 @@ func TestSignUp(t *testing.T) {
 		var responseBody map[string]interface{}
 		_ = json.Unmarshal(response.Body.Bytes(), &responseBody)
 
-		// ステータスコードがおかしいもしくは帰ってきたメッセージが想定と違えばダメ
+		// ステータスコードチェック
 		if response.Code != tt.want.code {
 			t.Errorf("%d番目のテストが失敗しました。想定返却コード：%d, 実際の返却コード：%d", i+1, tt.want.code, response.Code)
 		} else {
