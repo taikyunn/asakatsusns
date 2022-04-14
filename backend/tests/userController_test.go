@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -28,24 +29,56 @@ func TestSignUp(t *testing.T) {
 		want  preferResponse
 	}{
 		{
-			// 空登録しようとした場合
+			// 名前を空登録しようとした場合
 			users{
-				Email:    "",
-				Password: "",
+				Email:    "testtest@example.com",
+				Password: "testtest",
 				Name:     "",
 			},
 			preferResponse{
 				code: 201,
 				body: map[string]interface{}{
-					"Email": "*メールアドレスは必須入力です。",
 					//"Password": "test password", // hash化されるため省略
 					"Name": "*お名前は必須入力です。",
 				},
 			},
 		},
+		{
+			// メールアドレスを空登録しようとした場合
+			users{
+				Email:    "",
+				Password: "testtest",
+				Name:     "testuser",
+			},
+			preferResponse{
+				code: 201,
+				body: map[string]interface{}{
+					//"Password": "test password",
+					"Email": "*メールアドレスは必須入力です。",
+				},
+			},
+		},
+		{
+			// パスワードを空で登録しようとした場合
+			users{
+				Email:    "testtest@example.com",
+				Password: "",
+				Name:     "testuser",
+			},
+			preferResponse{
+				code: 201,
+				body: map[string]interface{}{
+					"Password": "*パスワードは必須入力です。",
+				},
+			},
+		},
 	}
 	for i, tt := range userTests {
-		requestBody := strings.NewReader("Email=" + tt.users.Email + "&Name=" + tt.users.Name + "&Password=" + tt.users.Password)
+		form := url.Values{}
+		form.Add("name", tt.users.Name)
+		form.Add("email", tt.users.Email)
+		form.Add("password", tt.users.Password)
+		requestBody := strings.NewReader(form.Encode())
 		// レスポンス
 		response := httptest.NewRecorder()
 

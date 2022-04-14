@@ -5,7 +5,7 @@ import (
 )
 
 type ValidateUser struct {
-	Name     string `validate:"required","unique"`
+	Name     string `validate:"required"`
 	Email    string `validate:"required"`
 	Password string `validate:"required"`
 }
@@ -30,8 +30,6 @@ func (form *ValidateUser) Validate() (ok bool, result map[string]string) {
 					switch errors[i].Tag() {
 					case "required":
 						result["Name"] = "*お名前は必須入力です。"
-					case "unique":
-						result["Name"] = "*すでに登録されているお名前です。"
 					}
 				case "Email":
 					switch errors[i].Tag() {
