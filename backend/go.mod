@@ -15,6 +15,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
+	github.com/gotestyourself/gotestyourself v1.4.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.4.0
 	github.com/koron/go-dproxy v1.3.0
@@ -23,4 +24,5 @@ require (
 	google.golang.org/api v0.64.0
 	gopkg.in/go-playground/validator.v9 v9.29.1
 	gorm.io/gorm v1.22.4
+	gotest.tools v1.4.0
 )
